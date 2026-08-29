@@ -343,7 +343,21 @@ Always: `relative overflow-hidden` on the section, `GlowOrbs` as the first child
 
 Hero (`variant="light"` orbs + `.glass-gold` eyebrow), `PageHero` (`variant="dark"` orbs + `.glass-gold` eyebrow — every interior page inherits this), `DiscoveryEngine` (`.glass` pillar cards over `variant="dark"` orbs), featured service card (`.glass-gold`), `FinalCta` (`.glass` panel + `.glass-gold` secondary button over `variant="dark"` orbs), sticky `Header` (plain `bg-white/70 backdrop-blur-xl`, not the `.glass` class, since a full-width bar needs a bottom-only border rather than the class's all-sides shorthand border).
 
-## 10. Applying This — Checklist
+## 10. Cursor-Reactive Dot Matrix
+
+A canvas-based dot grid used as a background layer on the Hero, inspired by the tech-grid-glows-toward-the-pointer treatment on modern AI/dev-tool landing pages (e.g. Google's Antigravity site). `<DotMatrix variant="light" | "dark" />` (`components/site/dot-matrix.tsx`) draws a grid of dots at rest (faint navy) that brighten toward the accent blue and grow as the cursor nears, with thin connecting lines threading from nearby dots to the pointer — reads as a live "network scan" rather than a static texture.
+
+**Mechanics:**
+- Plain `<canvas>` + `requestAnimationFrame`, not Framer Motion or GSAP — a per-dot procedural draw loop is a different problem than tweening a modest number of DOM nodes, so it doesn't try to reuse the DOM-animation tooling used elsewhere in the system.
+- Grid spacing ~34px; each dot's radius/alpha eases (lerp) toward a target driven by distance to the cursor (`INFLUENCE_RADIUS`), rather than snapping, so it feels fluid.
+- `IntersectionObserver` pauses the draw loop when the canvas scrolls out of view; `ResizeObserver` rebuilds the grid on resize; `devicePixelRatio` (capped at 2) keeps it crisp without over-drawing on high-DPI screens.
+- `prefers-reduced-motion: reduce` renders one static frame — no rAF loop, no mouse tracking — instead of the interactive version.
+- **Compatible with the foreground by construction**: a `mask-image: radial-gradient(...)` clears the dots out of the ellipse where the headline/body copy sits, so the effect frames the hero (edges, corners) rather than fighting the text. Don't remove the mask when reusing this on another page's hero — it's the difference between "tech accent" and "distracting noise behind body copy."
+- `pointer-events-none` throughout — it must never intercept clicks meant for CTAs above it. Mouse position is tracked via a `window` `mousemove` listener (cheap: it only stores coordinates; the actual per-frame math happens in the rAF loop, decoupled from event frequency), not a listener on the canvas itself.
+
+**Gotcha worth remembering:** `<canvas>` is a *replaced element*. `absolute inset-0` alone does **not** stretch it to fill its container the way it does a `<div>` (used successfully for `GlowOrbs`) — for absolutely-positioned replaced elements, `width/height: auto` resolves to the element's *intrinsic* size (canvas's default 300×150), not the inset-derived size. Always pair `absolute inset-0` with `size-full` (or explicit `w-full h-full`) on a canvas used this way.
+
+## 11. Applying This — Checklist
 
 1. Scaffold Next.js + Tailwind v4 + shadcn/ui (`base-nova`) + Framer Motion + lucide-react (§1).
 2. Wire the navy/gold scales from §2.1 into `@theme inline` + `:root`/`.dark` exactly as in §2.2.
@@ -353,3 +367,4 @@ Hero (`variant="light"` orbs + `.glass-gold` eyebrow), `PageHero` (`variant="dar
 6. For every new page: `PageHero` → one or more `Container`-wrapped sections, each wrapped in `AnimatedSection`, headings via `SectionHeading`.
 7. Re-use the exact class strings from §4 verbatim across pages — consistency comes from copying the same Tailwind combinations, not reinventing similar ones per page.
 8. Reach for glass (§9) only on dark/gradient sections with `GlowOrbs` behind them — not on the default content-grid cards.
+9. `DotMatrix` (§10) is a Hero-specific accent, not a default — reuse it deliberately (e.g. another top-of-funnel page's hero), always with its center mask intact, never behind a dense text block without one.

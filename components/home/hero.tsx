@@ -8,6 +8,7 @@ import gsap from "gsap";
 
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/site/container";
+import { DotMatrix } from "@/components/site/dot-matrix";
 import { GlowOrbs } from "@/components/site/glow-orbs";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ export function Hero() {
       className="relative overflow-hidden bg-gradient-to-b from-navy-50 via-white to-white py-20 sm:py-28"
     >
       <GlowOrbs variant="light" />
+      <DotMatrix variant="light" />
       <Container className="relative z-10 flex flex-col items-center gap-6 text-center">
         <span
           data-hero-eyebrow
