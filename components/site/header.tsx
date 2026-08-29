@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu } from "lucide-react";
 
 import { Container } from "@/components/site/container";
+import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,9 +42,14 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/70 backdrop-blur-xl backdrop-saturate-150">
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href="/" className="flex items-center">
-          <span className="font-heading text-2xl font-bold text-navy-600 sm:text-3xl">
-            BLUVIG
-          </span>
+          <Image
+            src="/logo.png"
+            alt="Bluvig"
+            width={656}
+            height={120}
+            priority
+            className="h-9 w-auto sm:h-11"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -79,10 +86,12 @@ export function Header() {
         </nav>
 
         <div className="hidden md:block">
-          <Button
-            className="btn-metallic gold-line font-semibold"
-            render={<Link href="/get-started">Get Started</Link>}
-          />
+          <MagneticButton>
+            <Button
+              className="btn-metallic gold-line font-semibold"
+              render={<Link href="/get-started">Get Started</Link>}
+            />
+          </MagneticButton>
         </div>
 
         <Sheet>

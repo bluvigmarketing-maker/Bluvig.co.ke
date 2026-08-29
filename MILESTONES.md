@@ -78,7 +78,7 @@ Pulled from `/References` screenshots + a live crawl of bluvig.co.ke.
 - [x] Add shadcn primitives: Button, Card, Badge, Dialog, DropdownMenu, NavigationMenu, Sheet, Separator, Input, Label
 - [x] Build layout shell: sticky Header/Nav (desktop dropdown + mobile Sheet drawer), dark Footer with white logo badge, WhatsApp floating CTA
 - [x] Establish consistent `py-16`/`py-16 sm:py-20` section rhythm and `max-w-6xl` container width — dead-whitespace problem from the old site is gone
-- [x] Logo treatment: rendered as a styled Playfair Display wordmark in `navy-600`/`navy-950` (header/footer) — **no real logo file was provided**, so this is a text wordmark standing in for one. Flag if there's an actual logo asset to drop in instead.
+- [x] Logo treatment: real logo asset (`public/logo.png`) in header and footer via `next/image` — background alpha extracted from the supplied JPG. Full navy/gold palette re-derived by pixel-sampling the logo's exact blue (`#297aef`) and rebuilt as a single-hue monochrome system (see DESIGN-SYSTEM.md §2).
 - [x] Verified with a live dev-server + headless-browser check: production build is clean (`npm run build`, 0 type errors), zero console errors across pages tested, scroll-reveal animations confirmed firing correctly with real scroll behavior
 - [x] Glassmorphism accent system added — `.glass`/`.glass-light`/`.glass-gold` utilities + `GlowOrbs` decorative background component, documented in DESIGN-SYSTEM.md §9. Applied to Hero, `PageHero` (all interior pages), Discovery Engine cards, the featured service card, Final CTA panel, and the sticky header — deliberately not on dense content grids (case studies, blog, trust cards) where it would hurt legibility
 

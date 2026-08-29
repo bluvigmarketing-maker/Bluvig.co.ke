@@ -4,6 +4,7 @@ import { PhoneCall } from "lucide-react";
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { GlowOrbs } from "@/components/site/glow-orbs";
+import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
 
 export function FinalCta() {
@@ -23,26 +24,30 @@ export function FinalCta() {
             to get found, trusted, and remembered.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button
-              size="lg"
-              className="btn-metallic gold-line h-12 px-8 font-semibold"
-              render={
-                <Link href="/get-started">
-                  <PhoneCall className="size-4" aria-hidden="true" />
-                  Book a FREE Clarity Call
-                </Link>
-              }
-            />
-            <Button
-              size="lg"
-              variant="outline"
-              className="glass-gold h-12 px-8 font-semibold text-white hover:bg-white/10"
-              render={
-                <Link href="/what-we-do">
-                  What is &ldquo;Discovery Engine&rdquo;?
-                </Link>
-              }
-            />
+            <MagneticButton>
+              <Button
+                size="lg"
+                className="btn-metallic gold-line h-12 px-8 font-semibold"
+                render={
+                  <Link href="/get-started">
+                    <PhoneCall className="size-4" aria-hidden="true" />
+                    Book a FREE Clarity Call
+                  </Link>
+                }
+              />
+            </MagneticButton>
+            <MagneticButton>
+              <Button
+                size="lg"
+                variant="outline"
+                className="glass-gold h-12 px-8 font-semibold text-white hover:bg-white/10"
+                render={
+                  <Link href="/what-we-do">
+                    What is &ldquo;Discovery Engine&rdquo;?
+                  </Link>
+                }
+              />
+            </MagneticButton>
           </div>
         </AnimatedSection>
       </Container>

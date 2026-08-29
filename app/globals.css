@@ -74,29 +74,34 @@
 }
 
 :root {
-  /* Bluvig brand scales — see DESIGN-SYSTEM.md §2 */
-  --navy-50: #eef2fb;
-  --navy-100: #dce3f5;
-  --navy-200: #b7c8ea;
-  --navy-300: #8ca6da;
-  --navy-400: #5f80c4;
-  --navy-500: #3d5fa8;
-  --navy-600: #2a4a8c;
-  --navy-700: #223c70;
-  --navy-800: #1c3057;
-  --navy-900: #16253f;
-  --navy-950: #0b1220;
+  /* Bluvig brand scales — see DESIGN-SYSTEM.md §2.
+     Monochrome, derived by pixel-sampling the real logo file (public/logo.png):
+     true brand blue = #297aef, hue ~215°. `navy` = muted/structural tints
+     of that hue; `gold` = the same hue at full saturation, used for
+     accents/CTAs (kept the `gold` name for now to avoid touching every
+     component — see DESIGN-SYSTEM.md §2 note). */
+  --navy-50: #f4f7fa;
+  --navy-100: #e6ecf4;
+  --navy-200: #cbd6e7;
+  --navy-300: #a5b9d4;
+  --navy-400: #7896bf;
+  --navy-500: #4d75ac;
+  --navy-600: #3c5d8b;
+  --navy-700: #2e4a70;
+  --navy-800: #223958;
+  --navy-900: #172840;
+  --navy-950: #0d1726;
 
-  --gold-50: #fdf3e7;
-  --gold-100: #fae3c4;
-  --gold-200: #f4c889;
-  --gold-300: #edaa57;
-  --gold-400: #e2903a;
-  --gold-500: #d97706;
-  --gold-600: #b85f05;
-  --gold-700: #8f4a08;
-  --gold-800: #6c380a;
-  --gold-900: #4d280a;
+  --gold-50: #ecf3fe;
+  --gold-100: #cfe2fc;
+  --gold-200: #a0c5f8;
+  --gold-300: #71a8f4;
+  --gold-400: #4b90f1;
+  --gold-500: #2a7cef;
+  --gold-600: #0f64db;
+  --gold-700: #0b51b1;
+  --gold-800: #093f8b;
+  --gold-900: #062e65;
 
   --background: oklch(1 0 0);
   --foreground: var(--navy-950);
@@ -207,6 +212,19 @@
     @apply border border-gold-400/60;
   }
 
+  .text-underline-sweep {
+    background-image: linear-gradient(
+      110deg,
+      transparent 0%,
+      var(--gold-400) 35%,
+      var(--gold-500) 50%,
+      var(--gold-400) 65%,
+      transparent 100%
+    );
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+
   /* Glassmorphism accents — DESIGN-SYSTEM.md §10.
      Use over a dark/gradient surface (ideally with .glow-orbs behind it),
      never as the default for dense content grids. */
@@ -254,7 +272,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn-metallic {
+  .btn-metallic,
+  .text-underline-sweep {
     animation: none;
   }
 }

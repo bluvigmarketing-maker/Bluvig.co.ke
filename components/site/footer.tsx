@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
 
@@ -16,11 +17,13 @@ export function Footer() {
     <footer className="bg-navy-950 text-navy-100">
       <Container className="grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex flex-col gap-4">
-          <div className="w-fit rounded-xl bg-white px-4 py-2.5">
-            <span className="font-heading text-xl font-bold text-navy-600">
-              BLUVIG
-            </span>
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Bluvig"
+            width={656}
+            height={120}
+            className="h-9 w-auto"
+          />
           <p className="max-w-xs text-sm text-navy-300">
             AI-powered digital marketing agency in Kenya. We build cash flow,
             not vanity metrics.

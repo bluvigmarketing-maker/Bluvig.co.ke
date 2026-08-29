@@ -24,36 +24,38 @@ This updates the stack noted in `MILESTONES.md` Phase 0 — add shadcn/ui, Frame
 
 ## 2. Color System
 
-Two hue families only: a **navy scale** (primary/structural — carried over from Bluvig's existing brand blue, but deepened and refined for a premium feel) and an **amber-gold scale** (accent/CTA — evolved from Bluvig's current flat orange into a richer, more "burnished" gold-orange). Semantic red is inherited from shadcn's default `--destructive` for error states only.
+**Monochrome — one hue, pixel-sampled directly from the real Bluvig logo file** (`public/logo.png`): a vivid, saturated royal-blue, `#297aef`, hue ≈215°. Split into two roles for hierarchy rather than two separate hues: a **navy scale** (structural — muted/desaturated tints of the logo hue, for backgrounds and body structure) and a **gold scale** (accent/CTA — the *same* hue at near-full saturation, standing in for what used to be a separate amber-orange; `gold-500` ≈ the exact logo color). Semantic red is inherited from shadcn's default `--destructive` for error states only.
 
-**Why these exact hues, not a hard rebrand:** the live site is already blue + orange, and the SEO/Tools page already uses a near-black navy hero. Keeping the same two hues preserves brand recognition (existing traffic, backlinks, social profiles all show blue/orange Bluvig) while the *execution* — true near-black structural navy, a richer amber instead of flat orange, serif display headlines, generous whitespace, consistent card/section system — is what actually delivers "high end." A hue swap wasn't needed; a craft upgrade was.
+**Naming note:** the `gold-*` tokens now render blue, not gold — the name is kept only because every component already references `text-gold-700`, `.glass-gold`, `.gold-line`, etc., and renaming the scale would mean touching every file that uses it for no functional gain. Treat `gold-*` as "accent" going forward; a rename pass is a mechanical follow-up if the naming mismatch becomes confusing to work in.
+
+**Why monochrome, not navy + amber:** the real Bluvig logo (circuit-mark wordmark) is a single vivid blue with no secondary color — matching it exactly means the whole site should derive from that one hue rather than pairing it with an unrelated accent color. Hierarchy still comes through (muted navy for structure vs. saturated "gold" for CTAs/accents), it's just tonal contrast within one hue family instead of a second hue.
 
 ### 2.1 Raw scale (defined once, in `:root`)
 
 ```css
 :root {
-  --navy-50:  #eef2fb;
-  --navy-100: #dce3f5;
-  --navy-200: #b7c8ea;
-  --navy-300: #8ca6da;
-  --navy-400: #5f80c4;
-  --navy-500: #3d5fa8;
-  --navy-600: #2a4a8c;   /* primary brand navy — refined, deeper version of Bluvig's current blue */
-  --navy-700: #223c70;
-  --navy-800: #1c3057;
-  --navy-900: #16253f;
-  --navy-950: #0b1220;   /* darkest surface — headers/footers/hero overlays */
+  --navy-50:  #f4f7fa;
+  --navy-100: #e6ecf4;
+  --navy-200: #cbd6e7;
+  --navy-300: #a5b9d4;
+  --navy-400: #7896bf;
+  --navy-500: #4d75ac;
+  --navy-600: #3c5d8b;   /* primary structural navy — muted tint of the logo blue */
+  --navy-700: #2e4a70;
+  --navy-800: #223958;
+  --navy-900: #172840;
+  --navy-950: #0d1726;   /* darkest surface — headers/footers/hero overlays */
 
-  --gold-50:  #fdf3e7;
-  --gold-100: #fae3c4;
-  --gold-200: #f4c889;
-  --gold-300: #edaa57;
-  --gold-400: #e2903a;   /* ring/focus color */
-  --gold-500: #d97706;   /* "amber-gold" — accent/secondary, evolved from Bluvig's flat orange */
-  --gold-600: #b85f05;
-  --gold-700: #8f4a08;   /* accent text on light backgrounds (AA-safe) */
-  --gold-800: #6c380a;
-  --gold-900: #4d280a;
+  --gold-50:  #ecf3fe;
+  --gold-100: #cfe2fc;
+  --gold-200: #a0c5f8;
+  --gold-300: #71a8f4;
+  --gold-400: #4b90f1;   /* ring/focus color */
+  --gold-500: #2a7cef;   /* the true logo blue (sampled from public/logo.png) — accent/CTA */
+  --gold-600: #0f64db;
+  --gold-700: #0b51b1;   /* accent text on light backgrounds (AA-safe) */
+  --gold-800: #093f8b;
+  --gold-900: #062e65;
 }
 ```
 
@@ -229,11 +231,11 @@ On a dark background, swap to `border-gold-400/40 text-gold-300` (eyebrow), `tex
 - Sticky, `bg-background/95 backdrop-blur`, `border-b border-navy-100`.
 - Desktop: horizontal links (Home · What We Do · Case Studies · Blog · Tools) + shadcn `DropdownMenu` for "What We Do" (SEO / Website Development / Digital Marketing Training / Graphic Design), plus a `btn-metallic` "Get Started" CTA on the far right.
 - Mobile (`< md`): hamburger opens a shadcn `Sheet` (slide-in drawer), flat indented list, children nested under a left border.
-- Logo: `h-12 sm:h-14` — always sized generously, never shrunk to fit a cramped bar.
+- Logo: real asset (`public/logo.png`, transparent PNG), `h-9 sm:h-11` via `next/image`, `w-auto` — sized to sit comfortably in the `h-16`/`h-20` bar without crowding the nav links.
 
 ### 4.7 Footer
 
-`bg-navy-950 text-navy-100`, three-column grid (brand + tagline / quick links / contact — phone, email, WhatsApp). Logo sits inside a white rounded badge (`rounded-xl bg-white px-4 py-2.5`) since the BLUVIG wordmark would vanish directly on navy-950. Bottom bar: centered copyright, `border-t border-navy-800`, `text-xs text-navy-400`.
+`bg-navy-950 text-navy-100`, three-column grid (brand + tagline / quick links / contact — phone, email, WhatsApp). Same `public/logo.png` asset as the header, placed directly on `navy-950` with no wrapper — the logo's blue is bright enough (`gold-500`-equivalent lightness) to read clearly on the dark surface, so no white badge is needed. Bottom bar: centered copyright, `border-t border-navy-800`, `text-xs text-navy-400`.
 
 ### 4.8 Forms
 
@@ -280,7 +282,7 @@ export function AnimatedSection({ children, className, delay = 0 }) {
 - Hero/banner photography: full-bleed, `object-cover`, dark gradient overlay for legible white text: `bg-gradient-to-t from-navy-950 via-navy-950/70 to-navy-950/40`.
 - Case study / team portraits: fixed aspect ratio (`aspect-[4/5]`), `object-cover`, rounded to match surrounding card.
 - Empty/missing-image state: never a broken image — solid `bg-navy-100` (light) or `bg-navy-950` (dark) placeholder with a muted icon or the item's title centered in it.
-- Logo on dark backgrounds: never CSS-filter the wordmark (invert/brightness-0 can render a solid block if the source isn't transparent) — check for transparency first, or place it on the white badge described in §4.7.
+- Logo: `public/logo.png` — the real logo file, supplied as a JPG on a solid black square with no alpha channel. Background was removed by unpremultiplying the blue-on-black compositing (recovers true color + alpha per pixel) rather than a hard color-key, so edges stay smooth. Never CSS-filter the wordmark (invert/brightness-0 can render a solid block) — the PNG's own transparency is what makes it work on both light (header) and dark (footer) surfaces directly, no badge wrapper needed.
 
 ## 8. Layout Conventions
 
