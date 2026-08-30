@@ -15,12 +15,36 @@ const textareaClass =
 
 export function GetStartedForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // TODO(Phase 4 — MILESTONES.md): wire this to a serverless API route
-    // (Resend email + CRM webhook) instead of this local confirmation.
-    setSubmitted(true);
+    setError(null);
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(body.error ?? "Something went wrong — please try again.");
+        setLoading(false);
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Could not reach the server — please try again.");
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -136,12 +160,15 @@ export function GetStartedForm() {
         />
       </div>
 
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+
       <Button
         type="submit"
         size="lg"
+        disabled={loading}
         className="btn-metallic gold-line mt-2 w-fit font-semibold"
       >
-        Send My Details
+        {loading ? "Sending…" : "Send My Details"}
         <ArrowRight className="size-4" aria-hidden="true" />
       </Button>
     </form>

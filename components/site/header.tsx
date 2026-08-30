@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronDown, Menu } from "lucide-react";
 
 import { Container } from "@/components/site/container";
@@ -38,6 +39,9 @@ const NAV_LINKS = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/70 backdrop-blur-xl backdrop-saturate-150">
       <Container className="flex h-16 items-center justify-between sm:h-20">

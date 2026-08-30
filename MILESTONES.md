@@ -97,11 +97,12 @@ Pulled from `/References` screenshots + a live crawl of bluvig.co.ke.
 
 ## Phase 4 — Lead-Generation Features
 This is the highest-leverage phase for turning the site into an actual leads engine. See **Genius Ideas** below for the full menu; build order suggested:
-- [~] "Get Started" qualifying form — built as a single-page form (name/email/phone/business type/goal/budget/message), **not yet the multi-step wizard** originally proposed. Submission is UI-only right now (shows a local success state) — **not wired to a backend**, see below.
+- [~] "Get Started" qualifying form — built as a single-page form (name/email/phone/business type/goal/budget/message), **not yet the multi-step wizard** originally proposed. Now wired to `POST /api/leads` (was UI-only before) — see below.
+- [x] **Lead persistence + admin dashboard** — `POST /api/leads` writes to a JSON file store (`lib/leads.ts`, `data/leads.json`, gitignored — contains customer PII). `/admin` (password-gated via `ADMIN_PASSWORD` in `.env.local`, session cookie is an HMAC of that password, no session store needed) lists submissions with basic stats (total, last 7 days, with phone). Marketing chrome (Header/Footer/WhatsAppButton) hides itself on `/admin/*` via a pathname check. **Known limitation:** file-based storage does not persist reliably on Vercel's serverless functions (ephemeral/read-only filesystem across invocations) — fine for local dev and any traditional Node host, but needs a real hosted DB (Postgres/Supabase) before this goes live on Vercel.
 - [ ] Inline booking widget for "Book a FREE Clarity Call" (Cal.com/Calendly embed) — remove the click-out-to-WhatsApp-only friction
 - [ ] Rebuild Readability Checker + QR Baker on the new stack, add email-gated result export
 - [ ] "Visibility Checker" tool (flagship new lead magnet — see idea #1)
-- [ ] **Lead notification pipeline** — form/tool submissions currently go nowhere. Needs a serverless API route + Resend (or similar) + optional CRM/Sheets webhook before this form is real. This is the single most important thing to wire up next.
+- [ ] **Email/CRM notification on new lead** — Resend (or similar) + optional CRM/Sheets webhook, so someone doesn't have to remember to check `/admin`.
 
 ## Phase 5 — Blog Migration
 - [ ] Export all existing WordPress posts (content, images, slugs, meta, publish dates) via WP REST API or export XML

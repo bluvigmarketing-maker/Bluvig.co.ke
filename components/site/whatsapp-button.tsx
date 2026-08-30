@@ -1,9 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 
 const WHATSAPP_NUMBER = "254700574125";
 
 export function WhatsAppButton() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <Link
       href={`https://wa.me/${WHATSAPP_NUMBER}`}
