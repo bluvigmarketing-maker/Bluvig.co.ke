@@ -3,8 +3,9 @@ import { generateAuthenticationOptions } from "@simplewebauthn/server";
 
 import { hasDevices, startCeremony } from "@/lib/authenticator";
 import { relyingParty } from "@/lib/webauthn";
+import { withStorageErrors } from "@/lib/storage-errors";
 
-export async function POST(request: Request) {
+export const POST = withStorageErrors(async (request: Request) => {
   if (!(await hasDevices())) {
     return NextResponse.json(
       { error: "No device is set up yet." },
@@ -19,4 +20,4 @@ export async function POST(request: Request) {
   });
   const ceremonyId = await startCeremony("authenticate", options.challenge);
   return NextResponse.json({ ceremonyId, options });
-}
+});

@@ -1,3 +1,4 @@
+import { withStorageErrors } from "@/lib/storage-errors";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -19,7 +20,7 @@ const LOGIN_REQUEST_COOKIE = "bluvig_login_request";
 const COOKIE_PATH = "/api/cockpit/login-request";
 
 /** Start a sign-in: returns the number to look for on the authenticator. */
-export async function POST(request: Request) {
+export const POST = withStorageErrors(async (request: Request) => {
   if (!(await hasDevices())) {
     return NextResponse.json(
       { error: "no-devices", message: "No authenticator is set up yet." },
@@ -67,10 +68,10 @@ export async function POST(request: Request) {
     number: created.request.number,
     expiresAt: created.request.expiresAt,
   });
-}
+});
 
 /** Polled by the login page. Issues the cockpit session once the phone approves. */
-export async function GET() {
+export const GET = withStorageErrors(async () => {
   const cookieStore = await cookies();
   const value = cookieStore.get(LOGIN_REQUEST_COOKIE)?.value ?? "";
   const [id, secret] = value.split(".");
@@ -90,4 +91,4 @@ export async function GET() {
   }
 
   return NextResponse.json({ status });
-}
+});

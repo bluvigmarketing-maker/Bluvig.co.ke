@@ -8,13 +8,14 @@ import {
   startCeremony,
 } from "@/lib/authenticator";
 import { AUTHENTICATOR_USER_NAME, relyingParty, RP_NAME } from "@/lib/webauthn";
+import { withStorageErrors } from "@/lib/storage-errors";
 
 /**
  * Enrolling a phone needs one of:
  * - the ADMIN_PASSWORD, but only while no device exists yet (first setup / recovery), or
  * - a one-time code generated inside the cockpit (adding more phones).
  */
-export async function POST(request: Request) {
+export const POST = withStorageErrors(async (request: Request) => {
   const { name, password, code } = (await request.json().catch(() => ({}))) as {
     name?: string;
     password?: string;
@@ -64,4 +65,4 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({ ceremonyId, options });
-}
+});

@@ -7,8 +7,9 @@ import { isoBase64URL } from "@simplewebauthn/server/helpers";
 
 import { addDevice, consumeCeremony } from "@/lib/authenticator";
 import { relyingParty, startAuthenticatorSession } from "@/lib/webauthn";
+import { withStorageErrors } from "@/lib/storage-errors";
 
-export async function POST(request: Request) {
+export const POST = withStorageErrors(async (request: Request) => {
   const { ceremonyId, response } = (await request.json().catch(() => ({}))) as {
     ceremonyId?: string;
     response?: RegistrationResponseJSON;
@@ -56,4 +57,4 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-}
+});

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 
 import { isCockpitAuthed } from "@/lib/admin-auth";
 import { removeDevice } from "@/lib/authenticator";
+import { withStorageErrors } from "@/lib/storage-errors";
 
 /** Revoke an authenticator device. Its unlocked session stops working immediately. */
-export async function DELETE(request: Request) {
+export const DELETE = withStorageErrors(async (request: Request) => {
   if (!(await isCockpitAuthed())) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
@@ -13,4 +14,4 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Device not found." }, { status: 404 });
   }
   return NextResponse.json({ ok: true });
-}
+});

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 
 import { addLead, type NewLead } from "@/lib/leads";
+import { withStorageErrors } from "@/lib/storage-errors";
 
-export async function POST(request: Request) {
+export const POST = withStorageErrors(async (request: Request) => {
   let body: Partial<NewLead>;
   try {
     body = await request.json();
@@ -31,4 +32,4 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({ ok: true, id: lead.id }, { status: 201 });
-}
+});
