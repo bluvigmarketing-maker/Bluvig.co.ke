@@ -9,8 +9,8 @@ export function LogoutButton() {
   const router = useRouter();
 
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
+    await fetch("/api/cockpit/logout", { method: "POST" });
+    router.push("/cockpit/login");
     router.refresh();
   }
 

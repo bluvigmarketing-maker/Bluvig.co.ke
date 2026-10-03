@@ -1,9 +1,10 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Mail, Phone, Users } from "lucide-react";
 
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
-import { getLeads } from "@/lib/leads";
+import { isCockpitAuthed } from "@/lib/admin-auth";
+import { getDevices } from "@/lib/authenticator";
+import { getLeads, type Lead } from "@/lib/leads";
+import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
 import { LogoutButton } from "@/components/admin/logout-button";
 
 export const dynamic = "force-dynamic";
@@ -31,16 +32,22 @@ function formatDate(iso: string) {
   });
 }
 
+function countSince(leads: Lead[], days: number) {
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return leads.filter((lead) => new Date(lead.submittedAt).getTime() >= cutoff).length;
+}
+
 export default async function AdminDashboardPage() {
-  const cookieStore = await cookies();
-  const authed = verifySessionToken(cookieStore.get(ADMIN_SESSION_COOKIE)?.value);
-  if (!authed) redirect("/admin/login");
+  if (!(await isCockpitAuthed())) redirect("/cockpit/login");
 
   const leads = getLeads();
-  const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const thisWeek = leads.filter(
-    (lead) => new Date(lead.submittedAt).getTime() >= oneWeekAgo
-  ).length;
+  const thisWeek = countSince(leads, 7);
+  const devices = getDevices().map(({ id, name, createdAt, lastUsedAt }) => ({
+    id,
+    name,
+    createdAt,
+    lastUsedAt,
+  }));
 
   return (
     <div className="min-h-screen bg-navy-50 py-10">
@@ -139,6 +146,8 @@ export default async function AdminDashboardPage() {
             </table>
           </div>
         )}
+
+        <AuthenticatorDevices devices={devices} />
       </div>
     </div>
   );

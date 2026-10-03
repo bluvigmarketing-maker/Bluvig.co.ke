@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mail, Phone } from "lucide-react";
 
+import { isChromeless } from "@/lib/chromeless";
 import { Container } from "@/components/site/container";
 
 const QUICK_LINKS = [
@@ -17,7 +18,7 @@ const QUICK_LINKS = [
 
 export function Footer() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/admin")) return null;
+  if (isChromeless(pathname)) return null;
 
   return (
     <footer className="bg-navy-950 text-navy-100">

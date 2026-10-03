@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu } from "lucide-react";
 
+import { isChromeless } from "@/lib/chromeless";
 import { Container } from "@/components/site/container";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ const NAV_LINKS = [
 
 export function Header() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/admin")) return null;
+  if (isChromeless(pathname)) return null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/70 backdrop-blur-xl backdrop-saturate-150">

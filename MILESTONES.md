@@ -1,158 +1,188 @@
-# Bluvig.co.ke Redesign — Milestones
+# Bluvig.co.ke — Business-Ready Roadmap
 
-**Goal:** Replace the current WordPress/Elementor site with a fast, custom-built Next.js site that looks as sharp as the agency claims to make other people look — and that actively generates leads, not just describes services.
+**Goal:** Turn bluvig.co.ke into the sales engine for a **software studio**: a fast, credible site that convinces businesses in Kenya and abroad to trust Bluvig with their business software, web applications and websites — and converts them through a visual project estimator into qualified, priced leads.
 
-**Stack decisions (confirmed):**
-- **Framework:** Next.js (App Router), React, TypeScript
-- **Styling:** Tailwind CSS v4, driven by design tokens defined in [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) — navy (structural) + amber-gold (accent), evolved from Bluvig's existing blue/orange brand
-- **UI primitives:** shadcn/ui (`base-nova`), Framer Motion for scroll-reveal, lucide-react for icons
-- **Fonts:** Geist Sans (body) + Playfair Display (headings) via `next/font/google`
-- **Blog:** Migrated fully off WordPress. Recommend a git-based or lightweight headless CMS (Sanity, or Decap/TinaCMS over MDX) so the team can keep publishing without a developer — see Phase 5 for the tradeoff.
-- **Hosting/Deploy:** Vercel (pairs natively with Next.js, free SSL, preview deploys per PR)
-- **Forms/Lead capture:** Serverless API routes + a transactional email provider (Resend) and/or CRM webhook (see Phase 4)
+_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first")._
 
 ---
 
-## Current Site Audit (reference — done)
+## Decisions Log
 
-Pulled from `/References` screenshots + a live crawl of bluvig.co.ke.
+| Date | Decision | Why |
+|---|---|---|
+| 2026-10-03 | **Positioning: software studio first.** Lead with custom business software, web/mobile apps and websites. SEO/digital marketing becomes a supporting "launch & grow" service, not the headline. | This is what the agency actually sells now. Software buyers need different proof and a different sales flow than SEO buyers. |
+| 2026-10-03 | **Target clients:** international clients, established companies, Kenyan SMEs (in that order of deal size). | Three segments with different needs (see Audience below) — the site must serve all three without diluting the message. |
+| 2026-10-03 | **Primary conversion: an advanced, visual project estimator** — spec in [ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md). Discovery-call booking and WhatsApp become secondary paths. | Pre-qualifies scope and budget before a sales conversation; differentiates from agencies with a generic contact form. |
+| 2026-10-03 | **Rejected: scroll-driven "code → wireframe → site" build animation.** Prototyped in three variants, then removed. | Delayed the headline/CTA on first visit — hurts conversion. Motion stays subtle and never gates content. |
+| (earlier) | Stack: Next.js 16 (App Router) + TypeScript, Tailwind v4, shadcn/ui (`base-nova`), Framer Motion + GSAP, lucide-react, Geist + Playfair Display. Hosting on Vercel. | See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). |
 
-**Nav:** Home · What We Do (SEO, Website Dev, Digital Marketing Training, Graphic Design) · Case Studies · Blogs · Get Started · Tools (Readability Checker, QR Baker)
+## Audience — what each segment needs to see
 
-**Positioning:** "AI-Powered Digital Marketing Agency in Kenya Driving Real Business Growth." Core hook is the **"Discovery Engine" / "Visibility Engine"** concept — SEO + AI-assistant visibility (ChatGPT/Gemini) + social content, bundled as one system. This is Bluvig's most distinctive, ownable idea and should be the spine of the new site, not just a mid-page section.
-
-**Services:** SEO (Business Discovery Engine), Digital Marketing, Website Development, Digital Marketing Training, Graphic Design.
-
-**Proof assets:** 7 case studies (Digitec, QR Baker, ULC social posters, Kifaru Landscaping/Liquor/Inc, Jimmy Group), a testimonials/FAQ section, "8+ years experience" and "best SEO company in Kenya" claims.
-
-**Existing lead magnets:** Readability Checker, QR Baker (M-Pesa QR generator) — genuinely useful, on-brand tools already live. Underused as lead capture right now.
-
-**Blog:** ~10 posts, WordPress-native, targeting Kenya digital-marketing/SEO search terms.
-
-**Contact:** phone, email, WhatsApp widget, "Book a FREE Clarity Call" CTA (currently likely just links out — no inline booking).
-
-**What's broken visually (from screenshots):** huge dead whitespace gaps between sections (hero → service cards), inconsistent card shadows/heights, weak type hierarchy, generic Elementor card grid for both services and case studies (no visual distinction between "what we do" and "what we built"), FAQ/testimonials section reads as an afterthought at the page bottom.
+| Segment | What they're buying | What convinces them | Site implications |
+|---|---|---|---|
+| **International clients** | Offshore/nearshore development — better cost than local agencies, without the risk | Communication, process, time-zone overlap, contracts/IP ownership, verifiable past work | USD pricing in the estimator, "How we work" page, overlap hours (EAT = UTC+3), English-first copy, NDA/IP terms stated up front |
+| **Established companies** | Internal systems, client portals, integrations (ERP/CRM/payments), modernizing legacy tools | Security, reliability, scale of past projects, support after launch | Case studies with stack + outcomes, security & data-handling page, SLA/maintenance offer |
+| **Kenyan SMEs** | Websites, booking/POS/inventory tools, M-Pesa integrations | Price clarity, speed, local presence, people they can call | KES pricing, M-Pesa expertise front and center, WhatsApp still available, "starting at" ranges |
 
 ---
 
-## Phase 0 — Foundations
-- [x] Audit live site content, structure, screenshots
-- [x] Confirm tech stack: Next.js + Tailwind v4 + shadcn/ui + Framer Motion + lucide-react
-- [x] Design system received and adapted to Bluvig's navy/gold palette — [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
-- [x] Initialize Next.js 16 + TypeScript + Tailwind v4 repo, git initialized locally
-- [x] `shadcn init` (base-nova preset), Framer Motion + lucide-react installed, Geist + Playfair Display wired up
-- [x] ESLint set up (via create-next-app default); base folder structure in place (`app/`, `components/`, `components/site/`, `components/home/`, `lib/`)
-- [ ] Connect repo to a remote (GitHub) and to Vercel for preview deploys — not done yet, no remote configured
-- [ ] Set up `content/` structure — deferred until Phase 5 CMS decision is made
+## Current State (what's already built — reusable)
 
-## Phase 1 — Information Architecture & Content Strategy
-- [ ] Finalize sitemap (see proposal below)
-- [ ] Rewrite/tighten copy per page (current copy is solid on the "Visibility Engine" page, weaker/generic on services cards)
-- [ ] Define content model for: Services, Case Studies, Blog Posts, Testimonials, Tools
-- [ ] Decide on case study depth — upgrade from cards to real before/after proof (traffic charts, ranking screenshots, results in numbers)
+Done and kept as-is (design and infrastructure carry over; **copy and positioning do not**):
 
-**Proposed sitemap:**
+- [x] Next.js 16 + TypeScript + Tailwind v4 repo, shadcn/ui primitives, ESLint
+- [x] Design system: single-hue brand blue sampled from the logo (`#297aef`), navy/"gold" token scales, glassmorphism utilities, `GlowOrbs`, cursor-reactive `DotMatrix` — [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)
+- [x] Layout shell: sticky header (desktop dropdown + mobile drawer), footer, WhatsApp floating button, favicon set
+- [x] Shared primitives: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `MagneticButton`, `.btn-metallic`
+- [x] Pages scaffolded: Home, What We Do + 4 service pages, Case Studies index, About, Get Started, Contact, Blog index, Tools index
+- [x] Lead capture: `POST /api/leads` + `/cockpit` admin dashboard (JSON file store — **not production-safe on Vercel**, see Phase 5)
+- [x] Cockpit sign-in via **Bluvig Authenticator** (2026-10-03): number matching — `/cockpit/login` shows a number, an enrolled phone at `/authenticator` (unlocked with a passkey) taps it from 3 choices. Multiple phones; add via one-time code from the cockpit, revoke from the cockpit. `ADMIN_PASSWORD` only enrols the first phone (and signs sessions). Device data is in `data/authenticator.json` — **must move to the hosted DB before deploying to Vercel**, or enrolled phones are lost. Set `WEBAUTHN_ORIGIN` in production.
+
+Needs rework because of the repositioning:
+
+- Home hero, Discovery Engine section, Services grid, Trust section — all written for SEO/marketing
+- `/what-we-do/*` service pages — wrong service lineup
+- Case study copy — framed as marketing projects; needs build/tech framing
+- Get Started form — will be replaced/fronted by the estimator
+- Site metadata/titles ("AI-Powered Digital Marketing Agency") — wrong keywords
+
+---
+
+## Phase 0 — Foundations (finish)
+- [ ] Create a GitHub remote and push (no git remote exists yet)
+- [ ] Connect to Vercel: preview deploys per branch, production on `main`
+- [ ] Choose and provision a hosted database (Postgres via Supabase or Neon) — required by Phases 4–5
+- [ ] Environment variable management for preview vs production (`ADMIN_PASSWORD`, DB URL, email API key)
+
+## Phase 1 — Positioning, Offers & Messaging
+_The site can't be rebuilt until this is decided. Mostly a writing/decision phase._
+- [ ] One-line value proposition + supporting line (e.g. "We design and build the software your business runs on")
+- [ ] Final service lineup. Proposed:
+  1. **Custom Business Software** — internal tools, dashboards, ERP/CRM/inventory, workflow automation
+  2. **Web Applications & Portals** — customer portals, SaaS products, booking/ordering systems
+  3. **Mobile Apps** — iOS/Android (cross-platform)
+  4. **Websites** — high-performance marketing and e-commerce sites
+  5. **Integrations** — M-Pesa/Daraja, payment gateways, KRA eTIMS, third-party APIs
+  6. **Launch & Grow** (supporting) — SEO, analytics and digital marketing for what we ship
+- [ ] Decide fate of **Digital Marketing Training** and **Graphic Design**: drop, fold into "Launch & Grow", or keep as minor pages → _owner decision_
+- [ ] Engagement models to present: fixed-scope project · MVP sprint · dedicated team / monthly retainer · support & maintenance plan
+- [ ] Pricing stance: published "starting at" ranges per service (KES + USD) — feeds the estimator's pricing model
+- [ ] **Proof inventory:** list every shipped project with client permission status, stack, scope, outcome numbers, screenshots, testimonial availability. (QR Baker is our own product — strong proof of software capability.)
+- [ ] Industries to highlight, if any (e.g. retail, logistics, hospitality, finance, NGOs)
+
+## Phase 2 — Information Architecture
+- [ ] Finalize sitemap. Proposed:
 ```
-/                    Home
-/what-we-do          Services overview
-/what-we-do/seo
-/what-we-do/website-development
-/what-we-do/digital-marketing-training
-/what-we-do/graphic-design
-/case-studies                (index)
-/case-studies/[slug]         (individual case study — upgraded from card to full page)
-/blog                         (index)
-/blog/[slug]
-/tools                         (index — expandable toolbox, see Genius Ideas)
-/tools/readability-checker
-/tools/qr-baker
-/tools/visibility-checker     (new — see Genius Ideas #1)
-/get-started                  (multi-step lead form / booking)
-/about                         (new — currently missing; agencies selling trust need a team/story page)
-/contact
+/                          Home (software studio positioning, estimator CTA)
+/services                  Services overview
+/services/custom-software
+/services/web-applications
+/services/mobile-apps
+/services/websites
+/services/integrations     (M-Pesa, payments, eTIMS, APIs)
+/services/launch-and-grow  (SEO & marketing — supporting)
+/estimate                  Visual project estimator (primary conversion)
+/work                      Case studies index
+/work/[slug]               Case study detail (problem → build → stack → outcome)
+/process                   How we work: discovery → design → build → launch → support
+/about                     Team, story, location, why us
+/insights                  Blog (renamed or kept as /blog — decide)
+/insights/[slug]
+/contact                   Call / email / WhatsApp / book a call
+/privacy  /terms           Legal (Phase 8)
 ```
+- [ ] 301 redirect map for every URL that changes: `/what-we-do/*` → `/services/*`, `/case-studies` → `/work`, old WordPress blog slugs, retired pages → nearest equivalent
+- [ ] Navigation: Services · Work · Process · About · Insights + persistent **"Get an Estimate"** button in the header
 
-## Phase 2 — Design System Integration
-- [x] Wire navy/gold token scales into `globals.css` (`@theme inline` + `:root`/`.dark`) per DESIGN-SYSTEM.md §2
-- [x] Build shared primitives: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `.btn-metallic`/`.gold-line` utilities
-- [x] Add shadcn primitives: Button, Card, Badge, Dialog, DropdownMenu, NavigationMenu, Sheet, Separator, Input, Label
-- [x] Build layout shell: sticky Header/Nav (desktop dropdown + mobile Sheet drawer), dark Footer with white logo badge, WhatsApp floating CTA
-- [x] Establish consistent `py-16`/`py-16 sm:py-20` section rhythm and `max-w-6xl` container width — dead-whitespace problem from the old site is gone
-- [x] Logo treatment: real logo asset (`public/logo.png`) in header and footer via `next/image` — background alpha extracted from the supplied JPG. Full navy/gold palette re-derived by pixel-sampling the logo's exact blue (`#297aef`) and rebuilt as a single-hue monochrome system (see DESIGN-SYSTEM.md §2).
-- [x] Verified with a live dev-server + headless-browser check: production build is clean (`npm run build`, 0 type errors), zero console errors across pages tested, scroll-reveal animations confirmed firing correctly with real scroll behavior
-- [x] Glassmorphism accent system added — `.glass`/`.glass-light`/`.glass-gold` utilities + `GlowOrbs` decorative background component, documented in DESIGN-SYSTEM.md §9. Applied to Hero, `PageHero` (all interior pages), Discovery Engine cards, the featured service card, Final CTA panel, and the sticky header — deliberately not on dense content grids (case studies, blog, trust cards) where it would hurt legibility
-- [x] Cursor-reactive dot matrix added to the Hero background (`components/site/dot-matrix.tsx`, DESIGN-SYSTEM.md §10) — canvas grid of dots that brighten/connect toward the pointer, masked to clear out from behind the headline so it stays "compatible with the foreground" instead of fighting the text. Fixed two bugs found while verifying it: `gsap`/`@gsap/react` were declared in `package.json` but never actually installed (build was broken until `npm install` was re-run), and `absolute inset-0` alone doesn't stretch a `<canvas>` (a replaced element) — needed `size-full` too
-- [x] Favicon set generated from the "B" cropped out of `public/logo.png` (Pillow, pixel bounding-box detection) — `app/favicon.ico` (16/32/48 multi-size), `app/icon.png` (512, transparent), `app/apple-icon.png` (180, white bg per Apple's no-transparency guidance). Verified served correctly (`/favicon.ico`, `/icon.png`, `/apple-icon.png` all 200, and linked in `<head>` by Next.js's automatic file-based icon convention)
+## Phase 3 — Page Rebuild (copy + layout)
+Reuse the existing design system and components; rewrite content.
+- [ ] **Home:** hero (value prop + "Get an Estimate" + secondary "See our work"), client/tech logo strip, services overview, featured case studies, process snapshot, estimator teaser, testimonials, final CTA
+- [ ] **Service pages** (template-driven, one data file): problem it solves, what's included, example deliverables, tech stack, typical timeline, starting price, related case studies, FAQ, CTA → estimator pre-filled with that service
+- [ ] **Work index + detail pages** (`/work/[slug]`): client, challenge, solution, stack, screenshots, outcome numbers, testimonial
+- [ ] **Process page:** phases, deliverables per phase, communication cadence, tools (Slack/Jira/etc.), who you'll talk to
+- [ ] **About:** real team/founder info, location, years operating, values — no fabricated bios
+- [ ] **Contact:** direct channels + calendar booking embed
+- [ ] Update site metadata, titles and descriptions to the new positioning
 
-## Phase 3 — Core Page Build
-- [x] Home page (hero, Discovery Engine explainer, services grid, case studies grid, trust/mission section, final CTA)
-- [x] Services overview (`/what-we-do`) + all 5 individual service pages
-- [x] Case Studies index (`/case-studies`) — 7 projects carried over from the live site, honest scope-based descriptions (no fabricated metrics since none were available)
-- [x] About page (`/about`) — mission + values; no fabricated team bios since no real team info was provided
-- [x] Get Started page (`/get-started`) — lead form UI (see Phase 4 note) + direct contact panel
-- [x] Contact page (`/contact`) — direct channels (call/email/WhatsApp) + link to Get Started
-- [x] Blog index (`/blog`) — placeholder listing of the 10 real post titles/categories from the live site; full content migration is still Phase 5
-- [x] Tools index (`/tools`) — Readability Checker, QR Baker, and the new Visibility Checker shown as "Coming Soon" (honest — none are rebuilt/functional yet)
-- [ ] Individual case-study detail pages (`/case-studies/[slug]`) — index only for now, no drill-down page per project yet
+## Phase 4 — Visual Project Estimator (flagship conversion)
+Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standard Website (KES 30,000; 3× in USD for international clients) → add modules with a live visual preview → proforma invoice PDF + purchase order sent to Bluvig's WhatsApp.
+- [x] Owner described the concept (2026-10-03); spec drafted
+- [ ] Owner review: international multiplier scope, payment terms, VAT status (spec §11)
+- [ ] Catalog file (industries, modules, dependencies, preview definitions, default prices) + DB tables for prices/settings, seeded from defaults
+- [ ] Admin **Pricing** screen: edit base price, module prices, FX rate, multiplier, enable/hide modules, change log (spec §10)
+- [ ] `/estimate` distraction-free layout + industry step
+- [ ] Builder: module picker + live visual preview + running total
+- [ ] Review + details steps, currency by country
+- [ ] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page
+- [ ] Save estimates to DB, show in `/cockpit` with status, email notification (needs Phase 5 DB)
+- [ ] Analytics events per step; spam protection
+- [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 
-## Phase 4 — Lead-Generation Features
-This is the highest-leverage phase for turning the site into an actual leads engine. See **Genius Ideas** below for the full menu; build order suggested:
-- [~] "Get Started" qualifying form — built as a single-page form (name/email/phone/business type/goal/budget/message), **not yet the multi-step wizard** originally proposed. Now wired to `POST /api/leads` (was UI-only before) — see below.
-- [x] **Lead persistence + admin dashboard** — `POST /api/leads` writes to a JSON file store (`lib/leads.ts`, `data/leads.json`, gitignored — contains customer PII). `/admin` (password-gated via `ADMIN_PASSWORD` in `.env.local`, session cookie is an HMAC of that password, no session store needed) lists submissions with basic stats (total, last 7 days, with phone). Marketing chrome (Header/Footer/WhatsAppButton) hides itself on `/admin/*` via a pathname check. **Known limitation:** file-based storage does not persist reliably on Vercel's serverless functions (ephemeral/read-only filesystem across invocations) — fine for local dev and any traditional Node host, but needs a real hosted DB (Postgres/Supabase) before this goes live on Vercel.
-- [ ] Inline booking widget for "Book a FREE Clarity Call" (Cal.com/Calendly embed) — remove the click-out-to-WhatsApp-only friction
-- [ ] Rebuild Readability Checker + QR Baker on the new stack, add email-gated result export
-- [ ] "Visibility Checker" tool (flagship new lead magnet — see idea #1)
-- [ ] **Email/CRM notification on new lead** — Resend (or similar) + optional CRM/Sheets webhook, so someone doesn't have to remember to check `/admin`.
+## Phase 5 — Lead Infrastructure
+- [ ] Move lead storage (`data/leads.json`) and authenticator devices (`data/authenticator.json`) to the hosted DB (file storage doesn't persist on Vercel)
+- [ ] Email notification on every new lead/estimate (Resend), plus auto-reply to the prospect
+- [ ] Optional: push leads to a CRM (HubSpot/Zoho) or Google Sheet via webhook
+- [ ] Calendar booking embed (Cal.com/Calendly) on Contact and after the estimator
+- [ ] Upgrade `/cockpit`: lead status (new → contacted → proposal → won/lost), estimate details, notes, CSV export
+- [ ] Spam protection on forms (Cloudflare Turnstile or honeypot + rate limiting)
 
-## Phase 5 — Blog Migration
-- [ ] Export all existing WordPress posts (content, images, slugs, meta, publish dates) via WP REST API or export XML
-- [ ] Decide final authoring workflow:
-  - **Option A — MDX in-repo:** posts are files in the codebase; every new post needs a git commit/PR. Fastest to build, zero ongoing cost, but not editor-friendly for non-devs.
-  - **Option B — Decap/TinaCMS over MDX:** git-backed but gives a web UI for editing/publishing — good middle ground.
-  - **Option C — Sanity (or similar headless CMS):** best long-term editing experience for a team that publishes regularly (they've shipped ~10 posts in a few months), small monthly cost/complexity.
-  - *Recommendation: Option C if the agency will keep publishing weekly/biweekly; Option B if publishing is occasional and low-friction beats extra infra.*
-- [ ] Migrate all posts + rebuild blog index/detail templates matching new design
-- [ ] 301 redirect map from old WordPress URLs to new slugs (preserve existing SEO equity — critical, this is an SEO agency's own site)
+## Phase 6 — Trust & Proof
+_Software buyers, especially international and established companies, buy trust before they buy code._
+- [ ] 3–5 flagship case studies at full depth (from the Phase 1 proof inventory)
+- [ ] Real testimonials with name, role and company (with permission); video if possible
+- [ ] Client logo strip (with permission)
+- [ ] Tech stack section (languages/frameworks/cloud we work with)
+- [ ] "Working with us" assurances: NDA available, client owns the code/IP, milestone-based payments, post-launch support terms
+- [ ] Security & data handling statement (hosting, backups, access control, Kenya Data Protection Act compliance)
+- [ ] Third-party profiles linked: Clutch / GoodFirms / Google Business Profile / LinkedIn company page — reviews there carry weight with international buyers
 
-## Phase 6 — SEO & Performance
-*(Non-negotiable given this is literally what Bluvig sells — the site itself has to be the best proof they have.)*
-- [ ] Technical SEO: sitemap.xml, robots.txt, canonical tags, structured data (Organization, LocalBusiness, Article, FAQ schema)
-- [ ] Metadata + Open Graph/Twitter cards per page, dynamic OG images for blog posts
-- [ ] Core Web Vitals pass — target 90+ Lighthouse across the board (image optimization via `next/image`, font subsetting, minimal JS on marketing pages)
-- [ ] Internal linking pass between services ↔ case studies ↔ blog posts
-- [ ] Set up Google Search Console, submit new sitemap, monitor redirect coverage post-launch
+## Phase 7 — Content & SEO
+- [ ] Retarget keywords: e.g. "software development company Kenya", "custom software Nairobi", "web application development Kenya", "M-Pesa integration developer", "hire developers in Kenya", "offshore development Africa"
+- [ ] Blog migration from WordPress: keep posts that still fit, 301 the rest to relevant pages; choose authoring setup (MDX in repo vs. Sanity — decide by publishing frequency)
+- [ ] Content plan for the new audience: build-cost guides ("How much does custom software cost in Kenya?"), integration how-tos, case-study write-ups
+- [ ] Technical SEO: `sitemap.xml`, `robots.txt`, canonical URLs, structured data (Organization, LocalBusiness, Service, Article, FAQ), Open Graph images
+- [ ] Core Web Vitals: 90+ Lighthouse on all marketing pages; keep decorative motion lightweight
+- [ ] Google Search Console + Bing Webmaster set up; monitor redirect coverage after launch
 
-## Phase 7 — QA & Testing
-- [ ] Cross-browser/device testing (mobile-first — screenshots show current site is desktop-card-heavy)
-- [ ] Form/tool submission testing end-to-end (lead actually lands in inbox/CRM)
-- [ ] Accessibility pass (contrast, focus states, alt text)
-- [ ] Copy/proofread pass, broken link check
+## Phase 8 — Legal & Business Readiness
+- [ ] Privacy policy (Kenya Data Protection Act 2019; GDPR basics for EU visitors since international clients are a target)
+- [ ] Terms of use; estimator disclaimer ("estimates are indicative, final quote after discovery")
+- [ ] Cookie/analytics consent banner (only if using cookie-based analytics)
+- [ ] Check whether ODPC registration as a data controller/processor applies to the business
+- [ ] Business details in footer: registered name, location, contact, business hours (EAT)
+- [ ] Standard proposal/contract template and NDA ready to send after estimator leads (offline, but needed before leads arrive)
 
-## Phase 8 — Launch
-- [ ] DNS cutover plan (low-TTL window, staging → production swap)
-- [ ] Redirect verification (spot-check old URLs from Search Console against new redirect map)
-- [ ] Post-launch monitoring: 404 tracking, GA4/Search Console alerts for ranking drops
+## Phase 9 — Analytics & Conversion Tracking
+- [ ] Analytics (GA4 or a privacy-friendly option like Plausible) with conversion events: estimate started/completed, lead submitted, call booked, WhatsApp click
+- [ ] Lead source attribution (UTM capture stored with each lead)
+- [ ] Simple dashboard: leads per week by source, estimator funnel drop-off
 
-## Phase 9 — Post-Launch Growth Loop
-- [ ] Analytics dashboard for lead sources (which tool/page/CTA converts best)
-- [ ] A/B test hero CTA copy and the Get Started flow
-- [ ] Monthly content upgrades tied to blog posts (see Genius Ideas)
+## Phase 10 — QA & Launch
+- [ ] Cross-browser/device testing (mobile-first)
+- [ ] End-to-end test: estimator → lead in DB → email received → booking works
+- [ ] Accessibility pass (contrast, keyboard navigation, focus states, alt text)
+- [ ] Copy proofread and broken-link check
+- [ ] DNS cutover (low TTL), redirect spot-checks, 404 monitoring
+- [ ] Production `npm run build` clean; Lighthouse check on live URLs
+
+## Phase 11 — Post-Launch Growth
+- [ ] Weekly lead review; tune estimator pricing against real quotes and won deals
+- [ ] A/B test hero copy and estimator entry points
+- [ ] Publish 1–2 case studies or articles per month
+- [ ] Collect reviews after every delivered project (Clutch/Google)
 
 ---
 
-## Genius Ideas — Turning This Into an Actual Leads Engine
+## Open Questions (owner)
+1. Estimator pricing and terms — see [ESTIMATOR-SPEC.md §11](ESTIMATOR-SPEC.md).
+2. Keep, fold or drop Digital Marketing Training and Graphic Design?
+3. Keep the "Discovery Engine" brand name (could become the "Launch & Grow" offer) or retire it?
+4. Which past projects can be shown publicly, and with what numbers?
+5. Real team info for the About page (names, roles, photos)?
+6. Existing tools (QR Baker, Readability Checker): rebuild as live product demos/portfolio pieces, or retire?
+7. Blog URL: keep `/blog` or rename to `/insights`?
 
-Bluvig's own pitch is "we build cash flow, not vanity metrics" and "Discovery Engine" — the site should *demonstrate* that promise, not just claim it. Ranked by leverage:
+## Suggested Order
+Phase 0 → **Phase 1 (decisions + copy)** → Phase 2 → Phase 3 (Home + Services + Work first) and Phase 5 (DB + notifications) in parallel → **Phase 4 estimator** → Phase 6 → Phases 7–8 → Phase 9 → Phase 10 launch → Phase 11.
 
-1. **Visibility Checker (flagship tool).** Visitor enters their business name/URL → the tool checks Google indexing status, basic on-page SEO signals, and (the killer differentiator) simulates whether ChatGPT/Gemini-style answers would surface them for a relevant query. Free headline score, full breakdown gated behind email. This directly productizes the "Discovery Engine" pitch and is genuinely novel — most agency sites only offer generic "SEO audits."
-2. **Cash-flow / ROI calculator.** Input current monthly traffic + conversion rate + average deal value → project revenue uplift from improved visibility. Ties straight into "we build cash flow" messaging and gives sales conversations a concrete number to anchor on.
-3. **Inline booking, not a click-out.** Replace "Book a FREE Clarity Call" as a link with an embedded calendar (Cal.com) directly on the page — every extra click before booking loses leads.
-4. **Multi-step qualifying form.** Instead of one generic contact form, ask 3–4 quick questions (business type, main goal, rough budget) before contact details. Higher completion rates than long forms, and sales gets pre-qualified leads instead of cold "tell me more" emails.
-5. **Toolbox expansion + gating.** Grow Readability Checker/QR Baker into a small suite (e.g. add a "Meta Tag Preview," "Page Speed Snapshot," "Local SEO Checklist Generator"). Each is cheap to build, ranks well on its own for tool-intent keywords, and is a natural email-capture point.
-6. **Proof-driven case studies.** Replace the current card-only case study grid with real before/after numbers — traffic charts, ranking screenshots, "X leads/month" — for at least 2–3 flagship projects. Nothing sells an SEO agency like their own visible results.
-7. **Content upgrades per blog post.** Each blog post gets a matching downloadable (checklist/template PDF) gated by email — turns existing blog traffic into a list instead of just pageviews.
-8. **AI chatbot pre-qualifier.** A simple chat widget trained on Bluvig's services/FAQ that can answer basic questions and route to the booking flow — reinforces the "AI-powered" brand story while doing real lead-qualifying work.
-9. **Social proof ticker/counter.** "X Kenyan businesses helped," live or periodically-updated — cheap trust signal near the hero.
-10. **Rough pricing/starting-at ranges.** Most agencies hide pricing; showing ballpark ranges filters out unqualified leads before they waste a call slot, and signals confidence.
-
-**Suggested build order for Phase 4:** #3 and #4 first (cheap, immediate conversion lift on existing traffic) → #1 (flagship differentiator, worth the build time) → #6 and #2 → rest as backlog.
+The estimator is the flagship, but it depends on Phase 1 pricing decisions and Phase 5 lead storage. Building those first means the estimator has real numbers to calculate with and somewhere to send leads.
