@@ -8,5 +8,5 @@ export async function POST() {
   if (!(await isCockpitAuthed())) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
-  return NextResponse.json(createEnrollCode());
+  return NextResponse.json(await createEnrollCode());
 }

@@ -45,7 +45,7 @@ export function DotMatrix({
 
     let width = 0;
     let height = 0;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let dots: Dot[] = [];
     let mouseX = -9999;
     let mouseY = -9999;

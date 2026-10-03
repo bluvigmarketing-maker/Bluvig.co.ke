@@ -34,20 +34,23 @@ function formatDate(iso: string) {
 
 function countSince(leads: Lead[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
-  return leads.filter((lead) => new Date(lead.submittedAt).getTime() >= cutoff).length;
+  return leads.filter((lead) => new Date(lead.submittedAt).getTime() >= cutoff)
+    .length;
 }
 
 export default async function AdminDashboardPage() {
   if (!(await isCockpitAuthed())) redirect("/cockpit/login");
 
-  const leads = getLeads();
+  const leads = await getLeads();
   const thisWeek = countSince(leads, 7);
-  const devices = getDevices().map(({ id, name, createdAt, lastUsedAt }) => ({
-    id,
-    name,
-    createdAt,
-    lastUsedAt,
-  }));
+  const devices = (await getDevices()).map(
+    ({ id, name, createdAt, lastUsedAt }) => ({
+      id,
+      name,
+      createdAt,
+      lastUsedAt,
+    })
+  );
 
   return (
     <div className="min-h-screen bg-navy-50 py-10">
@@ -115,7 +118,10 @@ export default async function AdminDashboardPage() {
                           href={`mailto:${lead.email}`}
                           className="flex items-center gap-1.5 hover:text-navy-950"
                         >
-                          <Mail className="size-3.5 shrink-0" aria-hidden="true" />
+                          <Mail
+                            className="size-3.5 shrink-0"
+                            aria-hidden="true"
+                          />
                           {lead.email}
                         </a>
                         {lead.phone ? (
@@ -123,7 +129,10 @@ export default async function AdminDashboardPage() {
                             href={`tel:${lead.phone}`}
                             className="flex items-center gap-1.5 hover:text-navy-950"
                           >
-                            <Phone className="size-3.5 shrink-0" aria-hidden="true" />
+                            <Phone
+                              className="size-3.5 shrink-0"
+                              aria-hidden="true"
+                            />
                             {lead.phone}
                           </a>
                         ) : null}
@@ -132,8 +141,12 @@ export default async function AdminDashboardPage() {
                     <td className="px-4 py-3 text-navy-700">
                       {lead.businessType || "—"}
                     </td>
-                    <td className="px-4 py-3 text-navy-700">{lead.goal || "—"}</td>
-                    <td className="px-4 py-3 text-navy-700">{lead.budget || "—"}</td>
+                    <td className="px-4 py-3 text-navy-700">
+                      {lead.goal || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-navy-700">
+                      {lead.budget || "—"}
+                    </td>
                     <td className="max-w-xs px-4 py-3 text-navy-700">
                       {lead.message || "—"}
                     </td>

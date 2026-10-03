@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const lead = addLead({
+  const lead = await addLead({
     name,
     email,
     phone: String(body.phone ?? "").trim(),

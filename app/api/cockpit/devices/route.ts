@@ -9,7 +9,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
   const { id } = (await request.json().catch(() => ({}))) as { id?: string };
-  if (!id || !removeDevice(id)) {
+  if (!id || !(await removeDevice(id))) {
     return NextResponse.json({ error: "Device not found." }, { status: 404 });
   }
   return NextResponse.json({ ok: true });

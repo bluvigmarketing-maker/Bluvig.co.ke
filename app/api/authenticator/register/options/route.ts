@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 
 import { verifyPassword } from "@/lib/admin-auth";
-import { getDevices, isValidEnrollCode, startCeremony } from "@/lib/authenticator";
+import {
+  getDevices,
+  isValidEnrollCode,
+  startCeremony,
+} from "@/lib/authenticator";
 import { AUTHENTICATOR_USER_NAME, relyingParty, RP_NAME } from "@/lib/webauthn";
 
 /**
@@ -18,15 +22,21 @@ export async function POST(request: Request) {
   };
 
   const deviceName = name?.trim().slice(0, 40) || "My phone";
-  const devices = getDevices();
+  const devices = await getDevices();
 
   if (devices.length === 0) {
     if (!password || !verifyPassword(password)) {
-      return NextResponse.json({ error: "Incorrect setup password." }, { status: 401 });
+      return NextResponse.json(
+        { error: "Incorrect setup password." },
+        { status: 401 }
+      );
     }
-  } else if (!code || !isValidEnrollCode(code)) {
+  } else if (!code || !(await isValidEnrollCode(code))) {
     return NextResponse.json(
-      { error: "That code is invalid or has expired. Generate a new one in the cockpit." },
+      {
+        error:
+          "That code is invalid or has expired. Generate a new one in the cockpit.",
+      },
       { status: 401 }
     );
   }
@@ -38,11 +48,17 @@ export async function POST(request: Request) {
     userName: AUTHENTICATOR_USER_NAME,
     userDisplayName: `Bluvig Authenticator — ${deviceName}`,
     attestationType: "none",
-    excludeCredentials: devices.map((d) => ({ id: d.id, transports: d.transports })),
-    authenticatorSelection: { residentKey: "required", userVerification: "required" },
+    excludeCredentials: devices.map((d) => ({
+      id: d.id,
+      transports: d.transports,
+    })),
+    authenticatorSelection: {
+      residentKey: "required",
+      userVerification: "required",
+    },
   });
 
-  const ceremonyId = startCeremony("register", options.challenge, {
+  const ceremonyId = await startCeremony("register", options.challenge, {
     deviceName,
     enrollCode: devices.length === 0 ? undefined : code,
   });

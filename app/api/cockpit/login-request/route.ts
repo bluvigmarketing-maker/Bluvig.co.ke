@@ -1,7 +1,11 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createSessionToken } from "@/lib/admin-auth";
+import {
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_MAX_AGE,
+  createSessionToken,
+} from "@/lib/admin-auth";
 import {
   createLoginRequest,
   hasDevices,
@@ -16,7 +20,7 @@ const COOKIE_PATH = "/api/cockpit/login-request";
 
 /** Start a sign-in: returns the number to look for on the authenticator. */
 export async function POST(request: Request) {
-  if (!hasDevices()) {
+  if (!(await hasDevices())) {
     return NextResponse.json(
       { error: "no-devices", message: "No authenticator is set up yet." },
       { status: 409 }
@@ -24,27 +28,40 @@ export async function POST(request: Request) {
   }
 
   const cookieStore = await cookies();
-  const [previousId, previousSecret] = (cookieStore.get(LOGIN_REQUEST_COOKIE)?.value ?? "").split(".");
+  const [previousId, previousSecret] = (
+    cookieStore.get(LOGIN_REQUEST_COOKIE)?.value ?? ""
+  ).split(".");
 
-  const created = createLoginRequest({
+  const created = await createLoginRequest({
     userAgent: request.headers.get("user-agent") ?? "Unknown browser",
-    ip: request.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown",
-    replaces: previousId && previousSecret ? { id: previousId, secret: previousSecret } : undefined,
+    ip:
+      request.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown",
+    replaces:
+      previousId && previousSecret
+        ? { id: previousId, secret: previousSecret }
+        : undefined,
   });
   if (!created) {
     return NextResponse.json(
-      { error: "busy", message: "Too many sign-in requests waiting. Try again in two minutes." },
+      {
+        error: "busy",
+        message: "Too many sign-in requests waiting. Try again in two minutes.",
+      },
       { status: 429 }
     );
   }
 
-  cookieStore.set(LOGIN_REQUEST_COOKIE, `${created.request.id}.${created.secret}`, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: COOKIE_PATH,
-    maxAge: Math.ceil(LOGIN_REQUEST_TTL_MS / 1000) + 60,
-  });
+  cookieStore.set(
+    LOGIN_REQUEST_COOKIE,
+    `${created.request.id}.${created.secret}`,
+    {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: COOKIE_PATH,
+      maxAge: Math.ceil(LOGIN_REQUEST_TTL_MS / 1000) + 60,
+    }
+  );
 
   return NextResponse.json({
     number: created.request.number,
@@ -59,7 +76,7 @@ export async function GET() {
   const [id, secret] = value.split(".");
   if (!id || !secret) return NextResponse.json({ status: "unknown" });
 
-  const status = redeemLoginRequest(id, secret);
+  const status = await redeemLoginRequest(id, secret);
 
   if (status === "approved") {
     cookieStore.delete({ name: LOGIN_REQUEST_COOKIE, path: COOKIE_PATH });

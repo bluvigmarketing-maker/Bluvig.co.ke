@@ -1,6 +1,6 @@
 import { createHash, randomBytes, randomInt, randomUUID } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import path from "node:path";
+
+import { readDoc, updateDoc } from "@/lib/storage";
 
 /**
  * Bluvig Authenticator — number-matching sign-in for /cockpit.
@@ -10,8 +10,8 @@ import path from "node:path";
  *    request as three numbers; tapping the right one approves it.
  * 3. The waiting browser (proved by a secret cookie) is issued a session.
  *
- * Stored as JSON like lib/leads.ts. Like leads, this needs a hosted DB before
- * deploying to serverless hosting (Vercel): the filesystem there isn't persistent.
+ * Stored via lib/storage.ts: Supabase/Postgres when DATABASE_URL is set,
+ * otherwise data/authenticator.json (local development).
  */
 
 export interface Device {
@@ -24,7 +24,8 @@ export interface Device {
   lastUsedAt: string | null;
 }
 
-export type LoginStatus = "pending" | "approved" | "denied" | "consumed" | "cancelled";
+export type LoginStatus =
+  "pending" | "approved" | "denied" | "consumed" | "cancelled";
 
 export interface LoginRequest {
   id: string;
@@ -64,60 +65,67 @@ const CEREMONY_TTL_MS = 5 * 60 * 1000;
 const ENROLL_CODE_TTL_MS = 10 * 60 * 1000;
 const MAX_PENDING_REQUESTS = 5;
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "authenticator.json");
+const KEY = "authenticator";
+const emptyStore = (): Store => ({
+  devices: [],
+  loginRequests: [],
+  ceremonies: [],
+  enrollCodes: [],
+});
 
-const hash = (value: string) => createHash("sha256").update(value).digest("hex");
-const isLive = (expiresAt: string) => new Date(expiresAt).getTime() > Date.now();
+const hash = (value: string) =>
+  createHash("sha256").update(value).digest("hex");
+const isLive = (expiresAt: string) =>
+  new Date(expiresAt).getTime() > Date.now();
 
-function read(): Store {
-  const empty: Store = { devices: [], loginRequests: [], ceremonies: [], enrollCodes: [] };
-  if (!existsSync(DATA_FILE)) return empty;
-  try {
-    return { ...empty, ...(JSON.parse(readFileSync(DATA_FILE, "utf-8")) as Partial<Store>) };
-  } catch {
-    return empty;
-  }
+async function read(): Promise<Store> {
+  return { ...emptyStore(), ...(await readDoc<Partial<Store>>(KEY, {})) };
 }
 
 /** Read-modify-write; drops expired requests, ceremonies and codes on every write. */
-function update<T>(fn: (store: Store) => T): T {
-  const store = read();
-  const result = fn(store);
-  // Keep resolved login requests briefly so the waiting browser can read the outcome.
-  store.loginRequests = store.loginRequests.filter(
-    (r) => new Date(r.expiresAt).getTime() > Date.now() - 60_000
-  );
-  store.ceremonies = store.ceremonies.filter((c) => isLive(c.expiresAt));
-  store.enrollCodes = store.enrollCodes.filter((c) => isLive(c.expiresAt));
-  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf-8");
-  return result;
+function update<T>(fn: (store: Store) => T): Promise<T> {
+  return updateDoc<Partial<Store>, T>(KEY, {}, (doc) => {
+    const store = Object.assign(doc, { ...emptyStore(), ...doc }) as Store;
+    const result = fn(store);
+    // Keep resolved login requests briefly so the waiting browser can read the outcome.
+    store.loginRequests = store.loginRequests.filter(
+      (r) => new Date(r.expiresAt).getTime() > Date.now() - 60_000
+    );
+    store.ceremonies = store.ceremonies.filter((c) => isLive(c.expiresAt));
+    store.enrollCodes = store.enrollCodes.filter((c) => isLive(c.expiresAt));
+    return result;
+  });
 }
 
 // ── Devices ──────────────────────────────────────────────────────────────
 
-export function getDevices(): Device[] {
-  return read().devices;
+export async function getDevices(): Promise<Device[]> {
+  return (await read()).devices;
 }
 
-export function hasDevices(): boolean {
-  return read().devices.length > 0;
+export async function hasDevices(): Promise<boolean> {
+  return (await read()).devices.length > 0;
 }
 
-export function findDevice(id: string): Device | undefined {
-  return read().devices.find((d) => d.id === id);
+export async function findDevice(id: string): Promise<Device | undefined> {
+  return (await read()).devices.find((d) => d.id === id);
 }
 
-export function addDevice(device: Omit<Device, "createdAt" | "lastUsedAt">) {
-  update((store) => {
+export async function addDevice(
+  device: Omit<Device, "createdAt" | "lastUsedAt">
+) {
+  await update((store) => {
     store.devices = store.devices.filter((d) => d.id !== device.id);
-    store.devices.push({ ...device, createdAt: new Date().toISOString(), lastUsedAt: null });
+    store.devices.push({
+      ...device,
+      createdAt: new Date().toISOString(),
+      lastUsedAt: null,
+    });
   });
 }
 
-export function touchDevice(id: string, counter: number) {
-  update((store) => {
+export async function touchDevice(id: string, counter: number) {
+  await update((store) => {
     const device = store.devices.find((d) => d.id === id);
     if (device) {
       device.counter = counter;
@@ -126,7 +134,7 @@ export function touchDevice(id: string, counter: number) {
   });
 }
 
-export function removeDevice(id: string): boolean {
+export async function removeDevice(id: string): Promise<boolean> {
   return update((store) => {
     const before = store.devices.length;
     store.devices = store.devices.filter((d) => d.id !== id);
@@ -137,12 +145,18 @@ export function removeDevice(id: string): boolean {
 // ── Enrolment codes (for adding a phone from inside the cockpit) ─────────
 
 /** Returns a one-time code like "K7Q2-M9XD", valid for 10 minutes. */
-export function createEnrollCode(): { code: string; expiresAt: string } {
+export async function createEnrollCode(): Promise<{
+  code: string;
+  expiresAt: string;
+}> {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
-  const raw = Array.from({ length: 8 }, () => alphabet[randomInt(alphabet.length)]).join("");
+  const raw = Array.from(
+    { length: 8 },
+    () => alphabet[randomInt(alphabet.length)]
+  ).join("");
   const code = `${raw.slice(0, 4)}-${raw.slice(4)}`;
   const expiresAt = new Date(Date.now() + ENROLL_CODE_TTL_MS).toISOString();
-  update((store) => {
+  await update((store) => {
     store.enrollCodes.push({ codeHash: hash(normalizeCode(code)), expiresAt });
   });
   return { code, expiresAt };
@@ -152,26 +166,30 @@ function normalizeCode(code: string) {
   return code.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
-export function isValidEnrollCode(code: string): boolean {
+export async function isValidEnrollCode(code: string): Promise<boolean> {
   const codeHash = hash(normalizeCode(code));
-  return read().enrollCodes.some((c) => c.codeHash === codeHash && isLive(c.expiresAt));
+  return (await read()).enrollCodes.some(
+    (c) => c.codeHash === codeHash && isLive(c.expiresAt)
+  );
 }
 
 // ── WebAuthn ceremonies (server-side challenge storage) ─────────────────
 
-export function startCeremony(
+export async function startCeremony(
   kind: Ceremony["kind"],
   challenge: string,
   extra: { deviceName?: string; enrollCode?: string } = {}
-): string {
+): Promise<string> {
   const id = randomUUID();
-  update((store) => {
+  await update((store) => {
     store.ceremonies.push({
       id,
       kind,
       challenge,
       deviceName: extra.deviceName,
-      enrollCodeHash: extra.enrollCode ? hash(normalizeCode(extra.enrollCode)) : undefined,
+      enrollCodeHash: extra.enrollCode
+        ? hash(normalizeCode(extra.enrollCode))
+        : undefined,
       expiresAt: new Date(Date.now() + CEREMONY_TTL_MS).toISOString(),
     });
   });
@@ -179,7 +197,10 @@ export function startCeremony(
 }
 
 /** One-shot: removes the ceremony (and its enrolment code, if any) as it's read. */
-export function consumeCeremony(id: string, kind: Ceremony["kind"]): Ceremony | null {
+export async function consumeCeremony(
+  id: string,
+  kind: Ceremony["kind"]
+): Promise<Ceremony | null> {
   return update((store) => {
     const ceremony = store.ceremonies.find(
       (c) => c.id === id && c.kind === kind && isLive(c.expiresAt)
@@ -189,7 +210,9 @@ export function consumeCeremony(id: string, kind: Ceremony["kind"]): Ceremony | 
       const valid = store.enrollCodes.some(
         (c) => c.codeHash === ceremony.enrollCodeHash && isLive(c.expiresAt)
       );
-      store.enrollCodes = store.enrollCodes.filter((c) => c.codeHash !== ceremony.enrollCodeHash);
+      store.enrollCodes = store.enrollCodes.filter(
+        (c) => c.codeHash !== ceremony.enrollCodeHash
+      );
       if (!valid) return null;
     }
     return ceremony ?? null;
@@ -211,7 +234,7 @@ function numberOptions(): { number: number; options: number[] } {
   return { number, options };
 }
 
-export function createLoginRequest(meta: {
+export async function createLoginRequest(meta: {
   userAgent: string;
   ip: string;
   /** The same browser's previous request (from its cookie) — cancelled so the phone never shows stale requests. */
@@ -220,7 +243,9 @@ export function createLoginRequest(meta: {
   return update((store) => {
     const previous = meta.replaces
       ? store.loginRequests.find(
-          (r) => r.id === meta.replaces!.id && r.secretHash === hash(meta.replaces!.secret)
+          (r) =>
+            r.id === meta.replaces!.id &&
+            r.secretHash === hash(meta.replaces!.secret)
         )
       : undefined;
     if (previous?.status === "pending") previous.status = "cancelled";
@@ -254,7 +279,10 @@ export type LoginOutcome = LoginStatus | "expired" | "unknown";
  * Called by the waiting browser. Returns "approved" exactly once — the request
  * is marked consumed in the same write, so a session can't be issued twice.
  */
-export function redeemLoginRequest(id: string, secret: string): LoginOutcome {
+export async function redeemLoginRequest(
+  id: string,
+  secret: string
+): Promise<LoginOutcome> {
   return update((store) => {
     const request = store.loginRequests.find((r) => r.id === id);
     if (!request || request.secretHash !== hash(secret)) return "unknown";
@@ -262,7 +290,8 @@ export function redeemLoginRequest(id: string, secret: string): LoginOutcome {
       request.status = "consumed";
       return "approved";
     }
-    if (request.status === "pending" && !isLive(request.expiresAt)) return "expired";
+    if (request.status === "pending" && !isLive(request.expiresAt))
+      return "expired";
     return request.status;
   });
 }
@@ -273,9 +302,9 @@ export type PublicLoginRequest = Pick<
 >;
 
 /** What an unlocked authenticator sees — the options, never which one is right. */
-export function getPendingRequests(): PublicLoginRequest[] {
-  return read()
-    .loginRequests.filter((r) => r.status === "pending" && isLive(r.expiresAt))
+export async function getPendingRequests(): Promise<PublicLoginRequest[]> {
+  return (await read()).loginRequests
+    .filter((r) => r.status === "pending" && isLive(r.expiresAt))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map(({ id, options, createdAt, expiresAt, userAgent, ip }) => ({
       id,
@@ -288,10 +317,10 @@ export function getPendingRequests(): PublicLoginRequest[] {
 }
 
 /** One answer per request: the right number approves it, anything else denies it. */
-export function answerLoginRequest(
+export async function answerLoginRequest(
   id: string,
   choice: number | "deny"
-): "approved" | "denied" | "gone" {
+): Promise<"approved" | "denied" | "gone"> {
   return update((store) => {
     const request = store.loginRequests.find(
       (r) => r.id === id && r.status === "pending" && isLive(r.expiresAt)

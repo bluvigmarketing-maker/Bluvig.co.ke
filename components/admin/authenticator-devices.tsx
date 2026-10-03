@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Smartphone, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { readJson } from "@/lib/read-json";
 
 export interface DeviceSummary {
   id: string;
@@ -23,17 +24,25 @@ function formatDate(iso: string | null) {
   });
 }
 
-export function AuthenticatorDevices({ devices }: { devices: DeviceSummary[] }) {
+export function AuthenticatorDevices({
+  devices,
+}: {
+  devices: DeviceSummary[];
+}) {
   const router = useRouter();
-  const [enrolCode, setEnrolCode] = useState<{ code: string; expiresAt: string } | null>(null);
+  const [enrolCode, setEnrolCode] = useState<{
+    code: string;
+    expiresAt: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function generateCode() {
     setError(null);
     const res = await fetch("/api/cockpit/enroll-code", { method: "POST" });
-    if (!res.ok) return setError("Could not create a code. Try signing in again.");
-    setEnrolCode(await res.json());
+    if (!res.ok)
+      return setError("Could not create a code. Try signing in again.");
+    setEnrolCode((await readJson(res)) as { code: string; expiresAt: string });
   }
 
   async function revoke(device: DeviceSummary) {
@@ -67,7 +76,12 @@ export function AuthenticatorDevices({ devices }: { devices: DeviceSummary[] }) 
             <span className="font-mono text-navy-900">/authenticator</span>.
           </p>
         </div>
-        <Button size="sm" variant="outline" className="gap-1.5" onClick={generateCode}>
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5"
+          onClick={generateCode}
+        >
           <Plus className="size-3.5" aria-hidden="true" />
           Add a phone
         </Button>
@@ -76,7 +90,8 @@ export function AuthenticatorDevices({ devices }: { devices: DeviceSummary[] }) 
       {enrolCode ? (
         <div className="flex flex-col gap-1 rounded-2xl border border-gold-200 bg-gold-50 p-5">
           <p className="text-sm text-navy-800">
-            On the new phone, open <span className="font-mono">/authenticator</span> → Set up this
+            On the new phone, open{" "}
+            <span className="font-mono">/authenticator</span> → Set up this
             phone, and enter:
           </p>
           <p className="font-mono text-3xl font-bold tracking-widest text-navy-950">
@@ -97,9 +112,12 @@ export function AuthenticatorDevices({ devices }: { devices: DeviceSummary[] }) 
               <Smartphone className="size-5" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-medium text-navy-950">{device.name}</p>
+              <p className="truncate font-medium text-navy-950">
+                {device.name}
+              </p>
               <p className="text-xs text-navy-500">
-                Added {formatDate(device.createdAt)} · Last used {formatDate(device.lastUsedAt)}
+                Added {formatDate(device.createdAt)} · Last used{" "}
+                {formatDate(device.lastUsedAt)}
               </p>
             </div>
             <Button

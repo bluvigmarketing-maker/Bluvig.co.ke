@@ -8,7 +8,7 @@ const locked = () => NextResponse.json({ error: "locked" }, { status: 401 });
 /** Pending cockpit sign-ins, as three-number choices. */
 export async function GET() {
   if (!(await getAuthenticatorDevice())) return locked();
-  return NextResponse.json({ requests: getPendingRequests() });
+  return NextResponse.json({ requests: await getPendingRequests() });
 }
 
 /** Answer one request: `choice` is the tapped number, or "deny". */
@@ -23,5 +23,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid answer." }, { status: 400 });
   }
 
-  return NextResponse.json({ result: answerLoginRequest(requestId, choice!) });
+  return NextResponse.json({
+    result: await answerLoginRequest(requestId, choice!),
+  });
 }

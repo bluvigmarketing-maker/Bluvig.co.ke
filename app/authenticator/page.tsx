@@ -1,10 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
-import { CheckCircle2, Fingerprint, Lock, ShieldCheck, Smartphone, XCircle } from "lucide-react";
+import {
+  startAuthentication,
+  startRegistration,
+} from "@simplewebauthn/browser";
+import {
+  CheckCircle2,
+  Fingerprint,
+  Lock,
+  ShieldCheck,
+  Smartphone,
+  XCircle,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { readJson } from "@/lib/read-json";
 
 interface PendingRequest {
   id: string;
@@ -62,15 +73,24 @@ export default function AuthenticatorPage() {
 
   const refreshStatus = useCallback(async () => {
     const res = await fetch("/api/authenticator/status", { cache: "no-store" });
-    const status = await res.json();
+    const status = await readJson(res);
+    if (!res.ok) throw new Error(status.error);
     setHasDevices(status.hasDevices);
     setDeviceName(status.deviceName);
-    setView(status.unlocked ? "unlocked" : status.hasDevices ? "locked" : "setup");
+    setView(
+      status.unlocked ? "unlocked" : status.hasDevices ? "locked" : "setup"
+    );
   }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    refreshStatus().catch(() => setError("Could not reach the server."));
+    refreshStatus().catch((e) =>
+      setError(
+        e instanceof Error && e.message
+          ? e.message
+          : "Could not reach the server."
+      )
+    );
   }, [refreshStatus]);
 
   // While unlocked, watch for sign-in requests from the cockpit.
@@ -78,14 +98,16 @@ export default function AuthenticatorPage() {
     if (view !== "unlocked") return;
     let cancelled = false;
     const load = async () => {
-      const res = await fetch("/api/authenticator/requests", { cache: "no-store" });
+      const res = await fetch("/api/authenticator/requests", {
+        cache: "no-store",
+      });
       if (cancelled) return;
       if (res.status === 401) {
         setRequests([]);
         setView("locked");
         return;
       }
-      const body = await res.json();
+      const body = await readJson(res);
       setRequests(body.requests ?? []);
     };
     load().catch(() => {});
@@ -100,8 +122,14 @@ export default function AuthenticatorPage() {
     setError(null);
     setBusy(true);
     try {
-      const optionsRes = await fetch("/api/authenticator/unlock/options", { method: "POST" });
-      const { ceremonyId, options, error: optionsError } = await optionsRes.json();
+      const optionsRes = await fetch("/api/authenticator/unlock/options", {
+        method: "POST",
+      });
+      const {
+        ceremonyId,
+        options,
+        error: optionsError,
+      } = await readJson(optionsRes);
       if (!optionsRes.ok) throw new Error(optionsError);
       const response = await startAuthentication({ optionsJSON: options });
       const verifyRes = await fetch("/api/authenticator/unlock/verify", {
@@ -109,7 +137,7 @@ export default function AuthenticatorPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ceremonyId, response }),
       });
-      const body = await verifyRes.json();
+      const body = await readJson(verifyRes);
       if (!verifyRes.ok) throw new Error(body.error);
       setDeviceName(body.deviceName);
       setView("unlocked");
@@ -135,7 +163,11 @@ export default function AuthenticatorPage() {
           code: form.get("code"),
         }),
       });
-      const { ceremonyId, options, error: optionsError } = await optionsRes.json();
+      const {
+        ceremonyId,
+        options,
+        error: optionsError,
+      } = await readJson(optionsRes);
       if (!optionsRes.ok) throw new Error(optionsError);
       const response = await startRegistration({ optionsJSON: options });
       const verifyRes = await fetch("/api/authenticator/register/verify", {
@@ -143,7 +175,7 @@ export default function AuthenticatorPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ceremonyId, response }),
       });
-      const body = await verifyRes.json();
+      const body = await readJson(verifyRes);
       if (!verifyRes.ok) throw new Error(body.error);
       await refreshStatus();
     } catch (e) {
@@ -162,7 +194,7 @@ export default function AuthenticatorPage() {
         body: JSON.stringify({ requestId, choice }),
       });
       if (res.status === 401) return setView("locked");
-      const { result } = await res.json();
+      const { result } = await readJson(res);
       setRequests((current) => current.filter((r) => r.id !== requestId));
       setFlash(result === "approved" ? "approved" : "denied");
       setTimeout(() => setFlash(null), 2500);
@@ -214,7 +246,9 @@ export default function AuthenticatorPage() {
           </p>
         ) : null}
 
-        {view === "loading" ? <p className="text-sm text-navy-300">Loading…</p> : null}
+        {view === "loading" ? (
+          <p className="text-sm text-navy-300">Loading…</p>
+        ) : null}
 
         {view === "locked" ? (
           <div className="flex w-full max-w-sm flex-col items-center gap-6 text-center">
@@ -247,15 +281,22 @@ export default function AuthenticatorPage() {
         ) : null}
 
         {view === "setup" ? (
-          <form onSubmit={enrol} className="flex w-full max-w-sm flex-col gap-4">
+          <form
+            onSubmit={enrol}
+            className="flex w-full max-w-sm flex-col gap-4"
+          >
             <div className="flex flex-col items-center gap-2 text-center">
-              <Smartphone className="size-12 text-gold-300" aria-hidden="true" />
+              <Smartphone
+                className="size-12 text-gold-300"
+                aria-hidden="true"
+              />
               <h1 className="text-xl font-semibold">Set up this phone</h1>
               <p className="text-sm text-navy-300">
                 {hasDevices
                   ? "Enter the one-time code from Cockpit → Authenticator devices."
                   : "First device: enter the setup password (ADMIN_PASSWORD)."}{" "}
-                You&rsquo;ll then create a passkey with Face ID, fingerprint or your screen lock.
+                You&rsquo;ll then create a passkey with Face ID, fingerprint or
+                your screen lock.
               </p>
             </div>
             <label className="flex flex-col gap-1.5 text-sm">
@@ -310,7 +351,10 @@ export default function AuthenticatorPage() {
         ) : null}
 
         {view === "unlocked" ? (
-          <div aria-live="polite" className="flex w-full max-w-sm flex-col items-center gap-6">
+          <div
+            aria-live="polite"
+            className="flex w-full max-w-sm flex-col items-center gap-6"
+          >
             {flash ? (
               <p
                 className={cn(
@@ -330,7 +374,9 @@ export default function AuthenticatorPage() {
             {request ? (
               <div className="flex w-full flex-col gap-6 rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-lg font-semibold">Approve cockpit sign-in?</h1>
+                  <h1 className="text-lg font-semibold">
+                    Approve cockpit sign-in?
+                  </h1>
                   <p className="text-sm text-navy-300">
                     {describeBrowser(request.userAgent)} ·{" "}
                     {new Date(request.createdAt).toLocaleTimeString([], {
@@ -340,7 +386,9 @@ export default function AuthenticatorPage() {
                     {request.ip !== "unknown" ? ` · ${request.ip}` : ""}
                   </p>
                 </div>
-                <p className="text-sm text-navy-200">Tap the number shown on the cockpit screen.</p>
+                <p className="text-sm text-navy-200">
+                  Tap the number shown on the cockpit screen.
+                </p>
                 <div className="grid grid-cols-3 gap-3">
                   {request.options.map((option) => (
                     <button
@@ -369,9 +417,12 @@ export default function AuthenticatorPage() {
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-gold-400 opacity-60 motion-reduce:animate-none" />
                   <span className="relative inline-flex size-3 rounded-full bg-gold-400" />
                 </span>
-                <p className="text-base font-medium">Waiting for sign-in requests</p>
+                <p className="text-base font-medium">
+                  Waiting for sign-in requests
+                </p>
                 <p className="text-sm text-navy-300">
-                  Open the cockpit on your computer — the request will appear here.
+                  Open the cockpit on your computer — the request will appear
+                  here.
                 </p>
               </div>
             ) : null}

@@ -2,9 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Clock, ShieldCheck, Smartphone, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  ShieldCheck,
+  Smartphone,
+  XCircle,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { readJson } from "@/lib/read-json";
 
 type State =
   | { kind: "starting" }
@@ -26,10 +33,13 @@ export default function CockpitLoginPage() {
     setState({ kind: "starting" });
     try {
       const res = await fetch("/api/cockpit/login-request", { method: "POST" });
-      const body = await res.json().catch(() => ({}));
+      const body = await readJson(res);
       if (res.status === 409) return setState({ kind: "no-devices" });
       if (!res.ok) {
-        return setState({ kind: "error", message: body.message ?? "Something went wrong." });
+        return setState({
+          kind: "error",
+          message: body.message ?? "Something went wrong.",
+        });
       }
       setState({
         kind: "waiting",
@@ -65,8 +75,10 @@ export default function CockpitLoginPage() {
 
     const poll = setInterval(async () => {
       try {
-        const res = await fetch("/api/cockpit/login-request", { cache: "no-store" });
-        const { status } = await res.json();
+        const res = await fetch("/api/cockpit/login-request", {
+          cache: "no-store",
+        });
+        const { status } = await readJson(res);
         if (status === "approved") {
           setState({ kind: "approved" });
           router.replace("/cockpit");
@@ -94,11 +106,18 @@ export default function CockpitLoginPage() {
           <ShieldCheck className="size-5" aria-hidden="true" />
         </span>
         <div className="flex flex-col gap-1">
-          <h1 className="font-heading text-xl font-semibold text-navy-950">Cockpit Sign-in</h1>
-          <p className="text-sm text-navy-700">Approve with Bluvig Authenticator.</p>
+          <h1 className="font-heading text-xl font-semibold text-navy-950">
+            Cockpit Sign-in
+          </h1>
+          <p className="text-sm text-navy-700">
+            Approve with Bluvig Authenticator.
+          </p>
         </div>
 
-        <div aria-live="polite" className="flex w-full flex-col items-center gap-5">
+        <div
+          aria-live="polite"
+          className="flex w-full flex-col items-center gap-5"
+        >
           {state.kind === "starting" ? (
             <p className="py-10 text-sm text-navy-500">Preparing sign-in…</p>
           ) : null}
@@ -106,8 +125,11 @@ export default function CockpitLoginPage() {
           {state.kind === "waiting" ? (
             <>
               <p className="text-sm text-navy-700">
-                Open <span className="font-semibold text-navy-950">Bluvig Authenticator</span> on
-                your phone and tap this number:
+                Open{" "}
+                <span className="font-semibold text-navy-950">
+                  Bluvig Authenticator
+                </span>{" "}
+                on your phone and tap this number:
               </p>
               <p
                 className="font-heading text-7xl font-bold tracking-tight text-navy-950"
@@ -125,11 +147,14 @@ export default function CockpitLoginPage() {
 
           {state.kind === "approved" ? (
             <p className="flex items-center gap-2 py-8 font-semibold text-gold-700">
-              <CheckCircle2 className="size-5" aria-hidden="true" /> Approved — opening cockpit…
+              <CheckCircle2 className="size-5" aria-hidden="true" /> Approved —
+              opening cockpit…
             </p>
           ) : null}
 
-          {state.kind === "denied" || state.kind === "expired" || state.kind === "error" ? (
+          {state.kind === "denied" ||
+          state.kind === "expired" ||
+          state.kind === "error" ? (
             <>
               <p className="flex items-center gap-2 py-4 text-sm text-destructive">
                 <XCircle className="size-4 shrink-0" aria-hidden="true" />
@@ -139,7 +164,10 @@ export default function CockpitLoginPage() {
                     ? "This sign-in request expired."
                     : state.message}
               </p>
-              <Button onClick={start} className="btn-metallic gold-line w-full font-semibold">
+              <Button
+                onClick={start}
+                className="btn-metallic gold-line w-full font-semibold"
+              >
                 Try again
               </Button>
             </>
@@ -150,8 +178,11 @@ export default function CockpitLoginPage() {
               <Smartphone className="size-6 text-navy-500" aria-hidden="true" />
               <p>
                 No authenticator is set up yet. On your phone, open{" "}
-                <span className="font-mono font-semibold text-navy-950">/authenticator</span> and
-                choose <span className="font-semibold">Set up this phone</span>.
+                <span className="font-mono font-semibold text-navy-950">
+                  /authenticator
+                </span>{" "}
+                and choose{" "}
+                <span className="font-semibold">Set up this phone</span>.
               </p>
               <Button onClick={start} variant="outline" className="w-full">
                 I&rsquo;ve set it up — continue

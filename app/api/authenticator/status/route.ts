@@ -6,7 +6,7 @@ import { getAuthenticatorDevice } from "@/lib/webauthn";
 export async function GET() {
   const device = await getAuthenticatorDevice();
   return NextResponse.json({
-    hasDevices: hasDevices(),
+    hasDevices: await hasDevices(),
     unlocked: Boolean(device),
     deviceName: device?.name ?? null,
   });

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { verifyRegistrationResponse, type RegistrationResponseJSON } from "@simplewebauthn/server";
+import {
+  verifyRegistrationResponse,
+  type RegistrationResponseJSON,
+} from "@simplewebauthn/server";
 import { isoBase64URL } from "@simplewebauthn/server/helpers";
 
 import { addDevice, consumeCeremony } from "@/lib/authenticator";
@@ -11,13 +14,19 @@ export async function POST(request: Request) {
     response?: RegistrationResponseJSON;
   };
   if (!ceremonyId || !response) {
-    return NextResponse.json({ error: "Missing registration data." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing registration data." },
+      { status: 400 }
+    );
   }
 
   // One-shot: also burns the enrolment code, so a code can't add two phones.
-  const ceremony = consumeCeremony(ceremonyId, "register");
+  const ceremony = await consumeCeremony(ceremonyId, "register");
   if (!ceremony) {
-    return NextResponse.json({ error: "Setup expired. Please start again." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Setup expired. Please start again." },
+      { status: 400 }
+    );
   }
 
   const { origin, rpID } = relyingParty(request);
@@ -32,7 +41,7 @@ export async function POST(request: Request) {
     if (!verified) throw new Error("not verified");
 
     const { credential } = registrationInfo;
-    addDevice({
+    await addDevice({
       id: credential.id,
       publicKey: isoBase64URL.fromBuffer(credential.publicKey),
       counter: credential.counter,
@@ -42,6 +51,9 @@ export async function POST(request: Request) {
     await startAuthenticatorSession(credential.id);
     return NextResponse.json({ ok: true });
   } catch {
-    return NextResponse.json({ error: "Could not verify this passkey." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Could not verify this passkey." },
+      { status: 400 }
+    );
   }
 }

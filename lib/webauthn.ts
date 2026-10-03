@@ -39,7 +39,9 @@ export async function startAuthenticatorSession(deviceId: string) {
 /** The unlocked device, or null. Revoking a device ends its session immediately. */
 export async function getAuthenticatorDevice(): Promise<Device | null> {
   const cookieStore = await cookies();
-  const payload = verifyToken(cookieStore.get(AUTHENTICATOR_SESSION_COOKIE)?.value);
+  const payload = verifyToken(
+    cookieStore.get(AUTHENTICATOR_SESSION_COOKIE)?.value
+  );
   if (!payload?.startsWith("device:")) return null;
-  return findDevice(payload.slice("device:".length)) ?? null;
+  return (await findDevice(payload.slice("device:".length))) ?? null;
 }

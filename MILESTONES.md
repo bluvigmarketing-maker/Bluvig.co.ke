@@ -36,7 +36,7 @@ Done and kept as-is (design and infrastructure carry over; **copy and positionin
 - [x] Shared primitives: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `MagneticButton`, `.btn-metallic`
 - [x] Pages scaffolded: Home, What We Do + 4 service pages, Case Studies index, About, Get Started, Contact, Blog index, Tools index
 - [x] Lead capture: `POST /api/leads` + `/cockpit` admin dashboard (JSON file store — **not production-safe on Vercel**, see Phase 5)
-- [x] Cockpit sign-in via **Bluvig Authenticator** (2026-10-03): number matching — `/cockpit/login` shows a number, an enrolled phone at `/authenticator` (unlocked with a passkey) taps it from 3 choices. Multiple phones; add via one-time code from the cockpit, revoke from the cockpit. `ADMIN_PASSWORD` only enrols the first phone (and signs sessions). Device data is in `data/authenticator.json` — **must move to the hosted DB before deploying to Vercel**, or enrolled phones are lost. Set `WEBAUTHN_ORIGIN` in production.
+- [x] Cockpit sign-in via **Bluvig Authenticator** (2026-10-03): number matching — `/cockpit/login` shows a number, an enrolled phone at `/authenticator` (unlocked with a passkey) taps it from 3 choices. Multiple phones; add via one-time code from the cockpit, revoke from the cockpit. `ADMIN_PASSWORD` only enrols the first phone (and signs sessions). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.
 
 Needs rework because of the repositioning:
 
@@ -51,7 +51,7 @@ Needs rework because of the repositioning:
 ## Phase 0 — Foundations (finish)
 - [ ] Create a GitHub remote and push (no git remote exists yet)
 - [ ] Connect to Vercel: preview deploys per branch, production on `main`
-- [ ] Choose and provision a hosted database (Postgres via Supabase or Neon) — required by Phases 4–5
+- [~] Hosted database: **Supabase** chosen (2026-10-03). Code supports it via `DATABASE_URL` (lib/storage.ts; table `bluvig_documents` auto-created with RLS on). **Owner to create the Supabase project and add `DATABASE_URL` in Vercel.**
 - [ ] Environment variable management for preview vs production (`ADMIN_PASSWORD`, DB URL, email API key)
 
 ## Phase 1 — Positioning, Offers & Messaging
@@ -119,7 +119,7 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 
 ## Phase 5 — Lead Infrastructure
-- [ ] Move lead storage (`data/leads.json`) and authenticator devices (`data/authenticator.json`) to the hosted DB (file storage doesn't persist on Vercel)
+- [x] Leads and authenticator devices stored in the hosted DB when `DATABASE_URL` is set (local dev still uses `data/*.json`)
 - [ ] Email notification on every new lead/estimate (Resend), plus auto-reply to the prospect
 - [ ] Optional: push leads to a CRM (HubSpot/Zoho) or Google Sheet via webhook
 - [ ] Calendar booking embed (Cal.com/Calendly) on Contact and after the estimator
