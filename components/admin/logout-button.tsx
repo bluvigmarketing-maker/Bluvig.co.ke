@@ -15,7 +15,12 @@ export function LogoutButton() {
   }
 
   return (
-    <Button variant="outline" size="sm" className="gap-1.5" onClick={handleLogout}>
+    <Button
+      variant="outline"
+      size="sm"
+      className="gap-1.5"
+      onClick={handleLogout}
+    >
       <LogOut className="size-3.5" aria-hidden="true" />
       Log Out
     </Button>

@@ -1,6 +1,6 @@
 # Visual Project Estimator — Spec
 
-**Route:** `/estimate` · **Status:** draft for owner review (2026-10-03) · Roadmap: [MILESTONES.md](MILESTONES.md) Phase 4
+**Route:** `/estimate` · **Status:** v1 built (2026-10-04) · Roadmap: [MILESTONES.md](MILESTONES.md) Phase 4
 
 ## 1. Goal
 
@@ -136,7 +136,6 @@ Prices are KES (Kenya). USD price = ×3 ÷ FX, per §4. These values seed the da
 **Monthly (shown separately)**
 | Item | KES / month |
 |---|---|
-| Hosting, backups & security | 3,000 |
 | Maintenance & content updates | 8,000 |
 | SEO retainer | 25,000 |
 
@@ -264,12 +263,17 @@ Later (not v1):
 - Duplicate an estimate into a custom quote with manual line items
 - Automatic FX rate updates from an exchange-rate API
 
-## 11. Open Questions (owner)
-1. **Prices in §5.2** are starting values only — they can be changed any time in admin, so they don't block the build.
-2. Does the **3× international multiplier** apply to every module and monthly item, or only the base website? What FX rate to use, and should it update automatically?
-3. **Payment terms:** deposit % and milestones? Payment details to print (Paybill/Till, bank)?
-4. Is Bluvig **VAT-registered**? (Determines whether VAT lines appear.)
-5. Is **hosting/domain for year 1** included in the KES 30,000, or always monthly?
-6. **Delivery timeline** per module — use rough defaults (base 2 weeks + days per module) or do you want to set them?
-7. Should visitors from Kenya also see USD (and vice versa), or lock currency by country?
-8. WhatsApp **click-to-send** now and API later — OK?
+## 11. Owner Decisions (2026-10-04)
+1. **Prices in §5.2** are starting values — edited live in `/cockpit/pricing`.
+2. **3× international multiplier applies to everything** — base, every module and monthly plans. FX rate editable in the cockpit (default 130 KES/USD).
+3. **Payment terms:** 60% deposit to start, 40% on launch. Clients may request a **free prototype first**. Pay via **M-Pesa Paybill 522522, Account 1315475243**.
+4. **No VAT** (not VAT-registered yet) — invoices say "No VAT charged".
+5. **Hosting & domain are included** in the Standard Website (the separate monthly hosting fee was removed).
+6. Delivery estimate: rough defaults (base 14 days + days per module, ~5 working days per week).
+7. **Currency is locked by country**: Kenya → KES, everywhere else → USD (enforced server-side). The builder has an "In Kenya / Outside Kenya" switch for previewing.
+8. WhatsApp **click-to-send** now; Cloud API auto-send later.
+
+### Still open
+- Is hosting & domain included for the **first year only**, or always? (Invoice currently says "Hosting & domain included".)
+- Point the site's "Get Started" buttons to `/estimate`?
+- Estimates are stored as one JSON document — fine for hundreds; move to a proper table before volume grows.

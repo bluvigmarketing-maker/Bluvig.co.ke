@@ -1,6 +1,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
+import { COCKPIT_AUTH_ENABLED } from "@/lib/cockpit-config";
+
 export const ADMIN_SESSION_COOKIE = "bluvig_admin_session";
 export const ADMIN_SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -39,7 +41,9 @@ export function verifyToken(token: string | undefined): string | null {
     const lastDot = token.lastIndexOf(".");
     const body = token.slice(0, lastDot);
     const sig = token.slice(lastDot + 1);
-    const expected = createHmac("sha256", getSecret()).update(body).digest("hex");
+    const expected = createHmac("sha256", getSecret())
+      .update(body)
+      .digest("hex");
     if (!safeEqual(sig, expected)) return null;
     const expDot = body.lastIndexOf(".");
     const exp = Number(body.slice(expDot + 1));
@@ -61,6 +65,11 @@ export function verifySessionToken(token: string | undefined): boolean {
 /** Used only to enrol the first authenticator device (see lib/authenticator.ts). */
 export function verifyPassword(candidate: string): boolean {
   return safeEqual(candidate, getSecret());
+}
+
+/** May this visitor view cockpit pages? True for everyone while sign-in is switched off. */
+export async function canViewCockpit(): Promise<boolean> {
+  return !COCKPIT_AUTH_ENABLED || (await isCockpitAuthed());
 }
 
 export async function isCockpitAuthed(): Promise<boolean> {

@@ -107,15 +107,16 @@ Reuse the existing design system and components; rewrite content.
 ## Phase 4 — Visual Project Estimator (flagship conversion)
 Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standard Website (KES 30,000; 3× in USD for international clients) → add modules with a live visual preview → proforma invoice PDF + purchase order sent to Bluvig's WhatsApp.
 - [x] Owner described the concept (2026-10-03); spec drafted
-- [ ] Owner review: international multiplier scope, payment terms, VAT status (spec §11)
-- [ ] Catalog file (industries, modules, dependencies, preview definitions, default prices) + DB tables for prices/settings, seeded from defaults
-- [ ] Admin **Pricing** screen: edit base price, module prices, FX rate, multiplier, enable/hide modules, change log (spec §10)
-- [ ] `/estimate` distraction-free layout + industry step
-- [ ] Builder: module picker + live visual preview + running total
-- [ ] Review + details steps, currency by country
-- [ ] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page
-- [ ] Save estimates to DB, show in `/cockpit` with status, email notification (needs Phase 5 DB)
-- [ ] Analytics events per step; spam protection
+- [x] Owner review: international multiplier scope, payment terms, VAT status (spec §11)
+- [x] Catalog file (industries, modules, dependencies, preview definitions, default prices) + DB tables for prices/settings, seeded from defaults
+- [x] Admin **Pricing** screen: edit base price, module prices, FX rate, multiplier, enable/hide modules, change log (spec §10)
+- [x] `/estimate` distraction-free layout + industry step
+- [x] Builder: module picker + live visual preview + running total
+- [x] Review + details steps, currency by country
+- [x] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page
+- [x] Save estimates to DB and list them in `/cockpit/estimates` (2026-10-04)
+- [ ] Estimate status (won/lost) in the cockpit + email notification on new estimate
+- [~] Spam protection: honeypot done; rate limiting + analytics events per step to do
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 
 ## Phase 5 — Lead Infrastructure

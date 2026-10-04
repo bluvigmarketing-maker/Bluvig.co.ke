@@ -8,6 +8,7 @@ import { getLeads, type Lead } from "@/lib/leads";
 import { describeStorageError } from "@/lib/storage-errors";
 import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
 import { LogoutButton } from "@/components/admin/logout-button";
+import { CockpitNav } from "@/components/admin/cockpit-nav";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ export default async function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-navy-50 py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="font-heading text-2xl font-semibold text-navy-950">
               Leads
@@ -70,7 +71,10 @@ export default async function AdminDashboardPage() {
               Submissions from the Get Started form.
             </p>
           </div>
-          {COCKPIT_AUTH_ENABLED ? <LogoutButton /> : null}
+          <div className="flex items-center gap-3">
+            <CockpitNav />
+            {COCKPIT_AUTH_ENABLED ? <LogoutButton /> : null}
+          </div>
         </div>
 
         {!COCKPIT_AUTH_ENABLED ? (
