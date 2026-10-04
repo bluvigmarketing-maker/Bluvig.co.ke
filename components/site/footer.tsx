@@ -13,7 +13,7 @@ const QUICK_LINKS = [
   { label: "Case Studies", href: "/case-studies" },
   { label: "Blog", href: "/blog" },
   { label: "Tools", href: "/tools" },
-  { label: "Get Started", href: "/get-started" },
+  { label: "Get Started", href: "/quotation" },
 ];
 
 export function Footer() {

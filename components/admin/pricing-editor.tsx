@@ -97,7 +97,7 @@ export function PricingEditor({
 
   return (
     <form onSubmit={save} className="flex flex-col gap-6 pb-28">
-      <section className="grid gap-4 rounded-2xl border border-navy-100 bg-white p-5 sm:grid-cols-3">
+      <section className="grid gap-4 rounded-2xl border border-navy-100 bg-white p-5 sm:grid-cols-2 lg:grid-cols-4">
         <label
           className={cn(
             "flex flex-col gap-1.5 text-sm font-medium text-navy-900",
@@ -155,6 +155,28 @@ export function PricingEditor({
           <span className="text-xs font-normal text-navy-500">
             Default {DEFAULT_SETTINGS.intlMultiplier}× · USD = KES × multiplier
             ÷ rate
+          </span>
+        </label>
+        <label
+          className={cn(
+            "flex flex-col gap-1.5 text-sm font-medium text-navy-900",
+            changed.has("settings.renewalKes") && "text-gold-700"
+          )}
+        >
+          Hosting & domain renewal (KES / year)
+          <input
+            type="number"
+            min={0}
+            step={500}
+            value={draft.settings.renewalKes}
+            onChange={(e) =>
+              setSetting("renewalKes", Math.round(Number(e.target.value)))
+            }
+            className={input}
+          />
+          <span className="text-xs font-normal text-navy-500">
+            From year 2 · first year included · USD{" "}
+            {usd(draft.settings.renewalKes)}
           </span>
         </label>
       </section>

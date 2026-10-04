@@ -16,6 +16,7 @@ function describeField(field: string) {
         "settings.basePriceKes": "Standard Website price",
         "settings.fxRate": "Exchange rate",
         "settings.intlMultiplier": "International multiplier",
+        "settings.renewalKes": "Hosting & domain renewal",
       }[field] ?? field
     );
   }
@@ -95,8 +96,8 @@ export default async function PricingPage() {
             </h1>
             <p className="text-sm text-navy-600">
               Prices used by the{" "}
-              <a href="/estimate" className="underline">
-                project estimator
+              <a href="/quotation" className="underline">
+                quotation page
               </a>
               . Changes apply immediately; invoices already issued keep their
               prices.

@@ -62,7 +62,7 @@ export const POST = withStorageErrors(async (request: Request) => {
     },
   });
 
-  const orderUrl = `${new URL(request.url).origin}/estimate/order/${estimate.token}`;
+  const orderUrl = `${new URL(request.url).origin}/quotation/order/${estimate.token}`;
   return NextResponse.json(
     {
       token: estimate.token,

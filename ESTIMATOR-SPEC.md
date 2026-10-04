@@ -1,6 +1,6 @@
 # Visual Project Estimator — Spec
 
-**Route:** `/estimate` · **Status:** v1 built (2026-10-04) · Roadmap: [MILESTONES.md](MILESTONES.md) Phase 4
+**Route:** `/quotation` (was `/estimate`, which now redirects) · **Status:** v1 built (2026-10-04) · Roadmap: [MILESTONES.md](MILESTONES.md) Phase 4
 
 ## 1. Goal
 
@@ -268,12 +268,11 @@ Later (not v1):
 2. **3× international multiplier applies to everything** — base, every module and monthly plans. FX rate editable in the cockpit (default 130 KES/USD).
 3. **Payment terms:** 60% deposit to start, 40% on launch. Clients may request a **free prototype first**. Pay via **M-Pesa Paybill 522522, Account 1315475243**.
 4. **No VAT** (not VAT-registered yet) — invoices say "No VAT charged".
-5. **Hosting & domain are included** in the Standard Website (the separate monthly hosting fee was removed).
+5. **Hosting & domain are included for the first year only.** The yearly renewal price is shown on the review screen, invoice, order page and WhatsApp PO; it's set in `/cockpit/pricing` (starting value KES 5,000/year — replace with the real figure; 3× in USD).
 6. Delivery estimate: rough defaults (base 14 days + days per module, ~5 working days per week).
 7. **Currency is locked by country**: Kenya → KES, everywhere else → USD (enforced server-side). The builder has an "In Kenya / Outside Kenya" switch for previewing.
 8. WhatsApp **click-to-send** now; Cloud API auto-send later.
 
 ### Still open
-- Is hosting & domain included for the **first year only**, or always? (Invoice currently says "Hosting & domain included".)
-- Point the site's "Get Started" buttons to `/estimate`?
+- ~~Point the site's "Get Started" buttons to the estimator~~ — done: header, hero, service cards, service pages and footer go to `/quotation`; "Pricing" added to the main menu. "Book a FREE Clarity Call" and the contact page's form link still go to `/get-started`.
 - Estimates are stored as one JSON document — fine for hundreds; move to a proper table before volume grows.

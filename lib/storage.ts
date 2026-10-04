@@ -37,27 +37,47 @@ function database(): Sql | null {
       max: 3,
       idle_timeout: 20,
     });
-    // RLS on with no policies: Supabase's public REST API can't read these rows;
-    // only this server's direct database connection can.
-    ready = client
-      .unsafe(
-        `
-        create table if not exists bluvig_documents (
-          key text primary key,
-          value jsonb not null,
-          updated_at timestamptz not null default now()
-        );
-        alter table bluvig_documents enable row level security;
-      `
-      )
-      .catch((error) => {
-        // Don't cache a failed setup (e.g. wrong password) — retry on the next request.
-        client = null;
-        ready = null;
-        throw error;
-      });
+    ready = createTable(client);
   }
   return client;
+}
+
+// RLS on with no policies: Supabase's public REST API can't read these rows;
+// only this server's direct database connection can.
+function createTable(sql: Sql) {
+  return sql
+    .unsafe(
+      `
+      create table if not exists bluvig_documents (
+        key text primary key,
+        value jsonb not null,
+        updated_at timestamptz not null default now()
+      );
+      alter table bluvig_documents enable row level security;
+    `
+    )
+    .catch((error) => {
+      // Don't cache a failed setup (e.g. wrong password) — retry on the next request.
+      client = null;
+      ready = null;
+      throw error;
+    });
+}
+
+/**
+ * Runs a query once the table exists. If the table has disappeared since this
+ * server started (e.g. the database was reset), recreate it and retry once.
+ */
+async function withTable<R>(sql: Sql, run: () => Promise<R>): Promise<R> {
+  await ready;
+  try {
+    return await run();
+  } catch (error) {
+    if ((error as { code?: string }).code !== "42P01") throw error;
+    ready = createTable(sql);
+    await ready;
+    return run();
+  }
 }
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -81,10 +101,11 @@ function writeFile<T>(key: string, value: T) {
 export async function readDoc<T>(key: string, empty: T): Promise<T> {
   const sql = database();
   if (!sql) return readFile(key, empty);
-  await ready;
-  const rows = await sql<
-    { value: T }[]
-  >`select value from bluvig_documents where key = ${key}`;
+  const rows = await withTable(
+    sql,
+    () =>
+      sql<{ value: T }[]>`select value from bluvig_documents where key = ${key}`
+  );
   return rows[0]?.value ?? empty;
 }
 
@@ -101,23 +122,27 @@ export async function updateDoc<T, R>(
     writeFile(key, doc);
     return result;
   }
-  await ready;
-  return sql.begin(async (tx) => {
-    await tx`
+  // A missing table fails on the first statement, before `fn` runs — safe to retry.
+  return withTable(
+    sql,
+    () =>
+      sql.begin(async (tx) => {
+        await tx`
       insert into bluvig_documents (key, value)
       values (${key}, ${tx.json(empty as postgres.JSONValue)})
       on conflict (key) do nothing
     `;
-    const rows = await tx<{ value: T }[]>`
+        const rows = await tx<{ value: T }[]>`
       select value from bluvig_documents where key = ${key} for update
     `;
-    const doc = rows[0].value;
-    const result = fn(doc);
-    await tx`
+        const doc = rows[0].value;
+        const result = fn(doc);
+        await tx`
       update bluvig_documents
       set value = ${tx.json(doc as postgres.JSONValue)}, updated_at = now()
       where key = ${key}
     `;
-    return result;
-  }) as Promise<R>;
+        return result;
+      }) as Promise<R>
+  );
 }

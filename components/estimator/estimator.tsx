@@ -212,7 +212,7 @@ export function Estimator({ pricing }: { pricing: Pricing }) {
         <CheckCircle2 className="size-14 text-gold-600" aria-hidden="true" />
         <div className="flex flex-col gap-2">
           <h1 className="font-heading text-3xl font-semibold text-navy-950">
-            Your estimate is ready
+            Your quotation is ready
           </h1>
           <p className="text-navy-700">
             Reference{" "}
@@ -559,7 +559,8 @@ export function Estimator({ pricing }: { pricing: Pricing }) {
                   className="size-4 shrink-0 text-gold-600"
                   aria-hidden="true"
                 />
-                Hosting & domain included
+                Hosting & domain free for year 1, then{" "}
+                {formatMoney(quote.renewal ?? 0, currency)}/year
               </li>
               <li className="flex gap-2">
                 <Check
@@ -740,7 +741,7 @@ function IndustryStep({ onChoose }: { onChoose: (id: string) => void }) {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
       <div className="flex flex-col gap-3 text-center">
         <p className="text-sm font-semibold tracking-wide text-gold-700 uppercase">
-          Project estimator
+          Instant quotation
         </p>
         <h1 className="font-heading text-3xl font-semibold text-balance text-navy-950 sm:text-4xl">
           What does your business do?

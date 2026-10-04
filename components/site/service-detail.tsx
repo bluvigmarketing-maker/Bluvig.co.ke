@@ -57,7 +57,7 @@ export function ServiceDetail({ data }: { data: ServiceDetailData }) {
               size="lg"
               className="btn-metallic gold-line font-semibold"
               render={
-                <Link href="/get-started">
+                <Link href="/quotation">
                   Get Started
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>

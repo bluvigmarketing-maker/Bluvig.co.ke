@@ -30,7 +30,7 @@ export default async function EstimatesPage() {
               Estimates
             </h1>
             <p className="text-sm text-navy-600">
-              Every estimate created in the project estimator.
+              Every quotation created on the /quotation page.
             </p>
           </div>
           <CockpitNav />
@@ -49,7 +49,7 @@ export default async function EstimatesPage() {
           <div className="rounded-2xl border border-dashed border-navy-200 bg-white p-14 text-center text-sm text-navy-600">
             No estimates yet. They appear here as soon as someone completes the{" "}
             <a
-              href="/estimate"
+              href="/quotation"
               className="font-semibold text-gold-700 underline"
             >
               estimator
@@ -151,7 +151,7 @@ export default async function EstimatesPage() {
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1 text-navy-700">
                         <a
-                          href={`/estimate/order/${e.token}`}
+                          href={`/quotation/order/${e.token}`}
                           target="_blank"
                           className="flex items-center gap-1.5 hover:text-navy-950"
                         >

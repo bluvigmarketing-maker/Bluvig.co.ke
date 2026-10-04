@@ -23,6 +23,11 @@ export function purchaseOrderLink(estimate: Estimate, orderUrl: string) {
           `Monthly: ${formatMoney(quote.monthlyTotal, quote.currency)}/month (${monthly.map((l) => l.name).join(", ")})`,
         ]
       : []),
+    ...(quote.renewal
+      ? [
+          `Hosting & domain: free for year 1, then ${formatMoney(quote.renewal, quote.currency)}/year`,
+        ]
+      : []),
     estimate.prototype
       ? "I'd like a FREE prototype first before paying the deposit."
       : `Ready to pay the ${formatMoney(quote.deposit, quote.currency)} deposit.`,

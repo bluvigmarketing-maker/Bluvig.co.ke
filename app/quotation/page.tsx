@@ -21,7 +21,7 @@ export default async function EstimatePage() {
   return (
     <div className="mx-auto max-w-lg px-4 py-20 text-center">
       <h1 className="font-heading text-2xl font-semibold text-navy-950">
-        The estimator is temporarily unavailable
+        Quotations are temporarily unavailable
       </h1>
       <p className="mt-3 text-navy-700">
         Please message us on WhatsApp at +254 700 574 125 and we&rsquo;ll price

@@ -12,6 +12,8 @@ export interface PricingSettings {
   fxRate: number;
   /** International clients pay this multiple of the KES price. */
   intlMultiplier: number;
+  /** Yearly hosting & domain renewal from year 2 (first year is included). */
+  renewalKes: number;
 }
 
 export interface ModulePricing {
@@ -29,6 +31,7 @@ export const DEFAULT_SETTINGS: PricingSettings = {
   basePriceKes: BASE.defaultPriceKes,
   fxRate: 130,
   intlMultiplier: 3,
+  renewalKes: 5_000,
 };
 
 export const PAYMENT_TERMS = {
@@ -59,6 +62,8 @@ export interface Quote {
   balance: number;
   /** Delivery estimate in weeks. */
   weeks: { min: number; max: number };
+  /** Hosting & domain renewal per year from year 2. Absent on estimates made before 2026-10-04. */
+  renewal?: number;
 }
 
 /** Converts a KES price to the client's currency. USD rounds to the nearest $10. */
@@ -151,6 +156,7 @@ export function buildQuote(
     deposit,
     balance: oneOffTotal - deposit,
     weeks: { min: weeks, max: weeks + Math.ceil(weeks / 3) },
+    renewal: convert(settings.renewalKes, currency, settings),
   };
 }
 

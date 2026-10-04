@@ -35,6 +35,7 @@ const SERVICES = [
 
 const NAV_LINKS = [
   { label: "Case Studies", href: "/case-studies" },
+  { label: "Pricing", href: "/quotation" },
   { label: "Blog", href: "/blog" },
   { label: "Tools", href: "/tools" },
 ];
@@ -94,7 +95,7 @@ export function Header() {
           <MagneticButton>
             <Button
               className="btn-metallic gold-line font-semibold"
-              render={<Link href="/get-started">Get Started</Link>}
+              render={<Link href="/quotation">Get Started</Link>}
             />
           </MagneticButton>
         </div>
@@ -163,7 +164,7 @@ export function Header() {
               ))}
               <Button
                 className="btn-metallic gold-line mt-3 font-semibold"
-                render={<Link href="/get-started">Get Started</Link>}
+                render={<Link href="/quotation">Get Started</Link>}
               />
             </nav>
           </SheetContent>

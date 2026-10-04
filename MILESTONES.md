@@ -110,7 +110,7 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [x] Owner review: international multiplier scope, payment terms, VAT status (spec §11)
 - [x] Catalog file (industries, modules, dependencies, preview definitions, default prices) + DB tables for prices/settings, seeded from defaults
 - [x] Admin **Pricing** screen: edit base price, module prices, FX rate, multiplier, enable/hide modules, change log (spec §10)
-- [x] `/estimate` distraction-free layout + industry step
+- [x] `/quotation` distraction-free layout + industry step (renamed from `/estimate`, which redirects); linked from the menu ("Pricing") and every "Get Started" button
 - [x] Builder: module picker + live visual preview + running total
 - [x] Review + details steps, currency by country
 - [x] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page

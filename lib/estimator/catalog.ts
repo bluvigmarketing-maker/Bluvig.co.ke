@@ -71,7 +71,7 @@ export const BASE = {
     "WhatsApp chat button",
     "Basic SEO & GEO (Google + AI-assistant ready)",
     "Mobile responsive + SSL",
-    "Hosting & domain included",
+    "Hosting & domain included for the first year",
   ],
 };
 

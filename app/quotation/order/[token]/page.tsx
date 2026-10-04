@@ -29,7 +29,7 @@ export default async function OrderPage({
 
   const host = (await headers()).get("host");
   const protocol = host?.startsWith("localhost") ? "http" : "https";
-  const orderUrl = `${protocol}://${host}/estimate/order/${estimate.token}`;
+  const orderUrl = `${protocol}://${host}/quotation/order/${estimate.token}`;
   const { quote } = estimate;
   const money = (n: number) => formatMoney(n, quote.currency);
 
@@ -96,7 +96,9 @@ export default async function OrderPage({
             ))}
           <p className="mt-1 text-xs text-navy-500">
             Delivery {quote.weeks.min}–{quote.weeks.max} weeks · Hosting &
-            domain included · No VAT
+            domain included for year 1
+            {quote.renewal ? ` (renews at ${money(quote.renewal)}/year)` : ""} ·
+            No VAT
           </p>
         </div>
       </div>

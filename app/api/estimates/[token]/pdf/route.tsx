@@ -15,7 +15,7 @@ export const GET = withStorageErrors(
     if (!estimate)
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
 
-    const orderUrl = `${new URL(request.url).origin}/estimate/order/${estimate.token}`;
+    const orderUrl = `${new URL(request.url).origin}/quotation/order/${estimate.token}`;
     const pdf = await renderToBuffer(
       <InvoiceDocument estimate={estimate} orderUrl={orderUrl} />
     );

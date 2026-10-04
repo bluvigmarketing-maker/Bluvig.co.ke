@@ -39,7 +39,8 @@ export const PUT = withStorageErrors(async (request: Request) => {
       typeof s.intlMultiplier === "number" &&
       s.intlMultiplier > 0 &&
       s.intlMultiplier <= 20
-    )
+    ) ||
+    !wholeNumber(s.renewalKes, 10_000_000)
   ) {
     return NextResponse.json(
       { error: "Check the base price, exchange rate and multiplier." },
@@ -71,6 +72,7 @@ export const PUT = withStorageErrors(async (request: Request) => {
       basePriceKes: s.basePriceKes,
       fxRate: s.fxRate,
       intlMultiplier: s.intlMultiplier,
+      renewalKes: s.renewalKes,
     },
     modules,
   });

@@ -219,7 +219,10 @@ export function InvoiceDocument({
               {PAYMENT_TERMS.depositPercent}% deposit to start; balance on
               launch.
             </Text>
-            <Text>Hosting & domain included.</Text>
+            <Text>Hosting & domain included for the first year.</Text>
+            {quote.renewal ? (
+              <Text>Renewal from year 2: {money(quote.renewal)} per year.</Text>
+            ) : null}
             <Text>
               You can request a free prototype before paying the deposit.
             </Text>
