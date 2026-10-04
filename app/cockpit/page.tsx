@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
-import { Mail, Phone, Users } from "lucide-react";
+import { AlertTriangle, Mail, Phone, Users } from "lucide-react";
 
 import { isCockpitAuthed } from "@/lib/admin-auth";
-import { getDevices } from "@/lib/authenticator";
+import { getDevices, type Device } from "@/lib/authenticator";
+import { COCKPIT_AUTH_ENABLED } from "@/lib/cockpit-config";
 import { getLeads, type Lead } from "@/lib/leads";
+import { describeStorageError } from "@/lib/storage-errors";
 import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
 import { LogoutButton } from "@/components/admin/logout-button";
 
@@ -39,18 +41,22 @@ function countSince(leads: Lead[], days: number) {
 }
 
 export default async function AdminDashboardPage() {
-  if (!(await isCockpitAuthed())) redirect("/cockpit/login");
+  if (COCKPIT_AUTH_ENABLED && !(await isCockpitAuthed())) {
+    redirect("/cockpit/login");
+  }
 
-  const leads = await getLeads();
+  // Show the dashboard even if the database isn't reachable yet — with the reason.
+  let leads: Lead[] = [];
+  let devices: Device[] = [];
+  let storageError: string | null = null;
+  try {
+    leads = await getLeads();
+    if (COCKPIT_AUTH_ENABLED) devices = await getDevices();
+  } catch (error) {
+    console.error("[cockpit]", error);
+    storageError = describeStorageError(error);
+  }
   const thisWeek = countSince(leads, 7);
-  const devices = (await getDevices()).map(
-    ({ id, name, createdAt, lastUsedAt }) => ({
-      id,
-      name,
-      createdAt,
-      lastUsedAt,
-    })
-  );
 
   return (
     <div className="min-h-screen bg-navy-50 py-10">
@@ -64,8 +70,24 @@ export default async function AdminDashboardPage() {
               Submissions from the Get Started form.
             </p>
           </div>
-          <LogoutButton />
+          {COCKPIT_AUTH_ENABLED ? <LogoutButton /> : null}
         </div>
+
+        {!COCKPIT_AUTH_ENABLED ? (
+          <p className="flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
+            Sign-in is switched off — anyone with this link can see this page.
+          </p>
+        ) : null}
+
+        {storageError ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          >
+            {storageError}
+          </p>
+        ) : null}
 
         <div className="grid gap-4 sm:grid-cols-3">
           <StatCard label="Total Leads" value={leads.length} />
@@ -160,7 +182,16 @@ export default async function AdminDashboardPage() {
           </div>
         )}
 
-        <AuthenticatorDevices devices={devices} />
+        {COCKPIT_AUTH_ENABLED ? (
+          <AuthenticatorDevices
+            devices={devices.map(({ id, name, createdAt, lastUsedAt }) => ({
+              id,
+              name,
+              createdAt,
+              lastUsedAt,
+            }))}
+          />
+        ) : null}
       </div>
     </div>
   );
