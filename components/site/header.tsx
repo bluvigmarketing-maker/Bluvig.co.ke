@@ -95,7 +95,7 @@ export function Header() {
           <MagneticButton>
             <Button
               className="btn-metallic gold-line font-semibold"
-              render={<Link href="/quotation">Get Started</Link>}
+              render={<Link href="/get-started">Get Started</Link>}
             />
           </MagneticButton>
         </div>
@@ -164,7 +164,7 @@ export function Header() {
               ))}
               <Button
                 className="btn-metallic gold-line mt-3 font-semibold"
-                render={<Link href="/quotation">Get Started</Link>}
+                render={<Link href="/get-started">Get Started</Link>}
               />
             </nav>
           </SheetContent>

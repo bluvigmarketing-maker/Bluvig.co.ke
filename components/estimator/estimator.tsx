@@ -42,6 +42,8 @@ import {
 } from "@/lib/estimator/pricing";
 import { IndustryIcon } from "./industry-icon";
 import { SitePreview } from "./site-preview";
+import { MaterialsFields } from "@/components/get-started/materials-fields";
+import { EMPTY_MATERIALS, type Materials } from "@/lib/materials";
 
 type Step = "industry" | "build" | "review" | "details" | "done";
 
@@ -74,29 +76,51 @@ interface Done {
   whatsappUrl: string;
 }
 
-export function Estimator({ pricing }: { pricing: Pricing }) {
-  const [step, setStep] = useState<Step>("industry");
-  const [industryId, setIndustryId] = useState<string | null>(null);
-  const [selection, setSelection] = useState<Selection>({});
-  const [inKenya, setInKenya] = useState(true);
+export interface EstimatorInitial {
+  industryId: string;
+  selection: Selection;
+  /** Set when the visitor arrives from the budget recommender. */
+  inKenya?: boolean;
+}
+
+export function Estimator({
+  pricing,
+  initial,
+}: {
+  pricing: Pricing;
+  /** Pre-filled from /quotation?i=…&m=…&loc=… (budget recommender). */
+  initial?: EstimatorInitial;
+}) {
+  const [step, setStep] = useState<Step>(initial ? "build" : "industry");
+  const [industryId, setIndustryId] = useState<string | null>(
+    initial?.industryId ?? null
+  );
+  const [selection, setSelection] = useState<Selection>(
+    initial?.selection ?? {}
+  );
+  const [inKenya, setInKenya] = useState(initial?.inKenya ?? true);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [lastAdded, setLastAdded] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [prototype, setPrototype] = useState(false);
-  const [country, setCountry] = useState("Kenya");
+  const [country, setCountry] = useState(
+    initial?.inKenya === false ? "" : "Kenya"
+  );
+  const [materials, setMaterials] = useState<Materials>(EMPTY_MATERIALS);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<Done | null>(null);
 
   // Guess location once from the browser's time zone (visitors can switch it).
   useEffect(() => {
+    if (initial?.inKenya !== undefined) return;
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (zone !== "Africa/Nairobi") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setInKenya(false);
       setCountry("");
     }
-  }, []);
+  }, [initial?.inKenya]);
 
   // Each step starts at the top of the page.
   useEffect(() => {
@@ -172,6 +196,7 @@ export function Estimator({ pricing }: { pricing: Pricing }) {
           industry: industryId,
           selection,
           prototype,
+          materials,
           website: form.get("website"),
           client: {
             name: form.get("name"),
@@ -458,6 +483,7 @@ export function Estimator({ pricing }: { pricing: Pricing }) {
                   selection={selection}
                   lastAdded={lastAdded}
                   device={device}
+                  platform={inKenya ? "windows" : "mac"}
                 />
               </div>
             </div>
@@ -684,6 +710,18 @@ export function Estimator({ pricing }: { pricing: Pricing }) {
                   className="rounded-xl border border-navy-200 bg-white px-4 py-3 text-base font-normal text-navy-950 focus:border-gold-400 focus:outline-none"
                 />
               </label>
+              <div className="flex flex-col gap-3 rounded-2xl border border-navy-100 bg-white p-5 sm:col-span-2">
+                <div>
+                  <p className="font-semibold text-navy-950">
+                    Share your ideas (optional)
+                  </p>
+                  <p className="text-sm text-navy-600">
+                    Brainstormed with AI, found sites you love or built a
+                    prototype? Add the links.
+                  </p>
+                </div>
+                <MaterialsFields value={materials} onChange={setMaterials} />
+              </div>
               {/* Honeypot — hidden from people, filled by bots. */}
               <input
                 type="text"

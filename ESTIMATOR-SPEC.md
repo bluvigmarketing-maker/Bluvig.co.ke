@@ -50,6 +50,8 @@ Home · About · Services page · Contact page (with form) · Admin dashboard (e
 
 ### 5.2 Modules (starting prices — editable in admin)
 
+> **2026-10-04:** defaults lowered ~35–45% for the Kenyan market (e.g. Online Shop 30,000, M-Pesa 12,000, Booking 15,000, Advanced SEO & GEO 20,000, Mobile app from 150,000). The live values are in `lib/estimator/catalog.ts`; the table below shows the original proposal. The cockpit stores only prices that differ from the default, and has **Reset all to defaults**.
+
 Prices are KES (Kenya). USD price = ×3 ÷ FX, per §4. These values seed the database at launch; after that the owner changes them in `/cockpit` (§10). The base Standard Website price is editable the same way.
 
 **Pages & Content**
@@ -193,6 +195,9 @@ Prices are KES (Kenya). USD price = ×3 ÷ FX, per §4. These values seed the da
 
 ## 7. Visual System (live preview)
 
+**Device frames (2026-10-04):** clients in Kenya see the site in **Chrome on Windows** (desktop) / **Chrome on Android** (mobile) with a `.co.ke` address; international clients see a **MacBook with Safari** / **iPhone**, with a `.com` address. Frames are percentage-based and tested at 375px with no horizontal scroll.
+
+
 A browser-window mockup ("yourbusiness.co.ke") showing a **schematic but recognisable** version of the site — styled blocks, not real content.
 
 - **Base site** shows header with nav (Home · About · Services · Contact), hero, services cards, map block, footer, and the WhatsApp bubble.
@@ -262,6 +267,15 @@ Later (not v1):
 - Edit industry → recommended-module mapping
 - Duplicate an estimate into a custom quote with manual line items
 - Automatic FX rate updates from an exchange-rate API
+
+## 10b. Get Started qualifying wizard (2026-10-04)
+
+`/get-started` asks how the visitor wants to start:
+1. **Call me back** → industry → budget band → launch timeline → share ideas (optional) → name / phone / email / best time. Saved as a lead rated **Hot / Warm / Cold** (`lib/qualify.ts`): below KES 30,000 → Cold; ready within a month with a fitting budget → Hot; otherwise Warm.
+2. **I'll pick the features** → `/quotation`.
+3. **Recommend for my budget** → industry + budget → the best module combination that fits (`lib/estimator/recommend.ts`: industry picks first, then general extras), or a "websites start at KES 30,000" message below the minimum → opens `/quotation` pre-filled (`?i=…&m=…&loc=…`) to customise.
+
+**Share your ideas** (wizard + quotation details step): links to AI brainstorming chats, inspiration websites and an AI-built prototype. Only http(s) links are kept (max 5 per type). Shown in the cockpit, on the order page, and summarised in the WhatsApp PO.
 
 ## 11. Owner Decisions (2026-10-04)
 1. **Prices in §5.2** are starting values — edited live in `/cockpit/pricing`.

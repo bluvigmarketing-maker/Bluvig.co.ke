@@ -106,7 +106,7 @@ export function Services() {
                     variant="outline"
                     className="border-navy-200"
                     render={
-                      <Link href="/quotation">
+                      <Link href="/get-started">
                         Get Started
                         <ArrowRight className="size-3.5" aria-hidden="true" />
                       </Link>

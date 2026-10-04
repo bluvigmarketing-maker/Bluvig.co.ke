@@ -4,6 +4,7 @@ import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
 import { cleanSelection, type Currency } from "@/lib/estimator/pricing";
 import { createEstimate, getPricing } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
+import { cleanMaterials } from "@/lib/materials";
 import { withStorageErrors } from "@/lib/storage-errors";
 
 const text = (value: unknown, max = 200) =>
@@ -52,6 +53,7 @@ export const POST = withStorageErrors(async (request: Request) => {
     selection: cleanSelection(body.selection, pricing),
     currency,
     prototype: Boolean(body.prototype),
+    materials: cleanMaterials(body.materials),
     client: {
       name,
       company: text(client?.company, 120),

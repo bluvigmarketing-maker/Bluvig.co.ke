@@ -301,7 +301,27 @@ export function PricingEditor({
               "No unsaved changes"
             )}
           </p>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => {
+                setDraft((d) => ({
+                  ...d,
+                  modules: Object.fromEntries(
+                    MODULES.map((m) => [
+                      m.id,
+                      { ...d.modules[m.id], priceKes: m.defaultPriceKes },
+                    ])
+                  ),
+                }));
+                setStatus(null);
+              }}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-navy-700 hover:bg-navy-50 disabled:opacity-40"
+            >
+              <RotateCcw className="size-3.5" aria-hidden="true" />
+              Reset all to defaults
+            </button>
             {needsPassword ? (
               <input
                 type="password"

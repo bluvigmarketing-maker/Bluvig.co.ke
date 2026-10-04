@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 
+import type { Materials } from "@/lib/materials";
 import { readDoc, updateDoc } from "@/lib/storage";
 import { MODULES } from "./catalog";
 import {
@@ -95,7 +96,14 @@ export async function savePricing(next: Pricing): Promise<Pricing> {
           to: after.enabled,
         });
       }
-      doc.modules[m.id] = { priceKes: after.priceKes, enabled: after.enabled };
+      // Store only real overrides, so future default changes still reach
+      // modules the owner never touched.
+      const override: { priceKes?: number; enabled?: boolean } = {};
+      if (after.priceKes !== m.defaultPriceKes)
+        override.priceKes = after.priceKes;
+      if (!after.enabled) override.enabled = false;
+      if (Object.keys(override).length) doc.modules[m.id] = override;
+      else delete doc.modules[m.id];
     }
     doc.log = log.slice(-500);
     return mergePricing(doc);
@@ -127,6 +135,8 @@ export interface Estimate {
   /** Prices snapshotted at creation — later price edits never change this. */
   quote: Quote;
   prototype: boolean;
+  /** AI chats, inspiration sites and prototype links the client shared. */
+  materials?: Materials;
   client: EstimateClient;
   status: EstimateStatus;
 }
@@ -144,6 +154,8 @@ export async function createEstimate(input: {
   selection: Selection;
   currency: Currency;
   prototype: boolean;
+  /** AI chats, inspiration sites and prototype links the client shared. */
+  materials?: Materials;
   client: EstimateClient;
 }): Promise<Estimate> {
   const pricing = await getPricing();
@@ -161,6 +173,7 @@ export async function createEstimate(input: {
       selection: input.selection,
       quote,
       prototype: input.prototype,
+      materials: input.materials,
       client: input.client,
       status: "estimate",
     };

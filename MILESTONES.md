@@ -115,7 +115,11 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [x] Review + details steps, currency by country
 - [x] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page
 - [x] Save estimates to DB and list them in `/cockpit/estimates` (2026-10-04)
-- [ ] Estimate status (won/lost) in the cockpit + email notification on new estimate
+- [x] Device frames: Windows Chrome / Android for Kenya, MacBook / iPhone for international (2026-10-04)
+- [x] Kenya-friendly default prices; cockpit stores only overrides + "Reset all to defaults"
+- [x] "Share your ideas": AI chat, inspiration and prototype links on quotations and call-backs
+- [x] `/get-started` qualifying wizard: call back / pick features / recommend for budget; Hot-Warm-Cold lead rating
+- [ ] Estimate status (won/lost) in the cockpit + email notification on new estimate or call-back
 - [~] Spam protection: honeypot done; rate limiting + analytics events per step to do
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 

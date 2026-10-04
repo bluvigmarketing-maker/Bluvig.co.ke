@@ -20,6 +20,7 @@ import {
   type SectionKind,
 } from "@/lib/estimator/catalog";
 import type { Selection } from "@/lib/estimator/pricing";
+import { DeviceFrame } from "./device-frame";
 import { IndustryIcon } from "./industry-icon";
 
 /** One accent per industry so each preview feels like "their" site. */
@@ -40,8 +41,8 @@ function accentFor(id: string) {
   return ACCENTS[hash % ACCENTS.length];
 }
 
-function slugDomain(name: string) {
-  return `your${name.split(/[^A-Za-z]/)[0].toLowerCase() || "business"}.co.ke`;
+function slugDomain(name: string, tld: string) {
+  return `your${name.split(/[^A-Za-z]/)[0].toLowerCase() || "business"}${tld}`;
 }
 
 const Bar = ({ className }: { className?: string }) => (
@@ -153,11 +154,14 @@ export function SitePreview({
   selection,
   lastAdded,
   device,
+  platform,
 }: {
   industry: IndustryDef;
   selection: Selection;
   lastAdded: string | null;
   device: "desktop" | "mobile";
+  /** mac = international (MacBook / iPhone), windows = Kenya (Chrome on Windows / Android). */
+  platform: "mac" | "windows";
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const accent = accentFor(industry.id);
@@ -184,6 +188,10 @@ export function SitePreview({
   const backend = chosen.filter((m) => m.preview.backend);
   const widget = chosen.find((m) => m.preview.widget)?.preview.widget;
   const isMobile = device === "mobile";
+  const domain = slugDomain(
+    industry.name,
+    platform === "mac" ? ".com" : ".co.ke"
+  );
 
   // Bring the newest addition into view inside the preview (never scrolls the page).
   useEffect(() => {
@@ -207,11 +215,12 @@ export function SitePreview({
 
   return (
     <div className="flex flex-col gap-3">
-      <div
-        className={cn(
-          "mx-auto w-full overflow-hidden rounded-xl border border-navy-200 bg-white shadow-xl shadow-navy-900/10 transition-[max-width] duration-300",
-          isMobile ? "max-w-[300px]" : "max-w-none"
-        )}
+      <DeviceFrame
+        platform={platform}
+        device={device}
+        domain={domain}
+        title={industry.id === "other" ? "YourBrand" : industry.name}
+        scrollRef={scrollRef}
         style={
           {
             "--accent": accent,
@@ -219,157 +228,136 @@ export function SitePreview({
           } as React.CSSProperties
         }
       >
-        {/* Browser chrome */}
-        <div className="flex items-center gap-1.5 border-b border-navy-100 bg-navy-50 px-3 py-2">
-          <span className="size-2 rounded-full bg-[#ff5f57]" />
-          <span className="size-2 rounded-full bg-[#febc2e]" />
-          <span className="size-2 rounded-full bg-[#28c840]" />
-          <span className="ml-2 flex-1 truncate rounded-md bg-white px-2 py-0.5 font-mono text-[10px] text-navy-500">
-            {slugDomain(industry.name)}
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-center gap-2 border-b border-navy-100 bg-white/95 px-3 py-2 backdrop-blur">
+          <span className="flex size-5 items-center justify-center rounded bg-[var(--accent)] text-white">
+            <IndustryIcon name={industry.icon} className="size-3" />
+          </span>
+          <span className="font-semibold">YourBrand</span>
+          {isMobile ? (
+            <span className="ml-auto flex items-center gap-1.5 text-navy-600">
+              {headerIcons.map((icon) => (
+                <HeaderIcon key={icon} icon={icon} />
+              ))}
+              <Menu className="size-3.5" aria-hidden="true" />
+            </span>
+          ) : (
+            <>
+              <nav className="ml-auto flex flex-wrap justify-end gap-x-2.5 gap-y-1 text-navy-600">
+                {navItems.map((item, i) => (
+                  <span
+                    key={`${item}-${i}`}
+                    className={cn(i > 2 && i < navItems.length - 1 && appear)}
+                  >
+                    {item}
+                  </span>
+                ))}
+              </nav>
+              {headerIcons.length ? (
+                <span className="flex items-center gap-1.5 border-l border-navy-100 pl-2 text-navy-600">
+                  {headerIcons.map((icon) => (
+                    <HeaderIcon key={icon} icon={icon} />
+                  ))}
+                </span>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        {/* Hero */}
+        <div className="bg-[var(--accent-soft)] px-4 py-6 text-center">
+          <p className="mx-auto max-w-[80%] text-[13px] leading-tight font-bold">
+            {industry.id === "other" ? "Your business, online" : industry.name}
+          </p>
+          <Bar className="mx-auto mt-2 w-2/3 bg-navy-300" />
+          <Bar className="mx-auto mt-1 w-1/2 bg-navy-300" />
+          <span className="mt-3 inline-block rounded-md bg-[var(--accent)] px-3 py-1 font-semibold text-white">
+            {industry.cta}
           </span>
         </div>
 
-        <div
-          ref={scrollRef}
-          className="relative h-[460px] overflow-y-auto text-[10px] text-navy-900 sm:h-[520px]"
-        >
-          {/* Header */}
-          <div className="sticky top-0 z-10 flex items-center gap-2 border-b border-navy-100 bg-white/95 px-3 py-2 backdrop-blur">
-            <span className="flex size-5 items-center justify-center rounded bg-[var(--accent)] text-white">
-              <IndustryIcon name={industry.icon} className="size-3" />
-            </span>
-            <span className="font-semibold">YourBrand</span>
-            {isMobile ? (
-              <span className="ml-auto flex items-center gap-1.5 text-navy-600">
-                {headerIcons.map((icon) => (
-                  <HeaderIcon key={icon} icon={icon} />
-                ))}
-                <Menu className="size-3.5" aria-hidden="true" />
-              </span>
+        {/* Services (base) */}
+        <div className="px-3 py-3">
+          <p className="mb-2 font-semibold">Our services</p>
+          <SectionBody kind="grid" />
+        </div>
+
+        {/* Module sections */}
+        {sections.map((m) => (
+          <div
+            key={m.id}
+            data-preview={m.id}
+            className={cn("mx-2 my-1 rounded-lg px-1 py-2", appear, ring(m.id))}
+          >
+            {m.preview.section!.kind === "banner" ? (
+              <div className="rounded-md bg-[var(--accent)] px-3 py-2 text-center font-semibold text-white">
+                {m.preview.section!.title}
+              </div>
             ) : (
               <>
-                <nav className="ml-auto flex flex-wrap justify-end gap-x-2.5 gap-y-1 text-navy-600">
-                  {navItems.map((item, i) => (
-                    <span
-                      key={`${item}-${i}`}
-                      className={cn(i > 2 && i < navItems.length - 1 && appear)}
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </nav>
-                {headerIcons.length ? (
-                  <span className="flex items-center gap-1.5 border-l border-navy-100 pl-2 text-navy-600">
-                    {headerIcons.map((icon) => (
-                      <HeaderIcon key={icon} icon={icon} />
-                    ))}
-                  </span>
-                ) : null}
+                <p className="mb-2 px-1 font-semibold">
+                  {m.preview.section!.title}
+                </p>
+                <SectionBody kind={m.preview.section!.kind} />
               </>
             )}
           </div>
+        ))}
 
-          {/* Hero */}
-          <div className="bg-[var(--accent-soft)] px-4 py-6 text-center">
-            <p className="mx-auto max-w-[80%] text-[13px] leading-tight font-bold">
-              {industry.id === "other"
-                ? "Your business, online"
-                : industry.name}
-            </p>
-            <Bar className="mx-auto mt-2 w-2/3 bg-navy-300" />
-            <Bar className="mx-auto mt-1 w-1/2 bg-navy-300" />
-            <span className="mt-3 inline-block rounded-md bg-[var(--accent)] px-3 py-1 font-semibold text-white">
-              {industry.cta}
+        {/* Map + contact (base) */}
+        <div className="grid grid-cols-2 gap-2 px-3 py-3">
+          <div className="relative flex h-16 items-center justify-center rounded-md bg-navy-100">
+            <MapPin
+              className="size-4 text-[var(--accent)]"
+              aria-hidden="true"
+            />
+            <span className="absolute bottom-1 left-1.5 text-[8px] text-navy-500">
+              Google Map
             </span>
           </div>
+          <SectionBody kind="form" />
+        </div>
 
-          {/* Services (base) */}
-          <div className="px-3 py-3">
-            <p className="mb-2 font-semibold">Our services</p>
-            <SectionBody kind="grid" />
-          </div>
-
-          {/* Module sections */}
-          {sections.map((m) => (
-            <div
-              key={m.id}
-              data-preview={m.id}
-              className={cn(
-                "mx-2 my-1 rounded-lg px-1 py-2",
-                appear,
-                ring(m.id)
-              )}
-            >
-              {m.preview.section!.kind === "banner" ? (
-                <div className="rounded-md bg-[var(--accent)] px-3 py-2 text-center font-semibold text-white">
-                  {m.preview.section!.title}
-                </div>
-              ) : (
-                <>
-                  <p className="mb-2 px-1 font-semibold">
-                    {m.preview.section!.title}
-                  </p>
-                  <SectionBody kind={m.preview.section!.kind} />
-                </>
-              )}
-            </div>
-          ))}
-
-          {/* Map + contact (base) */}
-          <div className="grid grid-cols-2 gap-2 px-3 py-3">
-            <div className="relative flex h-16 items-center justify-center rounded-md bg-navy-100">
-              <MapPin
-                className="size-4 text-[var(--accent)]"
-                aria-hidden="true"
-              />
-              <span className="absolute bottom-1 left-1.5 text-[8px] text-navy-500">
-                Google Map
-              </span>
-            </div>
-            <SectionBody kind="form" />
-          </div>
-
-          {/* Footer */}
-          <div className="flex flex-wrap items-center gap-2 bg-navy-950 px-3 py-3 text-navy-300">
-            <span className="font-semibold text-white">YourBrand</span>
-            <span>© 2026</span>
-            <span className="ml-auto flex flex-wrap gap-1">
-              {badges.map((b) => (
-                <span
-                  key={b}
-                  className={cn(
-                    "rounded bg-white px-1.5 py-0.5 text-[8px] font-bold text-navy-900",
-                    appear
-                  )}
-                >
-                  {b}
-                </span>
-              ))}
-            </span>
-          </div>
-
-          {/* Floating widgets */}
-          <div className="pointer-events-none sticky bottom-2 z-10 flex justify-end gap-1.5 px-2">
-            {widget ? (
+        {/* Footer */}
+        <div className="flex flex-wrap items-center gap-2 bg-navy-950 px-3 py-3 text-navy-300">
+          <span className="font-semibold text-white">YourBrand</span>
+          <span>© 2026</span>
+          <span className="ml-auto flex flex-wrap gap-1">
+            {badges.map((b) => (
               <span
+                key={b}
                 className={cn(
-                  "flex size-7 items-center justify-center rounded-full bg-[var(--accent)] text-white shadow",
+                  "rounded bg-white px-1.5 py-0.5 text-[8px] font-bold text-navy-900",
                   appear
                 )}
               >
-                {widget === "ai" ? (
-                  <Bot className="size-3.5" aria-hidden="true" />
-                ) : (
-                  <MessageCircle className="size-3.5" aria-hidden="true" />
-                )}
+                {b}
               </span>
-            ) : null}
-            <span className="flex size-7 items-center justify-center rounded-full bg-[#25d366] text-white shadow">
-              <MessageCircle className="size-3.5" aria-hidden="true" />
-            </span>
-          </div>
+            ))}
+          </span>
         </div>
-      </div>
+
+        {/* Floating widgets */}
+        <div className="pointer-events-none sticky bottom-2 z-10 flex justify-end gap-1.5 px-2">
+          {widget ? (
+            <span
+              className={cn(
+                "flex size-7 items-center justify-center rounded-full bg-[var(--accent)] text-white shadow",
+                appear
+              )}
+            >
+              {widget === "ai" ? (
+                <Bot className="size-3.5" aria-hidden="true" />
+              ) : (
+                <MessageCircle className="size-3.5" aria-hidden="true" />
+              )}
+            </span>
+          ) : null}
+          <span className="flex size-7 items-center justify-center rounded-full bg-[#25d366] text-white shadow">
+            <MessageCircle className="size-3.5" aria-hidden="true" />
+          </span>
+        </div>
+      </DeviceFrame>
 
       {/* Behind the scenes */}
       {backend.length ? (

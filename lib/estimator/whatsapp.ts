@@ -1,3 +1,4 @@
+import { describeMaterials, hasMaterials } from "@/lib/materials";
 import { formatMoney } from "./pricing";
 import type { Estimate } from "./store";
 
@@ -31,6 +32,11 @@ export function purchaseOrderLink(estimate: Estimate, orderUrl: string) {
     estimate.prototype
       ? "I'd like a FREE prototype first before paying the deposit."
       : `Ready to pay the ${formatMoney(quote.deposit, quote.currency)} deposit.`,
+    ...(hasMaterials(estimate.materials)
+      ? [
+          `Shared ideas: ${describeMaterials(estimate.materials)} (links on the order page)`,
+        ]
+      : []),
     `View order: ${orderUrl}`,
   ];
 

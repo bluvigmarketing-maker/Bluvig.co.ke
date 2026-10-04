@@ -6,6 +6,7 @@ import { formatMoney } from "@/lib/estimator/pricing";
 import { listEstimates, type Estimate } from "@/lib/estimator/store";
 import { describeStorageError } from "@/lib/storage-errors";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
+import { MaterialsList } from "@/components/admin/materials-list";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +133,9 @@ export default async function EstimatesPage() {
                           Free prototype first
                         </p>
                       ) : null}
+                      <div className="mt-1">
+                        <MaterialsList materials={e.materials} compact />
+                      </div>
                       {e.client.notes ? (
                         <p className="mt-1 max-w-xs text-xs text-navy-600">
                           “{e.client.notes}”

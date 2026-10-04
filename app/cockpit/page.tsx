@@ -9,6 +9,14 @@ import { describeStorageError } from "@/lib/storage-errors";
 import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
+import { MaterialsList } from "@/components/admin/materials-list";
+import { hasMaterials } from "@/lib/materials";
+
+const QUALIFICATION_STYLE = {
+  hot: "bg-red-100 text-red-800",
+  warm: "bg-amber-100 text-amber-900",
+  cold: "bg-navy-100 text-navy-700",
+} as const;
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +76,8 @@ export default async function AdminDashboardPage() {
               Leads
             </h1>
             <p className="text-sm text-navy-600">
-              Submissions from the Get Started form.
+              Call-back requests from the Get Started page, rated Hot / Warm /
+              Cold.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -97,8 +106,8 @@ export default async function AdminDashboardPage() {
           <StatCard label="Total Leads" value={leads.length} />
           <StatCard label="Last 7 Days" value={thisWeek} />
           <StatCard
-            label="With Phone Number"
-            value={leads.filter((l) => l.phone).length}
+            label="Hot Leads"
+            value={leads.filter((l) => l.qualification === "hot").length}
           />
         </div>
 
@@ -111,21 +120,20 @@ export default async function AdminDashboardPage() {
               No leads yet
             </h2>
             <p className="max-w-sm text-sm text-navy-600">
-              Submissions from the &ldquo;Get Started&rdquo; form will show up
-              here automatically.
+              Call-back requests from the Get Started page will show up here
+              automatically.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto rounded-2xl border border-navy-100 bg-white">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[900px] text-left text-sm">
               <thead>
                 <tr className="border-b border-navy-100 text-xs font-semibold tracking-wide text-navy-500 uppercase">
-                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Lead</th>
                   <th className="px-4 py-3">Contact</th>
-                  <th className="px-4 py-3">Business</th>
-                  <th className="px-4 py-3">Goal</th>
+                  <th className="px-4 py-3">Request</th>
                   <th className="px-4 py-3">Budget</th>
-                  <th className="px-4 py-3">Message</th>
+                  <th className="px-4 py-3">Shared ideas &amp; notes</th>
                   <th className="px-4 py-3">Submitted</th>
                 </tr>
               </thead>
@@ -135,21 +143,22 @@ export default async function AdminDashboardPage() {
                     key={lead.id}
                     className="border-b border-navy-50 align-top last:border-0 hover:bg-navy-50/60"
                   >
-                    <td className="px-4 py-3 font-medium text-navy-950">
-                      {lead.name}
+                    <td className="px-4 py-3">
+                      <p className="font-medium text-navy-950">{lead.name}</p>
+                      {lead.qualification ? (
+                        <span
+                          className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${QUALIFICATION_STYLE[lead.qualification]}`}
+                        >
+                          {lead.qualification === "hot"
+                            ? "Hot"
+                            : lead.qualification === "warm"
+                              ? "Warm"
+                              : "Cold"}
+                        </span>
+                      ) : null}
                     </td>
                     <td className="px-4 py-3 text-navy-700">
                       <div className="flex flex-col gap-1">
-                        <a
-                          href={`mailto:${lead.email}`}
-                          className="flex items-center gap-1.5 hover:text-navy-950"
-                        >
-                          <Mail
-                            className="size-3.5 shrink-0"
-                            aria-hidden="true"
-                          />
-                          {lead.email}
-                        </a>
                         {lead.phone ? (
                           <a
                             href={`tel:${lead.phone}`}
@@ -162,19 +171,52 @@ export default async function AdminDashboardPage() {
                             {lead.phone}
                           </a>
                         ) : null}
+                        {lead.email ? (
+                          <a
+                            href={`mailto:${lead.email}`}
+                            className="flex items-center gap-1.5 hover:text-navy-950"
+                          >
+                            <Mail
+                              className="size-3.5 shrink-0"
+                              aria-hidden="true"
+                            />
+                            {lead.email}
+                          </a>
+                        ) : null}
                       </div>
                     </td>
                     <td className="px-4 py-3 text-navy-700">
-                      {lead.businessType || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-navy-700">
-                      {lead.goal || "—"}
+                      <p className="font-medium text-navy-900">
+                        {lead.kind === "callback"
+                          ? "Call back"
+                          : lead.goal || "Enquiry"}
+                      </p>
+                      <p>{lead.businessType || "—"}</p>
+                      {lead.timeline ? (
+                        <p className="text-xs text-navy-500">
+                          Launch: {lead.timeline}
+                        </p>
+                      ) : null}
+                      {lead.bestTime ? (
+                        <p className="text-xs text-navy-500">
+                          Call: {lead.bestTime}
+                        </p>
+                      ) : null}
+                      {lead.location === "international" ? (
+                        <p className="text-xs text-navy-500">Outside Kenya</p>
+                      ) : null}
                     </td>
                     <td className="px-4 py-3 text-navy-700">
                       {lead.budget || "—"}
                     </td>
                     <td className="max-w-xs px-4 py-3 text-navy-700">
-                      {lead.message || "—"}
+                      <MaterialsList materials={lead.materials} compact />
+                      {lead.message ? (
+                        <p className="mt-1">{lead.message}</p>
+                      ) : null}
+                      {!lead.message && !hasMaterials(lead.materials)
+                        ? "—"
+                        : null}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-navy-500">
                       {formatDate(lead.submittedAt)}

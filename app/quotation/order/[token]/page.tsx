@@ -6,6 +6,8 @@ import { Check, Download, Lightbulb } from "lucide-react";
 import { formatMoney, PAYMENT_TERMS } from "@/lib/estimator/pricing";
 import { getEstimate } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
+import { hasMaterials } from "@/lib/materials";
+import { MaterialsList } from "@/components/admin/materials-list";
 
 export const dynamic = "force-dynamic";
 
@@ -120,6 +122,12 @@ export default async function OrderPage({
           (PDF)
         </a>
       </div>
+      {hasMaterials(estimate.materials) ? (
+        <div className="mt-6 rounded-2xl border border-navy-100 bg-white p-5">
+          <p className="mb-2 font-semibold text-navy-950">Shared ideas</p>
+          <MaterialsList materials={estimate.materials} />
+        </div>
+      ) : null}
       <p className="mt-6 text-sm text-navy-600">
         Pay via M-Pesa Paybill <strong>{PAYMENT_TERMS.paybill}</strong>, account{" "}
         <strong>{PAYMENT_TERMS.account}</strong> — after we confirm your order.

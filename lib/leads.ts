@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 
+import type { Materials } from "@/lib/materials";
+import type { Qualification } from "@/lib/qualify";
 import { readDoc, updateDoc } from "@/lib/storage";
 
 export interface Lead {
@@ -12,6 +14,15 @@ export interface Lead {
   budget: string;
   message: string;
   submittedAt: string;
+  /** "callback" = Get Started wizard; absent on leads from the old form. */
+  kind?: "callback";
+  industry?: string;
+  location?: "kenya" | "international";
+  budgetBand?: string;
+  timeline?: string;
+  bestTime?: string;
+  materials?: Materials;
+  qualification?: Qualification;
 }
 
 export type NewLead = Omit<Lead, "id" | "submittedAt">;
