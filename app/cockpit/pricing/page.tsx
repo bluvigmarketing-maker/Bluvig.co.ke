@@ -17,6 +17,7 @@ function describeField(field: string) {
         "settings.fxRate": "Exchange rate",
         "settings.intlMultiplier": "International multiplier",
         "settings.renewalKes": "Hosting & domain renewal",
+        "settings.bookedWeeks": "Weeks already booked",
       }[field] ?? field
     );
   }

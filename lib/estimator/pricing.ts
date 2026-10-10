@@ -14,6 +14,8 @@ export interface PricingSettings {
   intlMultiplier: number;
   /** Yearly hosting & domain renewal from year 2 (first year is included). */
   renewalKes: number;
+  /** Weeks already booked — we start one new website a week (honest scarcity). */
+  bookedWeeks: number;
 }
 
 export interface ModulePricing {
@@ -32,7 +34,47 @@ export const DEFAULT_SETTINGS: PricingSettings = {
   fxRate: 130,
   intlMultiplier: 3,
   renewalKes: 5_000,
+  bookedWeeks: 0,
 };
+
+/** Our guarantees, shown on the quotation and the proforma. */
+export const GUARANTEES = {
+  delivery: "Delivered on the date we agree — guaranteed.",
+  speed: "Scores 90+ on Google PageSpeed — guaranteed.",
+};
+
+/**
+ * The next free build slot: the Monday after `bookedWeeks` booked weeks.
+ * Counted in Nairobi time so server and browser agree.
+ */
+export function nextStartDate(settings: PricingSettings, now = new Date()) {
+  const nairobi = new Date(now.getTime() + 3 * 3_600_000);
+  const day = nairobi.getUTCDay();
+  const daysToMonday = ((8 - day) % 7) || 7;
+  const start = new Date(
+    Date.UTC(
+      nairobi.getUTCFullYear(),
+      nairobi.getUTCMonth(),
+      nairobi.getUTCDate() + daysToMonday + 7 * Math.max(0, settings.bookedWeeks)
+    )
+  );
+  return start;
+}
+
+/** e.g. "Mon 19 Oct". */
+export function formatDay(date: Date) {
+  return date.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+}
+
+/** Adds whole weeks to a date (used for the guaranteed go-live date). */
+export function addWeeks(date: Date, weeks: number) {
+  return new Date(date.getTime() + weeks * 7 * 86_400_000);
+}
 
 export const PAYMENT_TERMS = {
   depositPercent: 60,

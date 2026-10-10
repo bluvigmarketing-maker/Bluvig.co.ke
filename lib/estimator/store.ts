@@ -132,6 +132,8 @@ export interface Estimate {
   industryId: string;
   industryName: string;
   selection: Selection;
+  /** Ready-made package chosen, if the selection matches one exactly. */
+  packageName?: string;
   /** Prices snapshotted at creation — later price edits never change this. */
   quote: Quote;
   prototype: boolean;
@@ -152,6 +154,7 @@ export async function createEstimate(input: {
   industryId: string;
   industryName: string;
   selection: Selection;
+  packageName?: string;
   currency: Currency;
   prototype: boolean;
   /** AI chats, inspiration sites and prototype links the client shared. */
@@ -171,6 +174,7 @@ export async function createEstimate(input: {
       industryId: input.industryId,
       industryName: input.industryName,
       selection: input.selection,
+      packageName: input.packageName,
       quote,
       prototype: input.prototype,
       materials: input.materials,

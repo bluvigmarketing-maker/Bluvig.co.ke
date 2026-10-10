@@ -14,7 +14,9 @@ export function purchaseOrderLink(estimate: Estimate, orderUrl: string) {
     `*Purchase Order ${estimate.reference}*`,
     `${client.name}${client.company ? ` — ${client.company}` : ""} (${client.country})`,
     `Industry: ${estimate.industryName}`,
-    `Package: Standard Website${modules.length ? ` + ${modules.length} module${modules.length > 1 ? "s" : ""}` : ""}`,
+    estimate.packageName
+      ? `Package: ${estimate.packageName}`
+      : `Package: Standard Website${modules.length ? ` + ${modules.length} module${modules.length > 1 ? "s" : ""}` : ""}`,
     ...modules.map(
       (l) => `• ${l.name}${l.quantity > 1 ? ` ×${l.quantity}` : ""}`
     ),

@@ -124,7 +124,7 @@ export function InvoiceDocument({
             <Text style={s.label}>Prepared for</Text>
             <Text style={s.bold}>{client.name}</Text>
             {client.company ? <Text>{client.company}</Text> : null}
-            <Text>{client.email}</Text>
+            {client.email ? <Text>{client.email}</Text> : null}
             <Text>{client.phone}</Text>
             <Text>{client.country}</Text>
           </View>

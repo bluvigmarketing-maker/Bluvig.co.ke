@@ -40,10 +40,11 @@ export const PUT = withStorageErrors(async (request: Request) => {
       s.intlMultiplier > 0 &&
       s.intlMultiplier <= 20
     ) ||
-    !wholeNumber(s.renewalKes, 10_000_000)
+    !wholeNumber(s.renewalKes, 10_000_000) ||
+    !wholeNumber(s.bookedWeeks, 52)
   ) {
     return NextResponse.json(
-      { error: "Check the base price, exchange rate and multiplier." },
+      { error: "Check the base price, exchange rate, multiplier and booked weeks." },
       { status: 400 }
     );
   }
@@ -73,6 +74,7 @@ export const PUT = withStorageErrors(async (request: Request) => {
       fxRate: s.fxRate,
       intlMultiplier: s.intlMultiplier,
       renewalKes: s.renewalKes,
+      bookedWeeks: s.bookedWeeks,
     },
     modules,
   });

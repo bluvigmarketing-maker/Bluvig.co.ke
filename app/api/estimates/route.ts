@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
+import { buildPackages, matchPackage } from "@/lib/estimator/packages";
 import { cleanSelection, type Currency } from "@/lib/estimator/pricing";
 import { createEstimate, getPricing } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
@@ -39,18 +40,26 @@ export const POST = withStorageErrors(async (request: Request) => {
       { error: "Please choose an industry." },
       { status: 400 }
     );
-  if (!name || !phone || !/^\S+@\S+\.\S+$/.test(email)) {
+  if (!name || !phone || (email && !/^\S+@\S+\.\S+$/.test(email))) {
     return NextResponse.json(
-      { error: "Please add your name, a valid email and a phone number." },
+      {
+        error: email
+          ? "That email doesn't look right — check it or leave it blank."
+          : "Please add your name and a WhatsApp number.",
+      },
       { status: 400 }
     );
   }
 
   const pricing = await getPricing();
+  const selection = cleanSelection(body.selection, pricing);
+  const packages = buildPackages(industry, pricing);
+  const packageId = matchPackage(packages, selection);
   const estimate = await createEstimate({
     industryId: industry.id,
     industryName: industry.name,
-    selection: cleanSelection(body.selection, pricing),
+    selection,
+    packageName: packages.find((p) => p.id === packageId)?.name,
     currency,
     prototype: Boolean(body.prototype),
     materials: cleanMaterials(body.materials),

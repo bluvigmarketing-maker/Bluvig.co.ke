@@ -99,16 +99,18 @@ export default async function EstimatesPage() {
                       </p>
                     </td>
                     <td className="px-4 py-3 text-navy-700">
-                      <a
-                        href={`mailto:${e.client.email}`}
-                        className="flex items-center gap-1.5 hover:text-navy-950"
-                      >
-                        <Mail
-                          className="size-3.5 shrink-0"
-                          aria-hidden="true"
-                        />
-                        {e.client.email}
-                      </a>
+                      {e.client.email ? (
+                        <a
+                          href={`mailto:${e.client.email}`}
+                          className="flex items-center gap-1.5 hover:text-navy-950"
+                        >
+                          <Mail
+                            className="size-3.5 shrink-0"
+                            aria-hidden="true"
+                          />
+                          {e.client.email}
+                        </a>
+                      ) : null}
                       <a
                         href={`tel:${e.client.phone}`}
                         className="flex items-center gap-1.5 hover:text-navy-950"

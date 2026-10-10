@@ -16,13 +16,13 @@ export type CategoryId =
   | "monthly";
 
 export const CATEGORIES: { id: CategoryId; name: string }[] = [
-  { id: "pages", name: "Pages & Content" },
-  { id: "commerce", name: "Shop & Payments" },
-  { id: "bookings", name: "Bookings & Scheduling" },
-  { id: "customers", name: "Customers & Portals" },
-  { id: "growth", name: "Growth & Visibility" },
-  { id: "integrations", name: "Integrations & Operations" },
-  { id: "monthly", name: "Monthly Care Plans" },
+  { id: "pages", name: "Show what you do" },
+  { id: "commerce", name: "Sell online & get paid" },
+  { id: "bookings", name: "Take bookings" },
+  { id: "customers", name: "Win & serve customers" },
+  { id: "growth", name: "Get found on Google & AI" },
+  { id: "integrations", name: "Run the business behind the scenes" },
+  { id: "monthly", name: "Keep it running (monthly)" },
 ];
 
 /** Visual archetypes the live preview knows how to draw. */
