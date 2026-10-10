@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import type { Materials } from "@/lib/materials";
 import { readDoc, updateDoc } from "@/lib/storage";
 import { MODULES } from "./catalog";
+import { newProject, type Project } from "./project";
 import {
   buildQuote,
   DEFAULT_SETTINGS,
@@ -141,6 +142,8 @@ export interface Estimate {
   materials?: Materials;
   client: EstimateClient;
   status: EstimateStatus;
+  /** Set when the deposit arrives — drives the checklist and client tracker. */
+  project?: Project;
 }
 
 interface EstimatesDoc {
@@ -194,4 +197,55 @@ export async function getEstimate(token: string): Promise<Estimate | null> {
 export async function listEstimates(): Promise<Estimate[]> {
   const doc = await readDoc<EstimatesDoc>(ESTIMATES_KEY, {});
   return [...(doc.estimates ?? [])].reverse();
+}
+
+// ── Projects ─────────────────────────────────────────────────────────────
+
+export type ProjectAction =
+  | { action: "start" }
+  | { action: "task"; taskId: string; done: boolean }
+  | { action: "wait"; label: string }
+  | { action: "resolve"; waitId: string };
+
+/** Applies one cockpit action to an estimate's project. Returns null if not found. */
+export async function updateProject(
+  token: string,
+  change: ProjectAction
+): Promise<Estimate | null> {
+  return updateDoc<EstimatesDoc, Estimate | null>(ESTIMATES_KEY, {}, (doc) => {
+    const estimate = doc.estimates?.find((e) => e.token === token);
+    if (!estimate) return null;
+    const now = new Date().toISOString();
+
+    if (change.action === "start") {
+      if (!estimate.project) {
+        estimate.project = newProject(estimate.selection, estimate.quote);
+        estimate.status = "won";
+      }
+      return estimate;
+    }
+
+    const project = estimate.project;
+    if (!project) return null;
+
+    if (change.action === "task") {
+      const task = project.tasks.find((t) => t.id === change.taskId);
+      if (!task) return null;
+      task.done = change.done;
+      task.doneAt = change.done ? now : undefined;
+    } else if (change.action === "wait") {
+      project.waits.push({
+        id: randomBytes(6).toString("base64url"),
+        label: change.label,
+        since: now,
+      });
+    } else if (change.action === "resolve") {
+      const wait = project.waits.find((w) => w.id === change.waitId);
+      if (wait && !wait.until) wait.until = now;
+    }
+
+    const allDone = project.tasks.every((t) => t.done);
+    project.launchedAt = allDone ? (project.launchedAt ?? now) : undefined;
+    return estimate;
+  });
 }

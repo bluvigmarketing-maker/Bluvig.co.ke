@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { Download, ExternalLink, Lightbulb, Mail, Phone } from "lucide-react";
 
-import { canViewCockpit } from "@/lib/admin-auth";
+import { canViewCockpit, isCockpitAuthed } from "@/lib/admin-auth";
 import { formatMoney } from "@/lib/estimator/pricing";
 import { listEstimates, type Estimate } from "@/lib/estimator/store";
 import { describeStorageError } from "@/lib/storage-errors";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
+import { StartProjectButton } from "@/components/admin/project-board";
+import { projectProgress } from "@/lib/estimator/project";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,7 @@ export default async function EstimatesPage() {
     console.error("[cockpit/estimates]", e);
     error = describeStorageError(e);
   }
+  const needsPassword = !(await isCockpitAuthed());
 
   return (
     <div className="min-h-screen bg-navy-50 py-10">
@@ -175,6 +178,19 @@ export default async function EstimatesPage() {
                           PDF
                         </a>
                       </div>
+                      {e.project ? (
+                        <a
+                          href={`/cockpit/projects#${e.reference}`}
+                          className="mt-2 block text-xs font-semibold text-gold-700 hover:underline"
+                        >
+                          In progress · {projectProgress(e.project).percent}%
+                        </a>
+                      ) : (
+                        <StartProjectButton
+                          token={e.token}
+                          needsPassword={needsPassword}
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}

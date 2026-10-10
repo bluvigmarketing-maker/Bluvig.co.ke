@@ -8,16 +8,18 @@ import { getEstimate } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
 import { hasMaterials } from "@/lib/materials";
 import { MaterialsList } from "@/components/admin/materials-list";
+import { ProjectTracker } from "@/components/estimator/project-tracker";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Your Order",
+  title: "Your Order & Progress",
   robots: { index: false, follow: false },
 };
 
 /**
- * Read-only order summary at an unguessable URL. Shows no email or phone —
+ * Read-only order summary at an unguessable URL. Once the deposit arrives it
+ * also becomes the client's live project tracker. Shows no email or phone —
  * those stay in the PDF and the cockpit.
  */
 export default async function OrderPage({
@@ -48,6 +50,13 @@ export default async function OrderPage({
           dateStyle: "long",
         })}
       </p>
+
+      {estimate.project ? (
+        <ProjectTracker
+          project={estimate.project}
+          reference={estimate.reference}
+        />
+      ) : null}
 
       {estimate.prototype ? (
         <p className="mt-4 flex items-center gap-2 rounded-xl bg-gold-50 px-4 py-3 text-sm font-medium text-gold-800">
@@ -106,14 +115,16 @@ export default async function OrderPage({
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <a
-          href={purchaseOrderLink(estimate, orderUrl)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-1 items-center justify-center rounded-xl bg-[#25d366] px-5 py-3 font-semibold text-white hover:bg-[#1ebe5a]"
-        >
-          Send purchase order on WhatsApp
-        </a>
+        {estimate.project ? null : (
+          <a
+            href={purchaseOrderLink(estimate, orderUrl)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-1 items-center justify-center rounded-xl bg-[#25d366] px-5 py-3 font-semibold text-white hover:bg-[#1ebe5a]"
+          >
+            Send purchase order on WhatsApp
+          </a>
+        )}
         <a
           href={`/api/estimates/${estimate.token}/pdf`}
           className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-5 py-3 font-semibold text-navy-900 hover:bg-navy-50"
@@ -129,8 +140,9 @@ export default async function OrderPage({
         </div>
       ) : null}
       <p className="mt-6 text-sm text-navy-600">
-        Pay via M-Pesa Paybill <strong>{PAYMENT_TERMS.paybill}</strong>, account{" "}
-        <strong>{PAYMENT_TERMS.account}</strong> — after we confirm your order.
+        {estimate.project ? "Pay the balance" : "Pay"} via M-Pesa Paybill <strong>{PAYMENT_TERMS.paybill}</strong>, account{" "}
+        <strong>{PAYMENT_TERMS.account}</strong>
+        {estimate.project ? " on launch." : " — after we confirm your order."}
       </p>
     </div>
   );
