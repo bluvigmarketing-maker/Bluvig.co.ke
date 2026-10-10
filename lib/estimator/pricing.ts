@@ -37,10 +37,10 @@ export const DEFAULT_SETTINGS: PricingSettings = {
   bookedWeeks: 0,
 };
 
-/** Our guarantees, shown on the quotation and the proforma. */
+/** Our guarantees, shown on the quotation. */
 export const GUARANTEES = {
-  delivery: "Delivered on the date we agree — guaranteed.",
-  speed: "Scores 90+ on Google PageSpeed — guaranteed.",
+  delivery: "On time, or you get 10% off — guaranteed.",
+  speed: "Your website loads in 1 second — guaranteed.",
 };
 
 /**

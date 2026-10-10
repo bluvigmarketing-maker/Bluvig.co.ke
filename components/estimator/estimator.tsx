@@ -725,7 +725,7 @@ export function Estimator({
                 className="size-4 shrink-0 text-gold-600"
                 aria-hidden="true"
               />
-              Final price confirmed after a short call
+              10% off if we deliver late
             </li>
           </ul>
 
@@ -965,7 +965,7 @@ function Guarantees({
     },
     {
       icon: Gauge,
-      title: "A fast website",
+      title: "Loads in 1 second",
       text: GUARANTEES.speed,
     },
     {
