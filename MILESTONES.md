@@ -2,7 +2,7 @@
 
 **Goal:** Turn bluvig.co.ke into the sales engine for a **software studio**: a fast, credible site that convinces businesses in Kenya and abroad to trust Bluvig with their business software, web applications and websites — and converts them through a visual project estimator into qualified, priced leads.
 
-_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first")._
+_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first"). Progress last updated: 2026-10-12._
 
 ---
 
@@ -14,6 +14,8 @@ _Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing ag
 | 2026-10-03 | **Target clients:** international clients, established companies, Kenyan SMEs (in that order of deal size). | Three segments with different needs (see Audience below) — the site must serve all three without diluting the message. |
 | 2026-10-03 | **Primary conversion: an advanced, visual project estimator** — spec in [ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md). Discovery-call booking and WhatsApp become secondary paths. | Pre-qualifies scope and budget before a sales conversation; differentiates from agencies with a generic contact form. |
 | 2026-10-03 | **Rejected: scroll-driven "code → wireframe → site" build animation.** Prototyped in three variants, then removed. | Delayed the headline/CTA on first visit — hurts conversion. Motion stays subtle and never gates content. |
+| 2026-10-10 | **Packages over à-la-carte:** the quotation leads with three ready-made packages per industry (found / customers / complete), built from each industry's recommended modules. | ~60 add-ons was too many choices; most visitors should pick a package. |
+| 2026-10-12 | **Cockpit sign-in: passkey first.** One tap with fingerprint / Face ID / Windows Hello on the device you're using (or a phone via the browser's QR prompt). Number matching with Bluvig Authenticator stays as a fallback. Sign-in switched back on. | Easiest secure option: phishing-resistant, no password to leak, no second device needed. |
 | (earlier) | Stack: Next.js 16 (App Router) + TypeScript, Tailwind v4, shadcn/ui (`base-nova`), Framer Motion + GSAP, lucide-react, Geist + Playfair Display. Hosting on Vercel. | See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). |
 
 ## Audience — what each segment needs to see
@@ -36,7 +38,8 @@ Done and kept as-is (design and infrastructure carry over; **copy and positionin
 - [x] Shared primitives: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `MagneticButton`, `.btn-metallic`
 - [x] Pages scaffolded: Home, What We Do + 4 service pages, Case Studies index, About, Get Started, Contact, Blog index, Tools index
 - [x] Lead capture: `POST /api/leads` + `/cockpit` admin dashboard (JSON file store — **not production-safe on Vercel**, see Phase 5)
-- [x] Cockpit sign-in via **Bluvig Authenticator** (2026-10-03): number matching — `/cockpit/login` shows a number, an enrolled phone at `/authenticator` (unlocked with a passkey) taps it from 3 choices. Multiple phones; add via one-time code from the cockpit, revoke from the cockpit. `ADMIN_PASSWORD` only enrols the first phone (and signs sessions). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.
+- [x] Cockpit sign-in via **passkey** (2026-10-12): `/cockpit/login` → "Sign in with passkey" → fingerprint / Face ID / Windows Hello. On a computer without the passkey, the browser offers "Use a phone" (QR). First visit: enter `ADMIN_PASSWORD` once to create the first passkey, then it's one tap. More devices: "Add this device" in the cockpit, or a one-time code for another phone. Revoke from the cockpit. Fallback: number matching via **Bluvig Authenticator** at `/authenticator` (2026-10-03). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.
+- [x] Cockpit sign-in re-enabled (2026-10-12) — it was switched off 2026-10-04 (`lib/cockpit-config.ts`).
 
 Needs rework because of the repositioning:
 
@@ -49,7 +52,7 @@ Needs rework because of the repositioning:
 ---
 
 ## Phase 0 — Foundations (finish)
-- [ ] Create a GitHub remote and push (no git remote exists yet)
+- [x] GitHub remote created and pushed (`bluvigmarketing-maker/Bluvig.co.ke`)
 - [ ] Connect to Vercel: preview deploys per branch, production on `main`
 - [~] Hosted database: **Supabase** chosen (2026-10-03). Code supports it via `DATABASE_URL` (lib/storage.ts; table `bluvig_documents` auto-created with RLS on). **Owner to create the Supabase project and add `DATABASE_URL` in Vercel.**
 - [ ] Environment variable management for preview vs production (`ADMIN_PASSWORD`, DB URL, email API key)
@@ -119,6 +122,8 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [x] Kenya-friendly default prices; cockpit stores only overrides + "Reset all to defaults"
 - [x] "Share your ideas": AI chat, inspiration and prototype links on quotations and call-backs
 - [x] `/get-started` qualifying wizard: call back / pick features / recommend for budget; Hot-Warm-Cold lead rating
+- [x] Pricing redo (2026-10-10): three ready-made packages per industry, pre-selected default package, estimator polish
+- [x] **Project tracker** (2026-10-10): when the deposit arrives, a checklist is generated from what the client ordered (phases: kick-off → design → build → content & SEO → testing → launch), progress weighted by effort in days. Cockpit board at `/cockpit/projects`; client sees phase progress on their order page.
 - [ ] Estimate status (won/lost) in the cockpit + email notification on new estimate or call-back
 - [~] Spam protection: honeypot done; rate limiting + analytics events per step to do
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 
-import { verifyPassword } from "@/lib/admin-auth";
+import { isCockpitAuthed, verifyPassword } from "@/lib/admin-auth";
 import {
   getDevices,
   isValidEnrollCode,
@@ -11,9 +11,10 @@ import { AUTHENTICATOR_USER_NAME, relyingParty, RP_NAME } from "@/lib/webauthn";
 import { withStorageErrors } from "@/lib/storage-errors";
 
 /**
- * Enrolling a phone needs one of:
- * - the ADMIN_PASSWORD, but only while no device exists yet (first setup / recovery), or
- * - a one-time code generated inside the cockpit (adding more phones).
+ * Creating a passkey needs one of:
+ * - the ADMIN_PASSWORD, but only while no passkey exists yet (first setup / recovery),
+ * - a signed-in cockpit session (adding a passkey on the device you're using), or
+ * - a one-time code generated inside the cockpit (adding another phone).
  */
 export const POST = withStorageErrors(async (request: Request) => {
   const { name, password, code } = (await request.json().catch(() => ({}))) as {
@@ -22,10 +23,13 @@ export const POST = withStorageErrors(async (request: Request) => {
     code?: string;
   };
 
-  const deviceName = name?.trim().slice(0, 40) || "My phone";
+  const deviceName = name?.trim().slice(0, 40) || "My device";
   const devices = await getDevices();
+  const signedIn = await isCockpitAuthed();
 
-  if (devices.length === 0) {
+  if (signedIn) {
+    // Already inside the cockpit — no extra proof needed.
+  } else if (devices.length === 0) {
     if (!password || !verifyPassword(password)) {
       return NextResponse.json(
         { error: "Incorrect setup password." },
@@ -61,7 +65,7 @@ export const POST = withStorageErrors(async (request: Request) => {
 
   const ceremonyId = await startCeremony("register", options.challenge, {
     deviceName,
-    enrollCode: devices.length === 0 ? undefined : code,
+    enrollCode: signedIn || devices.length === 0 ? undefined : code,
   });
 
   return NextResponse.json({ ceremonyId, options });

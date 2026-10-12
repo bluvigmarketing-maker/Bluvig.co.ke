@@ -1,11 +1,10 @@
 /**
  * Cockpit sign-in switch.
  *
- * false (temporary, 2026-10-04): /cockpit opens without signing in, so ANYONE
- * with the link can see the dashboard, including lead contact details.
- * Device management (adding/revoking authenticator phones) stays locked behind
- * a real session, so nobody can plant a device while the cockpit is open.
- *
- * Set back to true to require Bluvig Authenticator sign-in again.
+ * true: /cockpit requires a passkey (or Bluvig Authenticator approval).
+ * false: /cockpit opens without signing in, so ANYONE with the link can see
+ * the dashboard, including lead contact details. Only for emergencies.
+ * Device management (adding/revoking passkeys) stays locked behind a real
+ * session either way.
  */
-export const COCKPIT_AUTH_ENABLED = false;
+export const COCKPIT_AUTH_ENABLED = true;

@@ -2,11 +2,7 @@ import { withStorageErrors } from "@/lib/storage-errors";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import {
-  ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_MAX_AGE,
-  createSessionToken,
-} from "@/lib/admin-auth";
+import { startCockpitSession } from "@/lib/admin-auth";
 import {
   createLoginRequest,
   hasDevices,
@@ -81,13 +77,7 @@ export const GET = withStorageErrors(async () => {
 
   if (status === "approved") {
     cookieStore.delete({ name: LOGIN_REQUEST_COOKIE, path: COOKIE_PATH });
-    cookieStore.set(ADMIN_SESSION_COOKIE, createSessionToken(), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: ADMIN_SESSION_MAX_AGE,
-    });
+    await startCockpitSession();
   }
 
   return NextResponse.json({ status });

@@ -5,6 +5,7 @@ import {
 } from "@simplewebauthn/server";
 import { isoBase64URL } from "@simplewebauthn/server/helpers";
 
+import { startCockpitSession } from "@/lib/admin-auth";
 import { addDevice, consumeCeremony } from "@/lib/authenticator";
 import { relyingParty, startAuthenticatorSession } from "@/lib/webauthn";
 import { withStorageErrors } from "@/lib/storage-errors";
@@ -47,9 +48,12 @@ export const POST = withStorageErrors(async (request: Request) => {
       publicKey: isoBase64URL.fromBuffer(credential.publicKey),
       counter: credential.counter,
       transports: credential.transports,
-      name: ceremony.deviceName ?? "My phone",
+      name: ceremony.deviceName ?? "My device",
     });
+    // Whoever could create a passkey (setup password, cockpit session or a
+    // cockpit-issued code) may use it straight away.
     await startAuthenticatorSession(credential.id);
+    await startCockpitSession();
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(

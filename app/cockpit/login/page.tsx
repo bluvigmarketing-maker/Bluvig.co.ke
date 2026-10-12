@@ -1,32 +1,206 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   Clock,
+  Fingerprint,
   ShieldCheck,
   Smartphone,
   XCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  createPasskey,
+  guessDeviceName,
+  passkeyError,
+  signInWithPasskey,
+} from "@/lib/passkey-client";
 import { readJson } from "@/lib/read-json";
 
-type State =
+type View = "loading" | "passkey" | "setup" | "phone" | "done";
+
+/**
+ * Cockpit sign-in. Main path: one tap with a passkey (fingerprint, Face ID,
+ * Windows Hello — or a phone via the browser's QR prompt). First visit with no
+ * passkey yet: create one with the setup password. Fallback: approve from a
+ * phone running Bluvig Authenticator (number matching).
+ */
+export default function CockpitLoginPage() {
+  const router = useRouter();
+  const [view, setView] = useState<View>("loading");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/authenticator/status", { cache: "no-store" })
+      .then(readJson)
+      .then((status) => {
+        if (status.error) throw new Error(status.error);
+        setView(status.hasDevices ? "passkey" : "setup");
+      })
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : "Could not reach the server.");
+        setView("passkey");
+      });
+  }, []);
+
+  const finish = useCallback(() => {
+    setView("done");
+    router.replace("/cockpit");
+    router.refresh();
+  }, [router]);
+
+  async function run(action: () => Promise<void>) {
+    setError(null);
+    setBusy(true);
+    try {
+      await action();
+      finish();
+    } catch (e) {
+      setError(passkeyError(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function setup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    run(() =>
+      createPasskey({
+        name: String(form.get("name") || guessDeviceName()),
+        password: String(form.get("password") ?? ""),
+      })
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-navy-50 px-4">
+      <div className="flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl border border-navy-100 bg-white p-8 text-center shadow-sm">
+        <span className="flex size-11 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
+          <ShieldCheck className="size-5" aria-hidden="true" />
+        </span>
+        <h1 className="font-heading text-xl font-semibold text-navy-950">
+          Cockpit Sign-in
+        </h1>
+
+        <div aria-live="polite" className="flex w-full flex-col gap-4">
+          {error ? (
+            <p
+              role="alert"
+              className="flex items-start gap-2 rounded-xl bg-red-50 px-3 py-2.5 text-left text-sm text-red-800"
+            >
+              <XCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              {error}
+            </p>
+          ) : null}
+
+          {view === "loading" ? (
+            <p className="py-8 text-sm text-navy-500">Loading…</p>
+          ) : null}
+
+          {view === "passkey" ? (
+            <>
+              <Button
+                onClick={() => run(signInWithPasskey)}
+                disabled={busy}
+                className="btn-metallic gold-line h-12 w-full gap-2 text-base font-semibold"
+              >
+                <Fingerprint className="size-5" aria-hidden="true" />
+                {busy ? "Waiting for passkey…" : "Sign in with passkey"}
+              </Button>
+              <p className="text-xs text-navy-500">
+                Use your fingerprint, face or screen lock. On a computer without
+                your passkey, choose &ldquo;Use a phone&rdquo; and scan the QR
+                code.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setView("phone");
+                }}
+                className="text-sm text-navy-600 underline-offset-4 hover:underline"
+              >
+                Approve from Bluvig Authenticator instead
+              </button>
+            </>
+          ) : null}
+
+          {view === "setup" ? (
+            <form onSubmit={setup} className="flex flex-col gap-3 text-left">
+              <p className="text-center text-sm text-navy-700">
+                First time here: enter the setup password to create a passkey
+                on this device. After that, signing in is one tap.
+              </p>
+              <label className="flex flex-col gap-1.5 text-sm text-navy-800">
+                Setup password
+                <input
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  className="rounded-lg border border-navy-200 px-3 py-2.5 text-base focus:border-gold-500 focus:outline-none"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm text-navy-800">
+                Device name <span className="text-navy-500">(optional)</span>
+                <input
+                  name="name"
+                  maxLength={40}
+                  placeholder="e.g. Office laptop"
+                  className="rounded-lg border border-navy-200 px-3 py-2.5 text-base focus:border-gold-500 focus:outline-none"
+                />
+              </label>
+              <Button
+                type="submit"
+                disabled={busy}
+                className="btn-metallic gold-line mt-1 h-12 w-full gap-2 text-base font-semibold"
+              >
+                <Fingerprint className="size-5" aria-hidden="true" />
+                {busy ? "Creating passkey…" : "Create passkey & sign in"}
+              </Button>
+            </form>
+          ) : null}
+
+          {view === "phone" ? (
+            <PhoneApproval onApproved={finish} onBack={() => setView("passkey")} />
+          ) : null}
+
+          {view === "done" ? (
+            <p className="flex items-center justify-center gap-2 py-8 font-semibold text-gold-700">
+              <CheckCircle2 className="size-5" aria-hidden="true" /> Signed in —
+              opening cockpit…
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Fallback: number matching with Bluvig Authenticator on a phone ────────
+
+type PhoneState =
   | { kind: "starting" }
   | { kind: "waiting"; number: number; expiresAt: number }
-  | { kind: "approved" }
   | { kind: "denied" }
   | { kind: "expired" }
-  | { kind: "no-devices" }
   | { kind: "error"; message: string };
 
 const POLL_MS = 2000;
 
-export default function CockpitLoginPage() {
-  const router = useRouter();
-  const [state, setState] = useState<State>({ kind: "starting" });
+function PhoneApproval({
+  onApproved,
+  onBack,
+}: {
+  onApproved: () => void;
+  onBack: () => void;
+}) {
+  const [state, setState] = useState<PhoneState>({ kind: "starting" });
   const [secondsLeft, setSecondsLeft] = useState(0);
 
   const start = useCallback(async () => {
@@ -34,11 +208,10 @@ export default function CockpitLoginPage() {
     try {
       const res = await fetch("/api/cockpit/login-request", { method: "POST" });
       const body = await readJson(res);
-      if (res.status === 409) return setState({ kind: "no-devices" });
       if (!res.ok) {
         return setState({
           kind: "error",
-          message: body.message ?? "Something went wrong.",
+          message: body.message ?? body.error ?? "Something went wrong.",
         });
       }
       setState({
@@ -51,8 +224,8 @@ export default function CockpitLoginPage() {
     }
   }, []);
 
-  // Kick off the first sign-in request once. The ref guards against effects
-  // running twice (React dev mode), which would leave an orphan request on the phone.
+  // The ref guards against effects running twice (React dev mode), which
+  // would leave an orphan request on the phone.
   const started = useRef(false);
   useEffect(() => {
     if (started.current) return;
@@ -79,15 +252,10 @@ export default function CockpitLoginPage() {
           cache: "no-store",
         });
         const { status } = await readJson(res);
-        if (status === "approved") {
-          setState({ kind: "approved" });
-          router.replace("/cockpit");
-          router.refresh();
-        } else if (status === "denied") {
-          setState({ kind: "denied" });
-        } else if (status === "expired" || status === "unknown") {
+        if (status === "approved") onApproved();
+        else if (status === "denied") setState({ kind: "denied" });
+        else if (status === "expired" || status === "unknown")
           setState({ kind: "expired" });
-        }
       } catch {
         // Transient network error — keep polling until the request expires.
       }
@@ -97,100 +265,69 @@ export default function CockpitLoginPage() {
       clearInterval(countdown);
       clearInterval(poll);
     };
-  }, [state, router]);
+  }, [state, onApproved]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy-50 px-4">
-      <div className="flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl border border-navy-100 bg-white p-8 text-center shadow-sm">
-        <span className="flex size-11 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
-          <ShieldCheck className="size-5" aria-hidden="true" />
-        </span>
-        <div className="flex flex-col gap-1">
-          <h1 className="font-heading text-xl font-semibold text-navy-950">
-            Cockpit Sign-in
-          </h1>
+    <div className="flex flex-col items-center gap-4">
+      {state.kind === "starting" ? (
+        <p className="py-8 text-sm text-navy-500">Preparing sign-in…</p>
+      ) : null}
+
+      {state.kind === "waiting" ? (
+        <>
           <p className="text-sm text-navy-700">
-            Approve with Bluvig Authenticator.
+            <Smartphone
+              className="mr-1 inline size-4 align-text-bottom"
+              aria-hidden="true"
+            />
+            Open{" "}
+            <span className="font-semibold text-navy-950">
+              Bluvig Authenticator
+            </span>{" "}
+            on your phone and tap this number:
           </p>
-        </div>
+          <p
+            className="font-heading text-7xl font-bold tracking-tight text-navy-950"
+            aria-label={`Your number is ${state.number}`}
+          >
+            {state.number}
+          </p>
+          <p className="flex items-center gap-1.5 text-xs text-navy-500">
+            <Clock className="size-3.5" aria-hidden="true" />
+            Waiting for approval · {Math.floor(secondsLeft / 60)}:
+            {String(secondsLeft % 60).padStart(2, "0")}
+          </p>
+        </>
+      ) : null}
 
-        <div
-          aria-live="polite"
-          className="flex w-full flex-col items-center gap-5"
-        >
-          {state.kind === "starting" ? (
-            <p className="py-10 text-sm text-navy-500">Preparing sign-in…</p>
-          ) : null}
+      {state.kind === "denied" ||
+      state.kind === "expired" ||
+      state.kind === "error" ? (
+        <>
+          <p className="flex items-center gap-2 py-2 text-sm text-destructive">
+            <XCircle className="size-4 shrink-0" aria-hidden="true" />
+            {state.kind === "denied"
+              ? "Sign-in was denied on the authenticator."
+              : state.kind === "expired"
+                ? "This sign-in request expired."
+                : state.message}
+          </p>
+          <Button
+            onClick={start}
+            className="btn-metallic gold-line w-full font-semibold"
+          >
+            Try again
+          </Button>
+        </>
+      ) : null}
 
-          {state.kind === "waiting" ? (
-            <>
-              <p className="text-sm text-navy-700">
-                Open{" "}
-                <span className="font-semibold text-navy-950">
-                  Bluvig Authenticator
-                </span>{" "}
-                on your phone and tap this number:
-              </p>
-              <p
-                className="font-heading text-7xl font-bold tracking-tight text-navy-950"
-                aria-label={`Your number is ${state.number}`}
-              >
-                {state.number}
-              </p>
-              <p className="flex items-center gap-1.5 text-xs text-navy-500">
-                <Clock className="size-3.5" aria-hidden="true" />
-                Waiting for approval · {Math.floor(secondsLeft / 60)}:
-                {String(secondsLeft % 60).padStart(2, "0")}
-              </p>
-            </>
-          ) : null}
-
-          {state.kind === "approved" ? (
-            <p className="flex items-center gap-2 py-8 font-semibold text-gold-700">
-              <CheckCircle2 className="size-5" aria-hidden="true" /> Approved —
-              opening cockpit…
-            </p>
-          ) : null}
-
-          {state.kind === "denied" ||
-          state.kind === "expired" ||
-          state.kind === "error" ? (
-            <>
-              <p className="flex items-center gap-2 py-4 text-sm text-destructive">
-                <XCircle className="size-4 shrink-0" aria-hidden="true" />
-                {state.kind === "denied"
-                  ? "Sign-in was denied on the authenticator."
-                  : state.kind === "expired"
-                    ? "This sign-in request expired."
-                    : state.message}
-              </p>
-              <Button
-                onClick={start}
-                className="btn-metallic gold-line w-full font-semibold"
-              >
-                Try again
-              </Button>
-            </>
-          ) : null}
-
-          {state.kind === "no-devices" ? (
-            <div className="flex flex-col items-center gap-3 py-2 text-sm text-navy-700">
-              <Smartphone className="size-6 text-navy-500" aria-hidden="true" />
-              <p>
-                No authenticator is set up yet. On your phone, open{" "}
-                <span className="font-mono font-semibold text-navy-950">
-                  /authenticator
-                </span>{" "}
-                and choose{" "}
-                <span className="font-semibold">Set up this phone</span>.
-              </p>
-              <Button onClick={start} variant="outline" className="w-full">
-                I&rsquo;ve set it up — continue
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      </div>
+      <button
+        type="button"
+        onClick={onBack}
+        className="text-sm text-navy-600 underline-offset-4 hover:underline"
+      >
+        Use a passkey instead
+      </button>
     </div>
   );
 }

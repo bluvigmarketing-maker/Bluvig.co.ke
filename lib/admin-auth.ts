@@ -62,7 +62,19 @@ export function verifySessionToken(token: string | undefined): boolean {
   return verifyToken(token) === "cockpit";
 }
 
-/** Used only to enrol the first authenticator device (see lib/authenticator.ts). */
+/** Signs this browser in to the cockpit. Call only from a route handler. */
+export async function startCockpitSession() {
+  const cookieStore = await cookies();
+  cookieStore.set(ADMIN_SESSION_COOKIE, createSessionToken(), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: ADMIN_SESSION_MAX_AGE,
+  });
+}
+
+/** Used only to create the first passkey (see lib/authenticator.ts). */
 export function verifyPassword(candidate: string): boolean {
   return safeEqual(candidate, getSecret());
 }

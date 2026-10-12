@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Smartphone, Trash2 } from "lucide-react";
+import { Fingerprint, KeyRound, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  createPasskey,
+  guessDeviceName,
+  passkeyError,
+} from "@/lib/passkey-client";
 import { readJson } from "@/lib/read-json";
 
 export interface DeviceSummary {
@@ -45,11 +50,24 @@ export function AuthenticatorDevices({
     setEnrolCode((await readJson(res)) as { code: string; expiresAt: string });
   }
 
+  async function addThisDevice() {
+    setError(null);
+    setBusyId("new");
+    try {
+      await createPasskey({ name: guessDeviceName() });
+      router.refresh();
+    } catch (e) {
+      setError(passkeyError(e));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   async function revoke(device: DeviceSummary) {
     const last = devices.length === 1;
     const message = last
-      ? `Revoke "${device.name}"? It's your only authenticator — you'll need the setup password (ADMIN_PASSWORD) to enrol a phone before you can sign in again.`
-      : `Revoke "${device.name}"? It will no longer be able to approve sign-ins.`;
+      ? `Revoke "${device.name}"? It's your only passkey — you'll need the setup password (ADMIN_PASSWORD) to create a new one before you can sign in again.`
+      : `Revoke "${device.name}"? It will no longer be able to sign in.`;
     if (!window.confirm(message)) return;
 
     setBusyId(device.id);
@@ -69,22 +87,34 @@ export function AuthenticatorDevices({
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="font-heading text-xl font-semibold text-navy-950">
-            Authenticator devices
+            Passkeys
           </h2>
           <p className="text-sm text-navy-600">
-            Phones that can approve cockpit sign-ins at{" "}
+            Devices that can sign in to the cockpit with one tap. Phones can
+            also approve sign-ins at{" "}
             <span className="font-mono text-navy-900">/authenticator</span>.
           </p>
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          className="gap-1.5"
-          onClick={generateCode}
-        >
-          <Plus className="size-3.5" aria-hidden="true" />
-          Add a phone
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            className="gap-1.5"
+            disabled={busyId === "new"}
+            onClick={addThisDevice}
+          >
+            <Fingerprint className="size-3.5" aria-hidden="true" />
+            {busyId === "new" ? "Waiting…" : "Add this device"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            onClick={generateCode}
+          >
+            <Plus className="size-3.5" aria-hidden="true" />
+            Add another phone
+          </Button>
+        </div>
       </div>
 
       {enrolCode ? (
@@ -109,7 +139,7 @@ export function AuthenticatorDevices({
         {devices.map((device) => (
           <li key={device.id} className="flex items-center gap-4 px-5 py-4">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy-600">
-              <Smartphone className="size-5" aria-hidden="true" />
+              <KeyRound className="size-5" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate font-medium text-navy-950">
