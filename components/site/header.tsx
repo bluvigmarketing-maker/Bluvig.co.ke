@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, Menu } from "lucide-react";
 
 import { isChromeless } from "@/lib/chromeless";
+import { SERVICES as SERVICE_LIST } from "@/lib/services";
 import { Container } from "@/components/site/container";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
@@ -23,21 +24,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const SERVICES = [
-  { label: "SEO", href: "/what-we-do/seo" },
-  { label: "Website Development", href: "/what-we-do/website-development" },
-  {
-    label: "Digital Marketing Training",
-    href: "/what-we-do/digital-marketing-training",
-  },
-  { label: "Graphic Design", href: "/what-we-do/graphic-design" },
-];
+const SERVICES = SERVICE_LIST.map((s) => ({
+  label: s.short,
+  href: `/services/${s.slug}`,
+}));
 
 const NAV_LINKS = [
-  { label: "Case Studies", href: "/case-studies" },
+  { label: "Work", href: "/work" },
+  { label: "How We Work", href: "/process" },
   { label: "Pricing", href: "/quotation" },
+  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
-  { label: "Tools", href: "/tools" },
 ];
 
 export function Header() {
@@ -59,19 +56,17 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          <Button variant="ghost" size="sm" render={<Link href="/">Home</Link>} />
-
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
                 <Button variant="ghost" size="sm" className="gap-1">
-                  What We Do
+                  Services
                   <ChevronDown className="size-3.5" aria-hidden="true" />
                 </Button>
               }
             />
             <DropdownMenuContent className="min-w-56">
-              <DropdownMenuItem render={<Link href="/what-we-do">All Services</Link>} />
+              <DropdownMenuItem render={<Link href="/services">All Services</Link>} />
               {SERVICES.map((service) => (
                 <DropdownMenuItem
                   key={service.href}
@@ -95,7 +90,7 @@ export function Header() {
           <MagneticButton>
             <Button
               className="btn-metallic gold-line font-semibold"
-              render={<Link href="/get-started">Get Started</Link>}
+              render={<Link href="/get-started">Start a Project</Link>}
             />
           </MagneticButton>
         </div>
@@ -124,12 +119,12 @@ export function Header() {
                 }
               />
               <span className="px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-navy-400 uppercase">
-                What We Do
+                Services
               </span>
               <SheetClose
                 render={
                   <Link
-                    href="/what-we-do"
+                    href="/services"
                     className="rounded-lg border-l-2 border-navy-100 py-2 pr-3 pl-4 text-sm font-medium text-navy-900 hover:bg-navy-50"
                   >
                     All Services
@@ -164,7 +159,7 @@ export function Header() {
               ))}
               <Button
                 className="btn-metallic gold-line mt-3 font-semibold"
-                render={<Link href="/get-started">Get Started</Link>}
+                render={<Link href="/get-started">Start a Project</Link>}
               />
             </nav>
           </SheetContent>

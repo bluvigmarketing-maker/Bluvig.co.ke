@@ -5,6 +5,7 @@ import { buildPackages, matchPackage } from "@/lib/estimator/packages";
 import { cleanSelection, type Currency } from "@/lib/estimator/pricing";
 import { createEstimate, getPricing } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
+import { cleanAttribution, recordEvent } from "@/lib/funnel";
 import { cleanMaterials } from "@/lib/materials";
 import { notifyNewEstimate } from "@/lib/notify";
 import { allow, tooManyRequests } from "@/lib/rate-limit";
@@ -70,6 +71,7 @@ export const POST = withStorageErrors(async (request: Request) => {
     currency,
     prototype: Boolean(body.prototype),
     materials: cleanMaterials(body.materials),
+    source: cleanAttribution(body.attribution),
     client: {
       name,
       company: text(client?.company, 120),
@@ -81,7 +83,10 @@ export const POST = withStorageErrors(async (request: Request) => {
   });
 
   const origin = new URL(request.url).origin;
-  after(() => notifyNewEstimate(estimate, origin));
+  after(async () => {
+    await recordEvent("quote_submitted");
+    await notifyNewEstimate(estimate, origin);
+  });
   const orderUrl = `${origin}/quotation/order/${estimate.token}`;
   return NextResponse.json(
     {

@@ -1,33 +1,53 @@
-import { Globe2, ShieldCheck, Target, TrendingUp } from "lucide-react";
+import {
+  Eye,
+  Globe2,
+  KeyRound,
+  LifeBuoy,
+  Receipt,
+  Smartphone,
+} from "lucide-react";
 
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { SectionHeading } from "@/components/site/section-heading";
 
-const POINTS = [
+/** "Working with us" assurances. */
+export const ASSURANCES = [
   {
-    icon: Target,
-    title: "Custom SEO Strategies",
+    icon: Eye,
+    title: "See It Before You Pay",
     description:
-      "No cookie-cutter playbooks. We run a comprehensive audit first to identify your strengths and hidden opportunities, then maximize your ROI.",
+      "Ask for a free prototype first. You click through the direction before you commit a shilling.",
+  },
+  {
+    icon: Receipt,
+    title: "Clear, Itemised Prices",
+    description:
+      "A fixed quote that lists every feature. 60% deposit to start, 40% when we launch — no hidden extras.",
+  },
+  {
+    icon: KeyRound,
+    title: "You Own What We Build",
+    description:
+      "Your code, content, domain and app store listings are yours once the project is paid for. NDA available on request.",
+  },
+  {
+    icon: Smartphone,
+    title: "M-Pesa and Local Know-How",
+    description:
+      "Daraja payments, eTIMS and how Kenyan customers actually buy — built in from day one, not bolted on.",
   },
   {
     icon: Globe2,
-    title: "Local & Global Reach",
+    title: "Easy to Work With From Abroad",
     description:
-      "Whether you're targeting customers in Nairobi or expanding into East Africa, our expertise ensures you connect with the right audience.",
+      "We work in English on East Africa Time (UTC+3), which overlaps European and Middle East business hours, and invoice international clients in USD.",
   },
   {
-    icon: TrendingUp,
-    title: "Proven Excellence & Experience",
+    icon: LifeBuoy,
+    title: "Support After Launch",
     description:
-      "With over eight years of hard-earned experience helping businesses grow, we don't stop optimizing until your website outperforms the competition.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Real Business Growth",
-    description:
-      "We build cash flow, not vanity metrics — every campaign is measured against enquiries, leads, and revenue, not just impressions.",
+      "We don't disappear at go-live. Fixes, hosting, updates and new features, on a plan that suits you.",
   },
 ];
 
@@ -39,15 +59,15 @@ export function Trust() {
           <SectionHeading
             align="center"
             eyebrow="Why Bluvig"
-            title="The Best SEO Company in Kenya"
-            description="Are you searching for a partner to dominate search results and drive sustainable growth? Look no further."
+            title="A Software Partner You Can Trust"
+            description="Software projects fail on trust before they fail on code. This is how we work with every client."
           />
         </AnimatedSection>
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          {POINTS.map((point, index) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {ASSURANCES.map((point, index) => (
             <AnimatedSection key={point.title} delay={index * 0.05}>
-              <div className="flex gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm">
+              <div className="flex h-full gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
                   <point.icon className="size-5" aria-hidden="true" />
                 </span>
@@ -63,16 +83,6 @@ export function Trust() {
             </AnimatedSection>
           ))}
         </div>
-
-        <AnimatedSection className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold tracking-wide text-gold-700 uppercase">
-            Our Mission
-          </span>
-          <p className="font-heading mt-3 text-xl text-balance text-navy-950 italic sm:text-2xl">
-            &ldquo;We never stop optimizing until your website stands out from
-            the competition and dominates the first page of Google.&rdquo;
-          </p>
-        </AnimatedSection>
       </Container>
     </section>
   );

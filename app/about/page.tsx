@@ -1,37 +1,39 @@
 import type { Metadata } from "next";
-import { Globe2, ShieldCheck, Target } from "lucide-react";
+import { Globe2, Handshake, Wrench } from "lucide-react";
 
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 import { SectionHeading } from "@/components/site/section-heading";
+import { Trust } from "@/components/home/trust";
 import { FinalCta } from "@/components/home/final-cta";
 
 const VALUES = [
   {
-    icon: Target,
-    title: "Cash Flow, Not Vanity Metrics",
+    icon: Wrench,
+    title: "Software That Gets Used",
     description:
-      "We measure our work against enquiries, leads, and revenue — not just impressions or follower counts.",
+      "We measure success by whether your team and customers actually use what we build — not by how many features we ship.",
   },
   {
     icon: Globe2,
-    title: "Built for Kenya, Ready for the Region",
+    title: "Built in Kenya, Ready for the World",
     description:
-      "Local search behavior, payment habits (like M-Pesa), and customer psychology inform everything we build.",
+      "M-Pesa, eTIMS and how Kenyan customers buy are second nature to us — and we build to the same standard for clients abroad.",
   },
   {
-    icon: ShieldCheck,
-    title: "No Cookie-Cutter Playbooks",
+    icon: Handshake,
+    title: "Straight Talk",
     description:
-      "Every engagement starts with a real audit of your business, not a template pulled off the shelf.",
+      "Clear prices, honest advice (including when you don't need custom software), and no jargon.",
   },
 ];
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Bluvig is an AI-powered digital marketing agency in Kenya, helping businesses get found, trusted, and remembered online.",
+    "Bluvig is a software studio in Kenya that designs and builds custom business software, web and mobile apps, websites and M-Pesa integrations.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -39,8 +41,8 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow="About Bluvig"
-        title="We Build Cash Flow, Not Vanity Metrics"
-        description="An AI-powered digital marketing agency helping Kenyan businesses get found, trusted, and remembered online."
+        title="A Software Studio in Kenya"
+        description="We design and build the software businesses run on — and stay around to keep it running."
       />
 
       <section className="bg-white py-20">
@@ -48,9 +50,9 @@ export default function AboutPage() {
           <AnimatedSection className="mx-auto flex max-w-3xl flex-col gap-6 text-center">
             <SectionHeading
               align="center"
-              eyebrow="Our Mission"
-              title="Getting Kenyan Businesses Found — Everywhere Customers Look"
-              description="Many businesses think website design is everything. It isn't. The money is in showing up where your customers are searching — on Google, AI tools like ChatGPT, and social platforms. We never stop optimizing until your business stands out from the competition and dominates the first page of Google."
+              eyebrow="Our Story"
+              title="From Getting Businesses Found to Building What They Run On"
+              description="Bluvig started by helping Kenyan businesses get found online — websites, SEO and digital marketing. Along the way our clients kept asking for more: online shops, booking systems, M-Pesa payments, tools for their teams. Today we're a software studio first, building custom systems, web and mobile apps and websites for businesses in Kenya and abroad — and we still make sure what we build gets found."
             />
           </AnimatedSection>
 
@@ -74,6 +76,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
+      <Trust />
       <FinalCta />
     </>
   );

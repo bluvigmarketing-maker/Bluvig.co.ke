@@ -10,6 +10,20 @@ const nextConfig: NextConfig = {
         destination: "/quotation/order/:token",
         permanent: true,
       },
+      // Software-studio repositioning (2026-10-16): /what-we-do → /services,
+      // /case-studies → /work. Retired marketing services fold into Launch & Grow.
+      { source: "/what-we-do", destination: "/services", permanent: true },
+      {
+        source: "/what-we-do/website-development",
+        destination: "/services/websites",
+        permanent: true,
+      },
+      {
+        source: "/what-we-do/:path(seo|digital-marketing-training|graphic-design)",
+        destination: "/services/launch-and-grow",
+        permanent: true,
+      },
+      { source: "/case-studies", destination: "/work", permanent: true },
     ];
   },
 };

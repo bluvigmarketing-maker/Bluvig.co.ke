@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Mail, MessageCircle, Phone } from "lucide-react";
+import { ArrowRight, Clock, Mail, MessageCircle, Phone } from "lucide-react";
 
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
@@ -31,7 +31,8 @@ const CHANNELS = [
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Bluvig — call, email, or WhatsApp us, or fill out the Get Started form.",
+    "Get in touch with Bluvig — call, email or WhatsApp us about your software, app or website project.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
@@ -40,7 +41,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Let's Talk"
-        description="Reach us directly, or tell us about your project and we'll get back to you."
+        description="Reach us directly, or tell us about your project and we'll call you back."
       />
       <section className="bg-white py-20">
         <Container className="flex flex-col items-center gap-12">
@@ -69,6 +70,15 @@ export default function ContactPage() {
             ))}
           </div>
 
+          <AnimatedSection
+            delay={0.1}
+            className="flex items-center gap-2 text-sm text-navy-700"
+          >
+            <Clock className="size-4 text-gold-600" aria-hidden="true" />
+            Monday–Friday, 8am–6pm East Africa Time (UTC+3). Outside Kenya? We
+            schedule calls to suit your time zone.
+          </AnimatedSection>
+
           <AnimatedSection delay={0.15} className="text-center">
             <p className="mb-4 text-sm text-navy-700">
               Prefer to share a few details about your project first?
@@ -78,7 +88,7 @@ export default function ContactPage() {
               className="btn-metallic gold-line font-semibold"
               render={
                 <Link href="/get-started">
-                  Fill Out the Get Started Form
+                  Start Your Project
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               }

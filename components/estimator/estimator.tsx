@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { getAttribution, track } from "@/lib/track-client";
 import { readJson } from "@/lib/read-json";
 import {
   BASE,
@@ -194,6 +195,7 @@ export function Estimator({
       setSelection(pkg?.selection ?? {});
       setLastAdded(null);
     }
+    track("quote_started");
     setStep("build");
   }
 
@@ -255,6 +257,7 @@ export function Estimator({
           selection,
           prototype,
           materials,
+          attribution: getAttribution(),
           website: form.get("website"),
           client: {
             name: form.get("name"),
@@ -307,6 +310,7 @@ export function Estimator({
             href={done.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track("whatsapp_click")}
             className="flex items-center justify-center gap-2 rounded-xl bg-[#25d366] px-6 py-4 text-base font-semibold text-white transition-colors hover:bg-[#1ebe5a]"
           >
             Send purchase order on WhatsApp
@@ -575,7 +579,10 @@ export function Estimator({
         {summaryBar(
           <button
             type="button"
-            onClick={() => setStep("price")}
+            onClick={() => {
+              track("quote_priced");
+              setStep("price");
+            }}
             className="btn-metallic gold-line flex items-center gap-2 rounded-xl px-5 py-3 font-semibold"
           >
             See my price
@@ -846,6 +853,15 @@ export function Estimator({
                 {error}
               </p>
             ) : null}
+            {/* Data protection notice (Kenya DPA 2019). */}
+            <p className="text-xs text-navy-500">
+              We use your details only to prepare your quotation and follow up.
+              See our{" "}
+              <a href="/privacy" target="_blank" className="underline">
+                Privacy Policy
+              </a>
+              .
+            </p>
           </form>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 
+import type { Attribution } from "@/lib/funnel-events";
 import type { Materials } from "@/lib/materials";
 import type { PipelineStatus } from "@/lib/pipeline";
 import { readDoc, updateDoc } from "@/lib/storage";
@@ -144,6 +145,8 @@ export interface Estimate {
   status: PipelineStatus | "estimate";
   /** Owner's private note. */
   note?: string;
+  /** Where the visitor came from (UTM / referrer). */
+  source?: Attribution;
   /** Set when the deposit arrives — drives the checklist and client tracker. */
   project?: Project;
 }
@@ -165,6 +168,7 @@ export async function createEstimate(input: {
   /** AI chats, inspiration sites and prototype links the client shared. */
   materials?: Materials;
   client: EstimateClient;
+  source?: Attribution;
 }): Promise<Estimate> {
   const pricing = await getPricing();
   const quote = buildQuote(input.selection, pricing, input.currency);
@@ -184,6 +188,7 @@ export async function createEstimate(input: {
       prototype: input.prototype,
       materials: input.materials,
       client: input.client,
+      source: input.source,
       status: "new",
     };
     (doc.estimates ??= []).push(estimate);

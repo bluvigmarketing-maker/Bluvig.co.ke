@@ -16,16 +16,16 @@ import { Button } from "@/components/ui/button";
 gsap.registerPlugin(useGSAP);
 
 const HEADLINE = [
-  "AI-Powered",
-  "Digital",
-  "Marketing",
-  "Agency",
-  "in",
-  "Kenya",
-  "Driving",
-  "Real",
+  "We",
+  "Design",
+  "and",
+  "Build",
+  "the",
+  "Software",
+  "Your",
   "Business",
-  "Growth",
+  "Runs",
+  "On",
 ];
 
 export function Hero() {
@@ -78,7 +78,7 @@ export function Hero() {
           data-hero-eyebrow
           className="glass-gold w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-gold-700 uppercase"
         >
-          The Discovery Engine
+          Software Studio · Kenya
         </span>
         <h1 className="font-heading max-w-3xl text-4xl font-bold text-balance text-navy-950 sm:text-5xl lg:text-6xl">
           {HEADLINE.map((word, i) => (
@@ -90,7 +90,7 @@ export function Hero() {
                 i < HEADLINE.length - 1 && "mr-[0.28em]"
               )}
             >
-              {word === "Kenya" ? (
+              {word === "Software" ? (
                 <span className="relative inline-block text-navy-600">
                   {word}
                   <span
@@ -105,8 +105,8 @@ export function Hero() {
           ))}
         </h1>
         <p data-hero-sub className="max-w-2xl text-lg text-navy-700">
-          Helping Kenyan businesses grow online through AI-driven digital
-          marketing, SEO, and high-performance website development.
+          Custom business systems, web and mobile apps, websites and M-Pesa
+          integrations — for businesses in Kenya and around the world.
         </p>
         <div
           data-hero-cta
@@ -118,7 +118,7 @@ export function Hero() {
               className="btn-metallic gold-line h-12 px-8 font-semibold"
               render={
                 <Link href="/get-started">
-                  Get Started
+                  Start Your Project
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               }
@@ -129,12 +129,18 @@ export function Hero() {
               size="lg"
               variant="outline"
               className="h-12 border-navy-200 px-8 font-semibold text-navy-900"
-              render={<Link href="/what-we-do">Explore Services</Link>}
+              render={<Link href="/work">See Our Work</Link>}
             />
           </MagneticButton>
         </div>
-        <p data-hero-note className="text-xs text-navy-400">
-          It takes a minute to get started.
+        <p data-hero-note className="text-sm text-navy-500">
+          Need a website?{" "}
+          <Link
+            href="/quotation"
+            className="font-semibold text-gold-700 underline-offset-4 hover:underline"
+          >
+            See your price in a minute →
+          </Link>
         </p>
       </Container>
     </section>

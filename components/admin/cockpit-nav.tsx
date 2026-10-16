@@ -10,6 +10,7 @@ const TABS = [
   { href: "/cockpit/estimates", label: "Estimates" },
   { href: "/cockpit/projects", label: "Projects" },
   { href: "/cockpit/pricing", label: "Pricing" },
+  { href: "/cockpit/insights", label: "Insights" },
 ];
 
 export function CockpitNav() {

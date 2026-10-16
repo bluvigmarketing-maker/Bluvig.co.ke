@@ -38,6 +38,7 @@ import {
   type BudgetBandId,
   type TimelineId,
 } from "@/lib/qualify";
+import { getAttribution, track } from "@/lib/track-client";
 import { IndustryIcon } from "@/components/estimator/industry-icon";
 import { MaterialsFields } from "./materials-fields";
 
@@ -104,6 +105,7 @@ export function StartWizard({
   }
 
   function start(next: Mode) {
+    if (next === "callback") track("callback_started");
     setMode(next);
     setStep(0);
     setError(null);
@@ -148,6 +150,7 @@ export function StartWizard({
           timeline,
           bestTime,
           materials,
+          attribution: getAttribution(),
           name: form.get("name"),
           phone: form.get("phone"),
           email: form.get("email"),
@@ -413,6 +416,14 @@ export function StartWizard({
                 {error}
               </p>
             ) : null}
+            <p className="text-xs text-navy-500">
+              We use your details only to call you back about your project. See
+              our{" "}
+              <a href="/privacy" target="_blank" className="underline">
+                Privacy Policy
+              </a>
+              .
+            </p>
             <NextButton type="submit" disabled={submitting}>
               {submitting ? "Sending…" : "Request my call back"}
             </NextButton>

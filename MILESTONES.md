@@ -2,7 +2,7 @@
 
 **Goal:** Turn bluvig.co.ke into the sales engine for a **software studio**: a fast, credible site that convinces businesses in Kenya and abroad to trust Bluvig with their business software, web applications and websites — and converts them through a visual project estimator into qualified, priced leads.
 
-_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first"). Progress last updated: 2026-10-16._
+_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first"). Progress last updated: 2026-10-16 (site rewrite)._
 
 ---
 
@@ -18,6 +18,7 @@ _Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing ag
 | 2026-10-12 | **Cockpit sign-in: passkey first.** One tap with fingerprint / Face ID / Windows Hello on the device you're using (or a phone via the browser's QR prompt). Number matching with Bluvig Authenticator stays as a fallback. Sign-in switched back on. | Easiest secure option: phishing-resistant, no password to leak, no second device needed. |
 | 2026-10-16 | **Cockpit PIN:** an 8-digit owner PIN, stored hashed in the DB, signs in as an alternative to the passkey (either one works). 5 wrong tries per visitor / 30 overall per hour pause PIN sign-in. | Lets the owner sign in from any computer without a passkey. |
 | 2026-10-16 | **USD only for visitors outside Kenya:** currency is set by the visitor's IP country; the KES/USD switch is gone. | Kenyan clients shouldn't see the 3× international prices. |
+| 2026-10-16 | **Site rewritten for the software studio positioning** using the proposed 6-service lineup. Digital Marketing Training and Graphic Design folded into **Launch & Grow** (old URLs redirect there). Blog stays at `/blog`. | Owner said "do them all"; lineup from Phase 1 proposal — owner to review copy. |
 | (earlier) | Stack: Next.js 16 (App Router) + TypeScript, Tailwind v4, shadcn/ui (`base-nova`), Framer Motion + GSAP, lucide-react, Geist + Playfair Display. Hosting on Vercel. | See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). |
 
 ## Audience — what each segment needs to see
@@ -56,28 +57,28 @@ Needs rework because of the repositioning:
 
 ## Phase 0 — Foundations (finish)
 - [x] GitHub remote created and pushed (`bluvigmarketing-maker/Bluvig.co.ke`)
-- [ ] Connect to Vercel: preview deploys per branch, production on `main`
+- [ ] Connect to Vercel: preview deploys per branch, production on `main` — step-by-step in [DEPLOY.md](DEPLOY.md) (owner's accounts)
 - [~] Hosted database: **Supabase** chosen (2026-10-03). Code supports it via `DATABASE_URL` (lib/storage.ts; table `bluvig_documents` auto-created with RLS on). **Owner to create the Supabase project and add `DATABASE_URL` in Vercel.**
-- [ ] Environment variable management for preview vs production (`ADMIN_PASSWORD`, DB URL, email API key)
+- [ ] Environment variables for preview vs production — full list in [DEPLOY.md](DEPLOY.md)
 
 ## Phase 1 — Positioning, Offers & Messaging
 _The site can't be rebuilt until this is decided. Mostly a writing/decision phase._
-- [ ] One-line value proposition + supporting line (e.g. "We design and build the software your business runs on")
-- [ ] Final service lineup. Proposed:
+- [x] One-line value proposition + supporting line (e.g. "We design and build the software your business runs on") (2026-10-16)
+- [x] Final service lineup. Proposed: — built as proposed (2026-10-16); data in `lib/services.ts`. **Owner to review copy, tech stacks and claims (eTIMS, React Native).**
   1. **Custom Business Software** — internal tools, dashboards, ERP/CRM/inventory, workflow automation
   2. **Web Applications & Portals** — customer portals, SaaS products, booking/ordering systems
   3. **Mobile Apps** — iOS/Android (cross-platform)
   4. **Websites** — high-performance marketing and e-commerce sites
   5. **Integrations** — M-Pesa/Daraja, payment gateways, KRA eTIMS, third-party APIs
   6. **Launch & Grow** (supporting) — SEO, analytics and digital marketing for what we ship
-- [ ] Decide fate of **Digital Marketing Training** and **Graphic Design**: drop, fold into "Launch & Grow", or keep as minor pages → _owner decision_
+- [x] Decide fate of **Digital Marketing Training** and **Graphic Design**: drop, fold into "Launch & Grow", or keep as minor pages → _owner decision_ — folded into Launch & Grow for now
 - [ ] Engagement models to present: fixed-scope project · MVP sprint · dedicated team / monthly retainer · support & maintenance plan
 - [ ] Pricing stance: published "starting at" ranges per service (KES + USD) — feeds the estimator's pricing model
 - [ ] **Proof inventory:** list every shipped project with client permission status, stack, scope, outcome numbers, screenshots, testimonial availability. (QR Baker is our own product — strong proof of software capability.)
 - [ ] Industries to highlight, if any (e.g. retail, logistics, hospitality, finance, NGOs)
 
 ## Phase 2 — Information Architecture
-- [ ] Finalize sitemap. Proposed:
+- [x] Finalize sitemap. Proposed: — built (2026-10-16); `/estimate` is `/quotation`, blog stays `/blog`
 ```
 /                          Home (software studio positioning, estimator CTA)
 /services                  Services overview
@@ -97,18 +98,18 @@ _The site can't be rebuilt until this is decided. Mostly a writing/decision phas
 /contact                   Call / email / WhatsApp / book a call
 /privacy  /terms           Legal (Phase 8)
 ```
-- [ ] 301 redirect map for every URL that changes: `/what-we-do/*` → `/services/*`, `/case-studies` → `/work`, old WordPress blog slugs, retired pages → nearest equivalent
-- [ ] Navigation: Services · Work · Process · About · Insights + persistent **"Get an Estimate"** button in the header
+- [x] 301 redirect map for every URL that changes: `/what-we-do/*` → `/services/*`, `/case-studies` → `/work`, old WordPress blog slugs, retired pages → nearest equivalent — site routes done (2026-10-16); old WordPress slugs still to map after launch (Search Console 404s)
+- [x] Navigation: Services · Work · Process · About · Insights + persistent **"Get an Estimate"** button in the header — Services · Work · How We Work · Pricing · About · Blog + "Start a Project" (2026-10-16)
 
 ## Phase 3 — Page Rebuild (copy + layout)
 Reuse the existing design system and components; rewrite content.
-- [ ] **Home:** hero (value prop + "Get an Estimate" + secondary "See our work"), client/tech logo strip, services overview, featured case studies, process snapshot, estimator teaser, testimonials, final CTA
-- [ ] **Service pages** (template-driven, one data file): problem it solves, what's included, example deliverables, tech stack, typical timeline, starting price, related case studies, FAQ, CTA → estimator pre-filled with that service
-- [ ] **Work index + detail pages** (`/work/[slug]`): client, challenge, solution, stack, screenshots, outcome numbers, testimonial
-- [ ] **Process page:** phases, deliverables per phase, communication cadence, tools (Slack/Jira/etc.), who you'll talk to
-- [ ] **About:** real team/founder info, location, years operating, values — no fabricated bios
-- [ ] **Contact:** direct channels + calendar booking embed
-- [ ] Update site metadata, titles and descriptions to the new positioning
+- [x] **Home:** hero (value prop + "Get an Estimate" + secondary "See our work"), client/tech logo strip, services overview, featured case studies, process snapshot, estimator teaser, testimonials, final CTA — done except logo strip and testimonials (need real, permitted ones)
+- [x] **Service pages** (template-driven, one data file): problem it solves, what's included, example deliverables, tech stack, typical timeline, starting price, related case studies, FAQ, CTA → estimator pre-filled with that service — `/services/[slug]` from `lib/services.ts`; websites show the live starting price in the visitor's currency, others go to a discovery call
+- [x] **Work index + detail pages** (`/work/[slug]`): client, challenge, solution, stack, screenshots, outcome numbers, testimonial — template ready; a project gets its page once `story` is added in `lib/work.ts` (no fabricated content)
+- [x] **Process page:** phases, deliverables per phase, communication cadence, tools (Slack/Jira/etc.), who you'll talk to (`/process`)
+- [~] **About:** rewritten story and values (2026-10-16); **still needs real team/founder info and photos**
+- [~] **Contact:** channels + working hours (Mon–Fri 8–6 EAT — **owner to confirm**); calendar booking embed still to do
+- [x] Update site metadata, titles and descriptions to the new positioning (2026-10-16)
 
 ## Phase 4 — Visual Project Estimator (flagship conversion)
 Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standard Website (KES 30,000; 3× in USD for international clients) → add modules with a live visual preview → proforma invoice PDF + purchase order sent to Bluvig's WhatsApp.
@@ -134,7 +135,7 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 ## Phase 5 — Lead Infrastructure
 - [x] Leads and authenticator devices stored in the hosted DB when `DATABASE_URL` is set (local dev still uses `data/*.json`)
 - [x] Email alert to the owner on every new lead/estimate (Resend; set `RESEND_API_KEY`, `NOTIFY_EMAIL`, `NOTIFY_FROM`) (2026-10-16)
-- [ ] Auto-reply email to the prospect (needs bluvig.co.ke verified in Resend)
+- [x] Auto-reply email to the prospect (needs bluvig.co.ke verified in Resend) — built; turns on when `NOTIFY_FROM` is set (2026-10-16)
 - [ ] Optional: push leads to a CRM (HubSpot/Zoho) or Google Sheet via webhook
 - [ ] Calendar booking embed (Cal.com/Calendly) on Contact and after the estimator
 - [x] Lead and estimate status (new → contacted → proposal → won/lost) + notes in the cockpit (2026-10-16)
@@ -146,31 +147,31 @@ _Software buyers, especially international and established companies, buy trust 
 - [ ] 3–5 flagship case studies at full depth (from the Phase 1 proof inventory)
 - [ ] Real testimonials with name, role and company (with permission); video if possible
 - [ ] Client logo strip (with permission)
-- [ ] Tech stack section (languages/frameworks/cloud we work with)
-- [ ] "Working with us" assurances: NDA available, client owns the code/IP, milestone-based payments, post-launch support terms
-- [ ] Security & data handling statement (hosting, backups, access control, Kenya Data Protection Act compliance)
+- [x] Tech stack section (languages/frameworks/cloud we work with) — per service page
+- [x] "Working with us" assurances: NDA available, client owns the code/IP, milestone-based payments, post-launch support terms — on home, About and Process (2026-10-16). **Owner to confirm the ownership and NDA promises.**
+- [~] Security & data handling: covered in the Privacy Policy; a fuller security page can follow
 - [ ] Third-party profiles linked: Clutch / GoodFirms / Google Business Profile / LinkedIn company page — reviews there carry weight with international buyers
 
 ## Phase 7 — Content & SEO
-- [ ] Retarget keywords: e.g. "software development company Kenya", "custom software Nairobi", "web application development Kenya", "M-Pesa integration developer", "hire developers in Kenya", "offshore development Africa"
+- [x] Retarget keywords: e.g. "software development company Kenya", "custom software Nairobi", "web application development Kenya", "M-Pesa integration developer", "hire developers in Kenya", "offshore development Africa" — titles, descriptions and copy (2026-10-16)
 - [ ] Blog migration from WordPress: keep posts that still fit, 301 the rest to relevant pages; choose authoring setup (MDX in repo vs. Sanity — decide by publishing frequency)
 - [ ] Content plan for the new audience: build-cost guides ("How much does custom software cost in Kenya?"), integration how-tos, case-study write-ups
-- [ ] Technical SEO: `sitemap.xml`, `robots.txt`, canonical URLs, structured data (Organization, LocalBusiness, Service, Article, FAQ), Open Graph images
+- [x] Technical SEO: `sitemap.xml`, `robots.txt`, canonical URLs, structured data (Organization, LocalBusiness, Service, Article, FAQ), Open Graph images — all but Article (no posts yet) (2026-10-16)
 - [ ] Core Web Vitals: 90+ Lighthouse on all marketing pages; keep decorative motion lightweight
 - [ ] Google Search Console + Bing Webmaster set up; monitor redirect coverage after launch
 
 ## Phase 8 — Legal & Business Readiness
-- [ ] Privacy policy (Kenya Data Protection Act 2019; GDPR basics for EU visitors since international clients are a target)
-- [ ] Terms of use; estimator disclaimer ("estimates are indicative, final quote after discovery")
-- [ ] Cookie/analytics consent banner (only if using cookie-based analytics)
+- [x] Privacy policy (Kenya Data Protection Act 2019; GDPR basics for EU visitors since international clients are a target) — `/privacy` (2026-10-16). **Have a lawyer review before launch.**
+- [x] Terms of use; estimator disclaimer ("estimates are indicative, final quote after discovery") — `/terms` (2026-10-16)
+- [x] Cookie/analytics consent banner (only if using cookie-based analytics) — not needed: no tracking cookies (Vercel Analytics is cookieless)
 - [ ] Check whether ODPC registration as a data controller/processor applies to the business
-- [ ] Business details in footer: registered name, location, contact, business hours (EAT)
+- [x] Business details in footer: registered name, location, contact, business hours (EAT) (2026-10-16)
 - [ ] Standard proposal/contract template and NDA ready to send after estimator leads (offline, but needed before leads arrive)
 
 ## Phase 9 — Analytics & Conversion Tracking
-- [ ] Analytics (GA4 or a privacy-friendly option like Plausible) with conversion events: estimate started/completed, lead submitted, call booked, WhatsApp click
-- [ ] Lead source attribution (UTM capture stored with each lead)
-- [ ] Simple dashboard: leads per week by source, estimator funnel drop-off
+- [x] Analytics (GA4 or a privacy-friendly option like Plausible) with conversion events: estimate started/completed, lead submitted, call booked, WhatsApp click — Vercel Web Analytics (page views, enable in Vercel) + first-party funnel counters (2026-10-16)
+- [x] Lead source attribution (UTM capture stored with each lead) (2026-10-16)
+- [x] Simple dashboard: leads per week by source, estimator funnel drop-off — Cockpit → Insights (2026-10-16)
 
 ## Phase 10 — QA & Launch
 - [ ] Cross-browser/device testing (mobile-first)
@@ -178,7 +179,7 @@ _Software buyers, especially international and established companies, buy trust 
 - [ ] Accessibility pass (contrast, keyboard navigation, focus states, alt text)
 - [ ] Copy proofread and broken-link check
 - [ ] DNS cutover (low TTL), redirect spot-checks, 404 monitoring
-- [ ] Production `npm run build` clean; Lighthouse check on live URLs
+- [x] Production `npm run build` clean; Lighthouse check on live URLs — build clean 2026-10-16; Lighthouse after deploy
 
 ## Phase 11 — Post-Launch Growth
 - [ ] Weekly lead review; tune estimator pricing against real quotes and won deals

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 
 import { isChromeless } from "@/lib/chromeless";
+import { track } from "@/lib/track-client";
 
 const WHATSAPP_NUMBER = "254700574125";
 
@@ -18,6 +19,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with Bluvig on WhatsApp"
+      onClick={() => track("whatsapp_click")}
       className="fixed right-5 bottom-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl"
     >
       <MessageCircle className="size-7" fill="white" aria-hidden="true" />

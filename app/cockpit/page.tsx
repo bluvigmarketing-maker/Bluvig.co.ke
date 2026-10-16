@@ -14,6 +14,7 @@ import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
 import { PipelineControl } from "@/components/admin/pipeline-control";
 import { pipelineStatus } from "@/lib/pipeline";
+import { describeAttribution } from "@/lib/funnel";
 import { hasMaterials } from "@/lib/materials";
 
 const QUALIFICATION_STYLE = {
@@ -241,6 +242,11 @@ export default async function AdminDashboardPage() {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-navy-500">
                       {formatDate(lead.submittedAt)}
+                      {lead.source ? (
+                        <p className="text-xs text-navy-400">
+                          via {describeAttribution(lead.source)}
+                        </p>
+                      ) : null}
                     </td>
                   </tr>
                 ))}

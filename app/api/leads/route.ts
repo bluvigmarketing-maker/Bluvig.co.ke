@@ -1,6 +1,7 @@
 import { after, NextResponse } from "next/server";
 
 import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
+import { cleanAttribution, recordEvent } from "@/lib/funnel";
 import { addLead } from "@/lib/leads";
 import { cleanMaterials } from "@/lib/materials";
 import { notifyNewLead } from "@/lib/notify";
@@ -86,8 +87,12 @@ export const POST = withStorageErrors(async (request: Request) => {
         : undefined,
       materials: cleanMaterials(body.materials),
       qualification,
+      source: cleanAttribution(body.attribution),
     });
-    after(() => notifyNewLead(lead, new URL(request.url).origin));
+    after(async () => {
+      await recordEvent("callback_submitted");
+      await notifyNewLead(lead, new URL(request.url).origin);
+    });
     return NextResponse.json(
       { ok: true, id: lead.id, qualification },
       { status: 201 }
@@ -110,6 +115,7 @@ export const POST = withStorageErrors(async (request: Request) => {
     goal: text(body.goal),
     budget: text(body.budget),
     message: text(body.message, 2000),
+    source: cleanAttribution(body.attribution),
   });
   after(() => notifyNewLead(lead, new URL(request.url).origin));
   return NextResponse.json({ ok: true, id: lead.id }, { status: 201 });

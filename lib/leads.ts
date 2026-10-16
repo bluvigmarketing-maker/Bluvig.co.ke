@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import type { Attribution } from "@/lib/funnel-events";
 import type { Materials } from "@/lib/materials";
 import type { PipelineStatus } from "@/lib/pipeline";
 import type { Qualification } from "@/lib/qualify";
@@ -28,6 +29,8 @@ export interface Lead {
   status?: PipelineStatus;
   /** Owner's private note, e.g. "Called Tue, wants a demo". */
   note?: string;
+  /** Where the visitor came from (UTM / referrer). */
+  source?: Attribution;
 }
 
 export type NewLead = Omit<Lead, "id" | "submittedAt" | "status" | "note">;

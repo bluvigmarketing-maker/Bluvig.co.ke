@@ -9,6 +9,7 @@ import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
 import { PipelineControl } from "@/components/admin/pipeline-control";
 import { pipelineStatus } from "@/lib/pipeline";
+import { describeAttribution } from "@/lib/funnel";
 import { StartProjectButton } from "@/components/admin/project-board";
 import { projectProgress } from "@/lib/estimator/project";
 
@@ -94,6 +95,11 @@ export default async function EstimatesPage() {
                           timeStyle: "short",
                         })}
                       </p>
+                      {e.source ? (
+                        <p className="text-xs text-navy-400">
+                          via {describeAttribution(e.source)}
+                        </p>
+                      ) : null}
                     </td>
                     <td className="px-4 py-3">
                       <PipelineControl

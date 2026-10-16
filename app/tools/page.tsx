@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Free Tools",
   description:
     "Free tools from Bluvig — a Readability Checker, QR Baker, and a Visibility Checker for AI-era search.",
+  alternates: { canonical: "/tools" },
 };
 
 const TOOLS = [

@@ -8,7 +8,8 @@ import { PageHero } from "@/components/site/page-hero";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "SEO, digital marketing, and AI visibility insights for Kenyan businesses.",
+    "Insights on software, websites, SEO and getting found online for businesses in Kenya.",
+  alternates: { canonical: "/blog" },
 };
 
 // Placeholder listing carried over from the current WordPress blog.
@@ -65,8 +66,8 @@ export default function BlogPage() {
     <>
       <PageHero
         eyebrow="Blog"
-        title="Visibility, SEO & Growth Insights"
-        description="Practical writing on SEO, AI visibility, and digital marketing for Kenyan businesses."
+        title="Insights"
+        description="Practical writing on software, websites, SEO and getting found online — for businesses in Kenya."
       />
       <section className="bg-white py-20">
         <Container>
