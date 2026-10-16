@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import type { Materials } from "@/lib/materials";
+import type { PipelineStatus } from "@/lib/pipeline";
 import type { Qualification } from "@/lib/qualify";
 import { readDoc, updateDoc } from "@/lib/storage";
 
@@ -23,9 +24,13 @@ export interface Lead {
   bestTime?: string;
   materials?: Materials;
   qualification?: Qualification;
+  /** Sales pipeline; absent on older leads (treated as "new"). */
+  status?: PipelineStatus;
+  /** Owner's private note, e.g. "Called Tue, wants a demo". */
+  note?: string;
 }
 
-export type NewLead = Omit<Lead, "id" | "submittedAt">;
+export type NewLead = Omit<Lead, "id" | "submittedAt" | "status" | "note">;
 
 const KEY = "leads";
 
@@ -39,6 +44,20 @@ export async function addLead(input: NewLead): Promise<Lead> {
     leads.push(lead);
   });
   return lead;
+}
+
+/** Updates a lead's pipeline status and/or note. False if not found. */
+export async function updateLead(
+  id: string,
+  change: { status?: PipelineStatus; note?: string }
+): Promise<boolean> {
+  return updateDoc<Lead[], boolean>(KEY, [], (leads) => {
+    const lead = leads.find((l) => l.id === id);
+    if (!lead) return false;
+    if (change.status) lead.status = change.status;
+    if (change.note !== undefined) lead.note = change.note;
+    return true;
+  });
 }
 
 export async function getLeads(): Promise<Lead[]> {

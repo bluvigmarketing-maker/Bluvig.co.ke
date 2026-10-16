@@ -8,6 +8,7 @@ import {
   startCeremony,
 } from "@/lib/authenticator";
 import { AUTHENTICATOR_USER_NAME, relyingParty, RP_NAME } from "@/lib/webauthn";
+import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
 
 /**
@@ -30,6 +31,7 @@ export const POST = withStorageErrors(async (request: Request) => {
   if (signedIn) {
     // Already inside the cockpit — no extra proof needed.
   } else if (devices.length === 0) {
+    if (!(await allow("setup", request))) return tooManyRequests();
     if (!password || !verifyPassword(password)) {
       return NextResponse.json(
         { error: "Incorrect setup password." },

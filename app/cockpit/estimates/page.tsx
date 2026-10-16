@@ -7,6 +7,8 @@ import { listEstimates, type Estimate } from "@/lib/estimator/store";
 import { describeStorageError } from "@/lib/storage-errors";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
+import { PipelineControl } from "@/components/admin/pipeline-control";
+import { pipelineStatus } from "@/lib/pipeline";
 import { StartProjectButton } from "@/components/admin/project-board";
 import { projectProgress } from "@/lib/estimator/project";
 
@@ -64,10 +66,11 @@ export default async function EstimatesPage() {
 
         {estimates.length ? (
           <div className="overflow-x-auto rounded-2xl border border-navy-100 bg-white">
-            <table className="w-full min-w-[860px] text-left text-sm">
+            <table className="w-full min-w-[1000px] text-left text-sm">
               <thead>
                 <tr className="border-b border-navy-100 text-xs tracking-wide text-navy-500 uppercase">
                   <th className="px-4 py-3">Reference</th>
+                  <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Client</th>
                   <th className="px-4 py-3">Contact</th>
                   <th className="px-4 py-3">Project</th>
@@ -91,6 +94,14 @@ export default async function EstimatesPage() {
                           timeStyle: "short",
                         })}
                       </p>
+                    </td>
+                    <td className="px-4 py-3">
+                      <PipelineControl
+                        kind="estimate"
+                        id={e.token}
+                        status={pipelineStatus(e.status)}
+                        note={e.note}
+                      />
                     </td>
                     <td className="px-4 py-3 text-navy-900">
                       <p className="font-medium">{e.client.name}</p>

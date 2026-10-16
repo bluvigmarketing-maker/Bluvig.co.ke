@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
 import { addLead } from "@/lib/leads";
 import { cleanMaterials } from "@/lib/materials";
+import { notifyNewLead } from "@/lib/notify";
 import {
   BEST_TIMES,
   isBestTime,
@@ -11,6 +12,7 @@ import {
   qualify,
   TIMELINES,
 } from "@/lib/qualify";
+import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
 
 const text = (value: unknown, max = 200) =>
@@ -58,6 +60,7 @@ export const POST = withStorageErrors(async (request: Request) => {
         { status: 400 }
       );
     }
+    if (!(await allow("lead", request))) return tooManyRequests();
     const bestTime = isBestTime(body.bestTime) ? body.bestTime : undefined;
     const qualification = qualify(band, timeline);
 
@@ -80,6 +83,7 @@ export const POST = withStorageErrors(async (request: Request) => {
       materials: cleanMaterials(body.materials),
       qualification,
     });
+    after(() => notifyNewLead(lead, new URL(request.url).origin));
     return NextResponse.json(
       { ok: true, id: lead.id, qualification },
       { status: 201 }
@@ -93,6 +97,7 @@ export const POST = withStorageErrors(async (request: Request) => {
       { status: 400 }
     );
   }
+  if (!(await allow("lead", request))) return tooManyRequests();
   const lead = await addLead({
     name,
     email,
@@ -102,5 +107,6 @@ export const POST = withStorageErrors(async (request: Request) => {
     budget: text(body.budget),
     message: text(body.message, 2000),
   });
+  after(() => notifyNewLead(lead, new URL(request.url).origin));
   return NextResponse.json({ ok: true, id: lead.id }, { status: 201 });
 });

@@ -2,7 +2,7 @@
 
 **Goal:** Turn bluvig.co.ke into the sales engine for a **software studio**: a fast, credible site that convinces businesses in Kenya and abroad to trust Bluvig with their business software, web applications and websites — and converts them through a visual project estimator into qualified, priced leads.
 
-_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first"). Progress last updated: 2026-10-12._
+_Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing agency" to "software studio first"). Progress last updated: 2026-10-16._
 
 ---
 
@@ -124,17 +124,19 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [x] `/get-started` qualifying wizard: call back / pick features / recommend for budget; Hot-Warm-Cold lead rating
 - [x] Pricing redo (2026-10-10): three ready-made packages per industry, pre-selected default package, estimator polish
 - [x] **Project tracker** (2026-10-10): when the deposit arrives, a checklist is generated from what the client ordered (phases: kick-off → design → build → content & SEO → testing → launch), progress weighted by effort in days. Cockpit board at `/cockpit/projects`; client sees phase progress on their order page.
-- [ ] Estimate status (won/lost) in the cockpit + email notification on new estimate or call-back
-- [~] Spam protection: honeypot done; rate limiting + analytics events per step to do
+- [x] Estimate status in the cockpit (New → Contacted → Proposal sent → Won / Lost) + private note; email alert on new estimate or call-back (2026-10-16)
+- [~] Spam protection: honeypot + per-visitor rate limiting done (2026-10-16); analytics events per step to do
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 
 ## Phase 5 — Lead Infrastructure
 - [x] Leads and authenticator devices stored in the hosted DB when `DATABASE_URL` is set (local dev still uses `data/*.json`)
-- [ ] Email notification on every new lead/estimate (Resend), plus auto-reply to the prospect
+- [x] Email alert to the owner on every new lead/estimate (Resend; set `RESEND_API_KEY`, `NOTIFY_EMAIL`, `NOTIFY_FROM`) (2026-10-16)
+- [ ] Auto-reply email to the prospect (needs bluvig.co.ke verified in Resend)
 - [ ] Optional: push leads to a CRM (HubSpot/Zoho) or Google Sheet via webhook
 - [ ] Calendar booking embed (Cal.com/Calendly) on Contact and after the estimator
-- [ ] Upgrade `/cockpit`: lead status (new → contacted → proposal → won/lost), estimate details, notes, CSV export
-- [ ] Spam protection on forms (Cloudflare Turnstile or honeypot + rate limiting)
+- [x] Lead and estimate status (new → contacted → proposal → won/lost) + notes in the cockpit (2026-10-16)
+- [ ] Cockpit: CSV export, filter by status
+- [x] Spam protection on forms: honeypot + rate limiting (5 call-backs / 10 quotations per visitor per 10 min; 5 setup-password tries per 15 min) (2026-10-16)
 
 ## Phase 6 — Trust & Proof
 _Software buyers, especially international and established companies, buy trust before they buy code._

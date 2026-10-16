@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 
 import type { Materials } from "@/lib/materials";
+import type { PipelineStatus } from "@/lib/pipeline";
 import { readDoc, updateDoc } from "@/lib/storage";
 import { MODULES } from "./catalog";
 import { newProject, type Project } from "./project";
@@ -122,8 +123,6 @@ export interface EstimateClient {
   notes: string;
 }
 
-export type EstimateStatus = "estimate" | "won" | "lost";
-
 export interface Estimate {
   /** Unguessable — used in the shareable order link. */
   token: string;
@@ -141,7 +140,10 @@ export interface Estimate {
   /** AI chats, inspiration sites and prototype links the client shared. */
   materials?: Materials;
   client: EstimateClient;
-  status: EstimateStatus;
+  /** Sales pipeline. Older estimates may hold "estimate" (= new) — read it with pipelineStatus(). */
+  status: PipelineStatus | "estimate";
+  /** Owner's private note. */
+  note?: string;
   /** Set when the deposit arrives — drives the checklist and client tracker. */
   project?: Project;
 }
@@ -182,7 +184,7 @@ export async function createEstimate(input: {
       prototype: input.prototype,
       materials: input.materials,
       client: input.client,
-      status: "estimate",
+      status: "new",
     };
     (doc.estimates ??= []).push(estimate);
     return estimate;
@@ -197,6 +199,20 @@ export async function getEstimate(token: string): Promise<Estimate | null> {
 export async function listEstimates(): Promise<Estimate[]> {
   const doc = await readDoc<EstimatesDoc>(ESTIMATES_KEY, {});
   return [...(doc.estimates ?? [])].reverse();
+}
+
+/** Updates an estimate's pipeline status and/or note. Null if not found. */
+export async function updateEstimateStatus(
+  token: string,
+  change: { status?: PipelineStatus; note?: string }
+): Promise<Estimate | null> {
+  return updateDoc<EstimatesDoc, Estimate | null>(ESTIMATES_KEY, {}, (doc) => {
+    const estimate = doc.estimates?.find((e) => e.token === token);
+    if (!estimate) return null;
+    if (change.status) estimate.status = change.status;
+    if (change.note !== undefined) estimate.note = change.note;
+    return estimate;
+  });
 }
 
 // ── Projects ─────────────────────────────────────────────────────────────

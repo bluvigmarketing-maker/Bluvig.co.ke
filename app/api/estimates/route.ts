@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
 import { buildPackages, matchPackage } from "@/lib/estimator/packages";
@@ -6,6 +6,8 @@ import { cleanSelection, type Currency } from "@/lib/estimator/pricing";
 import { createEstimate, getPricing } from "@/lib/estimator/store";
 import { purchaseOrderLink } from "@/lib/estimator/whatsapp";
 import { cleanMaterials } from "@/lib/materials";
+import { notifyNewEstimate } from "@/lib/notify";
+import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
 
 const text = (value: unknown, max = 200) =>
@@ -51,6 +53,8 @@ export const POST = withStorageErrors(async (request: Request) => {
     );
   }
 
+  if (!(await allow("estimate", request))) return tooManyRequests();
+
   const pricing = await getPricing();
   const selection = cleanSelection(body.selection, pricing);
   const packages = buildPackages(industry, pricing);
@@ -73,7 +77,9 @@ export const POST = withStorageErrors(async (request: Request) => {
     },
   });
 
-  const orderUrl = `${new URL(request.url).origin}/quotation/order/${estimate.token}`;
+  const origin = new URL(request.url).origin;
+  after(() => notifyNewEstimate(estimate, origin));
+  const orderUrl = `${origin}/quotation/order/${estimate.token}`;
   return NextResponse.json(
     {
       token: estimate.token,

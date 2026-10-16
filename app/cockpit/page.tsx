@@ -10,6 +10,8 @@ import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
+import { PipelineControl } from "@/components/admin/pipeline-control";
+import { pipelineStatus } from "@/lib/pipeline";
 import { hasMaterials } from "@/lib/materials";
 
 const QUALIFICATION_STYLE = {
@@ -102,7 +104,11 @@ export default async function AdminDashboardPage() {
           </p>
         ) : null}
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            label="Not Contacted Yet"
+            value={leads.filter((l) => pipelineStatus(l.status) === "new").length}
+          />
           <StatCard label="Total Leads" value={leads.length} />
           <StatCard label="Last 7 Days" value={thisWeek} />
           <StatCard
@@ -126,10 +132,11 @@ export default async function AdminDashboardPage() {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-2xl border border-navy-100 bg-white">
-            <table className="w-full min-w-[900px] text-left text-sm">
+            <table className="w-full min-w-[1040px] text-left text-sm">
               <thead>
                 <tr className="border-b border-navy-100 text-xs font-semibold tracking-wide text-navy-500 uppercase">
                   <th className="px-4 py-3">Lead</th>
+                  <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Contact</th>
                   <th className="px-4 py-3">Request</th>
                   <th className="px-4 py-3">Budget</th>
@@ -156,6 +163,14 @@ export default async function AdminDashboardPage() {
                               : "Cold"}
                         </span>
                       ) : null}
+                    </td>
+                    <td className="px-4 py-3">
+                      <PipelineControl
+                        kind="lead"
+                        id={lead.id}
+                        status={pipelineStatus(lead.status)}
+                        note={lead.note}
+                      />
                     </td>
                     <td className="px-4 py-3 text-navy-700">
                       <div className="flex flex-col gap-1">
