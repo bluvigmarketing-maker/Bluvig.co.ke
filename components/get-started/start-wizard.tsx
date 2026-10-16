@@ -51,11 +51,18 @@ const CALLBACK_STEPS = [
 ] as const;
 const RECOMMEND_STEPS = ["industry", "amount", "result"] as const;
 
-export function StartWizard({ pricing }: { pricing: Pricing }) {
+export function StartWizard({
+  pricing,
+  location,
+}: {
+  pricing: Pricing;
+  /** Visitor in Kenya (KES) or not (USD), from their IP; null if unknown. */
+  location: boolean | null;
+}) {
   const [mode, setMode] = useState<Mode>("choose");
   const [step, setStep] = useState(0);
   const [industryId, setIndustryId] = useState<string | null>(null);
-  const [inKenya, setInKenya] = useState(true);
+  const [inKenya, setInKenya] = useState(location ?? true);
   const [band, setBand] = useState<BudgetBandId | null>(null);
   const [timeline, setTimeline] = useState<TimelineId | null>(null);
   const [materials, setMaterials] = useState<Materials>(EMPTY_MATERIALS);
@@ -65,12 +72,14 @@ export function StartWizard({ pricing }: { pricing: Pricing }) {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<{ belowMinimum: boolean } | null>(null);
 
+  // Location unknown (local dev): guess from the browser's time zone.
   useEffect(() => {
+    if (location !== null) return;
     if (Intl.DateTimeFormat().resolvedOptions().timeZone !== "Africa/Nairobi") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setInKenya(false);
     }
-  }, []);
+  }, [location]);
 
   const currency: Currency = inKenya ? "KES" : "USD";
   const money = (kes: number) =>
@@ -165,27 +174,6 @@ export function StartWizard({ pricing }: { pricing: Pricing }) {
         loc: inKenya ? "ke" : "intl",
       })}`
     : "/quotation";
-
-  const locationToggle = (
-    <div className="flex w-fit gap-1 rounded-full border border-navy-200 bg-white p-1 text-sm">
-      {[true, false].map((kenya) => (
-        <button
-          key={String(kenya)}
-          type="button"
-          aria-pressed={inKenya === kenya}
-          onClick={() => setInKenya(kenya)}
-          className={cn(
-            "rounded-full px-3 py-1",
-            inKenya === kenya
-              ? "bg-navy-950 text-white"
-              : "text-navy-700 hover:bg-navy-50"
-          )}
-        >
-          {kenya ? "I'm in Kenya · KES" : "Outside Kenya · USD"}
-        </button>
-      ))}
-    </div>
-  );
 
   // ── Done ───────────────────────────────────────────────────────────────
   if (done) {
@@ -302,7 +290,6 @@ export function StartWizard({ pricing }: { pricing: Pricing }) {
           title="What budget do you have in mind?"
           subtitle="A rough range is fine."
         >
-          {locationToggle}
           <div className="grid gap-2 sm:grid-cols-2">
             {BUDGET_BANDS.map((b) => (
               <Chip
@@ -438,7 +425,6 @@ export function StartWizard({ pricing }: { pricing: Pricing }) {
           title="What's your budget?"
           subtitle="We'll fit the best features for your industry into it."
         >
-          {locationToggle}
           <label className="flex max-w-sm items-center gap-2 rounded-xl border border-navy-200 bg-white px-4 py-3 focus-within:border-gold-400">
             <span className="font-semibold text-navy-600">{currency}</span>
             <input

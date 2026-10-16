@@ -6,6 +6,7 @@ import { INDUSTRY_BY_ID } from "@/lib/estimator/catalog";
 import { cleanSelection, type Pricing } from "@/lib/estimator/pricing";
 import { getPricing } from "@/lib/estimator/store";
 import { describeStorageError } from "@/lib/storage-errors";
+import { visitorInKenya } from "@/lib/visitor-location";
 
 // Prices are read live so cockpit edits show up immediately.
 export const dynamic = "force-dynamic";
@@ -60,6 +61,7 @@ export default async function QuotationPage({
       <Estimator
         pricing={pricing}
         initial={parseInitial(await searchParams, pricing)}
+        location={await visitorInKenya()}
       />
     );
   }

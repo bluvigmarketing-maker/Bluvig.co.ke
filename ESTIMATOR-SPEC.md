@@ -29,7 +29,7 @@ A visitor picks their industry, starts from a standard website, and adds feature
    - **Right:** live preview (§7) + running total.
    - **Mobile:** preview on top (collapsible), picker below, total in a sticky bottom bar.
 3. **Review.** Itemised list (base + modules), subtotal, estimated delivery timeline, payment terms, what's included (hosting year 1? — see Open Questions). Edit links back to Build.
-4. **Your details.** Name, company, email, phone (WhatsApp), country, optional notes. Country decides currency (§4) — shown before submit so there are no surprises.
+4. **Your details.** Name, company, email, phone (WhatsApp), country, optional notes. Currency is decided by the visitor's location (§4), not this field — the total shown before submit is final.
 5. **Done.** Reference number (e.g. `BLV-2026-0142`), **Download proforma invoice (PDF)**, **Send purchase order on WhatsApp**, and an optional "Book a call to finalise" link.
 
 ## 4. Pricing Rules
@@ -39,7 +39,7 @@ A visitor picks their industry, starts from a standard website, and adds feature
   - Example at an assumed FX rate of 130: Standard Website → 90,000 KES-equivalent → **≈ USD 690**.
   - `FX_RATE` and the multiplier (3) are editable in the admin dashboard (§10).
 - Applies to the base **and every module** (assumed — confirm).
-- **Currency by country:** Kenya → KES; every other country → USD. Visitor can switch manually.
+- **Currency by location:** visitors in Kenya (by IP) see KES only; everyone else sees USD only. No manual switch (2026-10-16).
 - **Dependencies are auto-added with a note**, e.g. Inventory requires Online Shop, and M-Pesa Checkout requires something to pay for (Shop, Booking, Donations, Ticketing or Courses).
 - Monthly items (hosting/maintenance) are shown separately from the one-off total.
 
@@ -284,7 +284,7 @@ Later (not v1):
 4. **No VAT** (not VAT-registered yet) — invoices say "No VAT charged".
 5. **Hosting & domain are included for the first year only.** The yearly renewal price is shown on the review screen, invoice, order page and WhatsApp PO; it's set in `/cockpit/pricing` (starting value KES 5,000/year — replace with the real figure; 3× in USD).
 6. Delivery estimate: rough defaults (base 14 days + days per module, ~5 working days per week).
-7. **Currency is locked by country**: Kenya → KES, everywhere else → USD (enforced server-side). The builder has an "In Kenya / Outside Kenya" switch for previewing.
+7. **Currency is locked by the visitor's location** (Vercel IP country): Kenya → KES, everywhere else → USD, enforced server-side. USD prices are never shown to visitors in Kenya; the old "In Kenya / Outside Kenya" switch was removed (2026-10-16). Without a location header (local dev) the browser time zone / typed country is used.
 8. WhatsApp **click-to-send** now; Cloud API auto-send later.
 
 ### Still open

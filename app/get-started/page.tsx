@@ -6,6 +6,7 @@ import { PageHero } from "@/components/site/page-hero";
 import { StartWizard } from "@/components/get-started/start-wizard";
 import type { Pricing } from "@/lib/estimator/pricing";
 import { getPricing } from "@/lib/estimator/store";
+import { visitorInKenya } from "@/lib/visitor-location";
 
 export const metadata: Metadata = {
   title: "Get Started",
@@ -18,6 +19,7 @@ export const dynamic = "force-dynamic";
 
 export default async function GetStartedPage() {
   let pricing: Pricing | null = null;
+  const inKenya = await visitorInKenya();
   try {
     pricing = await getPricing();
   } catch (error) {
@@ -34,7 +36,7 @@ export default async function GetStartedPage() {
       <section className="bg-white py-14 sm:py-20">
         <Container className="flex flex-col gap-12">
           {pricing ? (
-            <StartWizard pricing={pricing} />
+            <StartWizard pricing={pricing} location={inKenya} />
           ) : (
             <p className="mx-auto max-w-lg text-center text-navy-700">
               Our planner is temporarily unavailable — please call or WhatsApp

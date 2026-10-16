@@ -110,18 +110,22 @@ interface Done {
 export interface EstimatorInitial {
   industryId: string;
   selection: Selection;
-  /** Set when the visitor arrives from the budget recommender. */
+  /** From the budget recommender; only used when the location is unknown. */
   inKenya?: boolean;
 }
 
 export function Estimator({
   pricing,
   initial,
+  location,
 }: {
   pricing: Pricing;
   /** Pre-filled from /quotation?i=…&m=…&loc=… (budget recommender). */
   initial?: EstimatorInitial;
+  /** Visitor in Kenya (KES) or not (USD), from their IP; null if unknown. */
+  location: boolean | null;
 }) {
+  const knownInKenya = location ?? initial?.inKenya;
   const [step, setStep] = useState<Step>(initial ? "build" : "industry");
   const [industryId, setIndustryId] = useState<string | null>(
     initial?.industryId ?? null
@@ -129,30 +133,30 @@ export function Estimator({
   const [selection, setSelection] = useState<Selection>(
     initial?.selection ?? {}
   );
-  const [inKenya, setInKenya] = useState(initial?.inKenya ?? true);
+  const [inKenya, setInKenya] = useState(knownInKenya ?? true);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [lastAdded, setLastAdded] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [prototype, setPrototype] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [country, setCountry] = useState(
-    initial?.inKenya === false ? "" : "Kenya"
+    knownInKenya === false ? "" : "Kenya"
   );
   const [materials, setMaterials] = useState<Materials>(EMPTY_MATERIALS);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<Done | null>(null);
 
-  // Guess location once from the browser's time zone (visitors can switch it).
+  // Location unknown (local dev): guess once from the browser's time zone.
   useEffect(() => {
-    if (initial?.inKenya !== undefined) return;
+    if (knownInKenya !== undefined) return;
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (zone !== "Africa/Nairobi") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setInKenya(false);
       setCountry("");
     }
-  }, [initial?.inKenya]);
+  }, [knownInKenya]);
 
   // Each step starts at the top of the page.
   useEffect(() => {
@@ -235,11 +239,6 @@ export function Estimator({
       ...current,
       [id]: Math.max(1, Math.min(50, quantity)),
     }));
-  }
-
-  function changeCountry(value: string) {
-    setCountry(value);
-    if (value) setInKenya(value === "Kenya");
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -380,27 +379,6 @@ export function Estimator({
               {industry.name}
               <span className="text-xs text-navy-500">Change</span>
             </button>
-            <div className="ml-auto flex items-center gap-1 rounded-full border border-navy-200 bg-white p-1 text-sm">
-              {[true, false].map((kenya) => (
-                <button
-                  key={String(kenya)}
-                  type="button"
-                  aria-pressed={inKenya === kenya}
-                  onClick={() => {
-                    setInKenya(kenya);
-                    setCountry(kenya ? "Kenya" : "");
-                  }}
-                  className={cn(
-                    "rounded-full px-3 py-1",
-                    inKenya === kenya
-                      ? "bg-navy-950 text-white"
-                      : "text-navy-700 hover:bg-navy-50"
-                  )}
-                >
-                  {kenya ? "In Kenya · KES" : "Outside Kenya · USD"}
-                </button>
-              ))}
-            </div>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
@@ -792,7 +770,7 @@ export function Estimator({
                 <select
                   required
                   value={country}
-                  onChange={(e) => changeCountry(e.target.value)}
+                  onChange={(e) => setCountry(e.target.value)}
                   className="rounded-xl border border-navy-200 bg-white px-4 py-3 text-base font-normal text-navy-950 focus:border-gold-400 focus:outline-none"
                 >
                   <option value="" disabled>
@@ -803,9 +781,6 @@ export function Estimator({
                   ))}
                 </select>
                 <span className="text-xs font-normal text-navy-500">
-                  {country === "Kenya" || !country
-                    ? "Clients in Kenya are quoted in KES."
-                    : "Clients outside Kenya are quoted in USD."}{" "}
                   Your total:{" "}
                   <strong>{formatMoney(quote.oneOffTotal, currency)}</strong>
                 </span>

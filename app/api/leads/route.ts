@@ -14,6 +14,7 @@ import {
 } from "@/lib/qualify";
 import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
+import { visitorInKenya } from "@/lib/visitor-location";
 
 const text = (value: unknown, max = 200) =>
   String(value ?? "")
@@ -74,7 +75,10 @@ export const POST = withStorageErrors(async (request: Request) => {
       budget: text(body.budgetLabel, 60),
       message: text(body.message, 1000),
       industry: industry.id,
-      location: body.location === "international" ? "international" : "kenya",
+      location:
+        ((await visitorInKenya()) ?? body.location !== "international")
+          ? "kenya"
+          : "international",
       budgetBand: band,
       timeline: TIMELINES.find((t) => t.id === timeline)!.label,
       bestTime: bestTime

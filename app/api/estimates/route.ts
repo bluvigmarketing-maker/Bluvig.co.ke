@@ -9,6 +9,7 @@ import { cleanMaterials } from "@/lib/materials";
 import { notifyNewEstimate } from "@/lib/notify";
 import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
+import { visitorInKenya } from "@/lib/visitor-location";
 
 const text = (value: unknown, max = 200) =>
   String(value ?? "")
@@ -31,8 +32,10 @@ export const POST = withStorageErrors(async (request: Request) => {
   const industry = INDUSTRY_BY_ID.get(text(body.industry, 40));
   const client = body.client as Record<string, unknown> | undefined;
   const country = text(client?.country, 60) || "Kenya";
-  // Currency follows the client's country (spec §4) — never the browser's choice.
-  const currency: Currency = country === "Kenya" ? "KES" : "USD";
+  // Currency follows where the visitor is (KES in Kenya, USD elsewhere) —
+  // never the browser's choice. Unknown location (local dev): the country typed.
+  const inKenya = (await visitorInKenya()) ?? country === "Kenya";
+  const currency: Currency = inKenya ? "KES" : "USD";
   const name = text(client?.name, 100);
   const email = text(client?.email, 200);
   const phone = text(client?.phone, 40);

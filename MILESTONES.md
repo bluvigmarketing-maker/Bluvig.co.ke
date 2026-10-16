@@ -16,6 +16,8 @@ _Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing ag
 | 2026-10-03 | **Rejected: scroll-driven "code → wireframe → site" build animation.** Prototyped in three variants, then removed. | Delayed the headline/CTA on first visit — hurts conversion. Motion stays subtle and never gates content. |
 | 2026-10-10 | **Packages over à-la-carte:** the quotation leads with three ready-made packages per industry (found / customers / complete), built from each industry's recommended modules. | ~60 add-ons was too many choices; most visitors should pick a package. |
 | 2026-10-12 | **Cockpit sign-in: passkey first.** One tap with fingerprint / Face ID / Windows Hello on the device you're using (or a phone via the browser's QR prompt). Number matching with Bluvig Authenticator stays as a fallback. Sign-in switched back on. | Easiest secure option: phishing-resistant, no password to leak, no second device needed. |
+| 2026-10-16 | **Cockpit PIN:** an 8-digit owner PIN, stored hashed in the DB, signs in as an alternative to the passkey (either one works). 5 wrong tries per visitor / 30 overall per hour pause PIN sign-in. | Lets the owner sign in from any computer without a passkey. |
+| 2026-10-16 | **USD only for visitors outside Kenya:** currency is set by the visitor's IP country; the KES/USD switch is gone. | Kenyan clients shouldn't see the 3× international prices. |
 | (earlier) | Stack: Next.js 16 (App Router) + TypeScript, Tailwind v4, shadcn/ui (`base-nova`), Framer Motion + GSAP, lucide-react, Geist + Playfair Display. Hosting on Vercel. | See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). |
 
 ## Audience — what each segment needs to see
@@ -39,6 +41,7 @@ Done and kept as-is (design and infrastructure carry over; **copy and positionin
 - [x] Pages scaffolded: Home, What We Do + 4 service pages, Case Studies index, About, Get Started, Contact, Blog index, Tools index
 - [x] Lead capture: `POST /api/leads` + `/cockpit` admin dashboard (JSON file store — **not production-safe on Vercel**, see Phase 5)
 - [x] Cockpit sign-in via **passkey** (2026-10-12): `/cockpit/login` → "Sign in with passkey" → fingerprint / Face ID / Windows Hello. On a computer without the passkey, the browser offers "Use a phone" (QR). First visit: enter `ADMIN_PASSWORD` once to create the first passkey, then it's one tap. More devices: "Add this device" in the cockpit, or a one-time code for another phone. Revoke from the cockpit. Fallback: number matching via **Bluvig Authenticator** at `/authenticator` (2026-10-03). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.
+- [x] Cockpit **8-digit PIN** as an alternative to the passkey (2026-10-16): set/change/turn off in the cockpit, or put `{"pin":"12345678"}` in the `cockpit-pin` row of `bluvig_documents` — it's hashed on first use.
 - [x] Cockpit sign-in re-enabled (2026-10-12) — it was switched off 2026-10-04 (`lib/cockpit-config.ts`).
 
 Needs rework because of the repositioning:
@@ -115,7 +118,7 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [x] Admin **Pricing** screen: edit base price, module prices, FX rate, multiplier, enable/hide modules, change log (spec §10)
 - [x] `/quotation` distraction-free layout + industry step (renamed from `/estimate`, which redirects); linked from the menu ("Pricing") and every "Get Started" button
 - [x] Builder: module picker + live visual preview + running total
-- [x] Review + details steps, currency by country
+- [x] Review + details steps, currency by visitor location (USD hidden from visitors in Kenya, 2026-10-16)
 - [x] Proforma invoice PDF (server-side) + WhatsApp purchase-order link + shareable order page
 - [x] Save estimates to DB and list them in `/cockpit/estimates` (2026-10-04)
 - [x] Device frames: Windows Chrome / Android for Kenya, MacBook / iPhone for international (2026-10-04)

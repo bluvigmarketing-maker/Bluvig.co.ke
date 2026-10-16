@@ -16,6 +16,10 @@ export const LIMITS = {
   estimate: { max: 10, windowMs: 10 * 60_000 },
   /** Setup-password attempts when creating the first passkey. */
   setup: { max: 5, windowMs: 15 * 60_000 },
+  /** Cockpit PIN tries per visitor. */
+  pin: { max: 5, windowMs: 15 * 60_000 },
+  /** Cockpit PIN tries from everyone combined — stops guessing from many IPs. */
+  pinGlobal: { max: 30, windowMs: 60 * 60_000 },
 } as const;
 
 type Bucket = keyof typeof LIMITS;
@@ -31,10 +35,15 @@ export function clientIp(request: Request) {
   );
 }
 
-/** Records one attempt. Returns false if the visitor is over the limit. */
-export async function allow(bucket: Bucket, request: Request): Promise<boolean> {
+/**
+ * Records one attempt. Returns false if over the limit. With a request the
+ * limit is per visitor (IP); without one it's shared by everyone.
+ */
+export async function allow(bucket: Bucket, request?: Request): Promise<boolean> {
   const { max, windowMs } = LIMITS[bucket];
-  const id = `${bucket}:${createHash("sha256").update(clientIp(request)).digest("hex").slice(0, 32)}`;
+  const id = request
+    ? `${bucket}:${createHash("sha256").update(clientIp(request)).digest("hex").slice(0, 32)}`
+    : `${bucket}:all`;
   const now = Date.now();
 
   return updateDoc<Record<string, number[]>, boolean>(KEY, {}, (doc) => {

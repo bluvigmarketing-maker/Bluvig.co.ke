@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Clock,
   Fingerprint,
+  KeyRound,
   ShieldCheck,
   Smartphone,
   XCircle,
@@ -20,30 +21,34 @@ import {
 } from "@/lib/passkey-client";
 import { readJson } from "@/lib/read-json";
 
-type View = "loading" | "passkey" | "setup" | "phone" | "done";
+type View = "loading" | "signin" | "setup" | "phone" | "done";
 
 /**
- * Cockpit sign-in. Main path: one tap with a passkey (fingerprint, Face ID,
- * Windows Hello — or a phone via the browser's QR prompt). First visit with no
- * passkey yet: create one with the setup password. Fallback: approve from a
- * phone running Bluvig Authenticator (number matching).
+ * Cockpit sign-in. Either way gets you in:
+ * - one tap with a passkey (fingerprint, Face ID, Windows Hello — or a phone
+ *   via the browser's QR prompt), or
+ * - the owner's 8-digit PIN (set in the cockpit or the database).
+ * First visit with neither: create a passkey with the setup password.
+ * Fallback: approve from a phone running Bluvig Authenticator.
  */
 export default function CockpitLoginPage() {
   const router = useRouter();
   const [view, setView] = useState<View>("loading");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [methods, setMethods] = useState({ passkey: true, pin: false });
 
   useEffect(() => {
     fetch("/api/authenticator/status", { cache: "no-store" })
       .then(readJson)
       .then((status) => {
         if (status.error) throw new Error(status.error);
-        setView(status.hasDevices ? "passkey" : "setup");
+        setMethods({ passkey: status.hasDevices, pin: status.hasPin });
+        setView(status.hasDevices || status.hasPin ? "signin" : "setup");
       })
       .catch((e) => {
         setError(e instanceof Error ? e.message : "Could not reach the server.");
-        setView("passkey");
+        setView("signin");
       });
   }, []);
 
@@ -64,6 +69,23 @@ export default function CockpitLoginPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function signInWithPin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const pin = String(new FormData(event.currentTarget).get("pin") ?? "");
+    const form = event.currentTarget;
+    run(async () => {
+      const res = await fetch("/api/cockpit/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin }),
+      });
+      if (!res.ok) {
+        form.reset();
+        throw new Error((await readJson(res)).error ?? "Could not sign in.");
+      }
+    });
   }
 
   function setup(event: FormEvent<HTMLFormElement>) {
@@ -102,7 +124,7 @@ export default function CockpitLoginPage() {
             <p className="py-8 text-sm text-navy-500">Loading…</p>
           ) : null}
 
-          {view === "passkey" ? (
+          {view === "signin" && methods.passkey ? (
             <>
               <Button
                 onClick={() => run(signInWithPasskey)}
@@ -128,6 +150,58 @@ export default function CockpitLoginPage() {
                 Approve from Bluvig Authenticator instead
               </button>
             </>
+          ) : null}
+
+          {view === "signin" && methods.passkey && methods.pin ? (
+            <p className="flex items-center gap-3 text-xs text-navy-400 before:h-px before:flex-1 before:bg-navy-100 after:h-px after:flex-1 after:bg-navy-100">
+              or
+            </p>
+          ) : null}
+
+          {view === "signin" && methods.pin ? (
+            <form onSubmit={signInWithPin} className="flex flex-col gap-3">
+              <label className="flex flex-col gap-1.5 text-sm text-navy-800">
+                Your 8-digit PIN
+                <input
+                  name="pin"
+                  type="password"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  pattern="[0-9]{8}"
+                  minLength={8}
+                  maxLength={8}
+                  required
+                  title="8 digits"
+                  placeholder="••••••••"
+                  className="rounded-lg border border-navy-200 px-3 py-2.5 text-center font-mono text-2xl tracking-[0.4em] focus:border-gold-500 focus:outline-none"
+                />
+              </label>
+              <Button
+                type="submit"
+                disabled={busy}
+                variant={methods.passkey ? "outline" : "default"}
+                className={
+                  methods.passkey
+                    ? "h-11 w-full gap-2 font-semibold"
+                    : "btn-metallic gold-line h-12 w-full gap-2 text-base font-semibold"
+                }
+              >
+                <KeyRound className="size-4" aria-hidden="true" />
+                {busy ? "Checking…" : "Sign in with PIN"}
+              </Button>
+              {!methods.passkey ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    setView("setup");
+                  }}
+                  className="text-sm text-navy-600 underline-offset-4 hover:underline"
+                >
+                  Set up fingerprint / face sign-in
+                </button>
+              ) : null}
+            </form>
           ) : null}
 
           {view === "setup" ? (
@@ -163,11 +237,23 @@ export default function CockpitLoginPage() {
                 <Fingerprint className="size-5" aria-hidden="true" />
                 {busy ? "Creating passkey…" : "Create passkey & sign in"}
               </Button>
+              {methods.pin ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    setView("signin");
+                  }}
+                  className="text-center text-sm text-navy-600 underline-offset-4 hover:underline"
+                >
+                  Back to PIN sign-in
+                </button>
+              ) : null}
             </form>
           ) : null}
 
           {view === "phone" ? (
-            <PhoneApproval onApproved={finish} onBack={() => setView("passkey")} />
+            <PhoneApproval onApproved={finish} onBack={() => setView("signin")} />
           ) : null}
 
           {view === "done" ? (
