@@ -495,7 +495,7 @@ export function Estimator({
                             <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 text-sm font-semibold text-navy-950 [&::-webkit-details-marker]:hidden">
                               {category.name}
                               {chosen ? (
-                                <span className="rounded-full bg-gold-100 px-2 py-0.5 text-xs text-gold-800">
+                                <span className="text-xs font-normal text-gold-700">
                                   {chosen} added
                                 </span>
                               ) : null}
@@ -1021,9 +1021,9 @@ function PackageCard({
       )}
     >
       {recommended ? (
-        <span className="flex w-fit items-center gap-1 rounded-full bg-navy-950 px-2.5 py-0.5 text-xs font-semibold text-white">
+        <span className="flex w-fit items-center gap-1 text-xs font-semibold text-gold-700">
           <Star
-            className="size-3 fill-gold-400 text-gold-400"
+            className="size-3 fill-gold-500 text-gold-500"
             aria-hidden="true"
           />
           Recommended for {industryName}

@@ -125,7 +125,7 @@ const playfairDisplay = Playfair_Display({ variable: "--font-playfair", subsets:
 - Body copy: always Geist Sans, regular, `text-navy-700` (not pure black) for warmth against the navy palette.
 - Pull-quotes / client testimonial lines: `font-heading` + italic even when not a semantic heading — serif italic signals "quoted, credible" throughout (good fit for testimonials and case-study result callouts).
 - Monospace (`font-mono`, Geist Mono): reserved for literal technical strings only (e.g. a URL in a case study, a code snippet in the Digital Marketing Training page) — never decorative.
-- Eyebrow/label text: `text-xs font-semibold uppercase tracking-wide`.
+- Eyebrow/label text: `text-xs font-semibold uppercase tracking-wide` — plain text, never in a pill (no `rounded-full` border or fill around labels, tags or eyebrows). Lists like a tech stack are a `·`-separated line.
 
 ## 4. Core Component Patterns
 
@@ -197,7 +197,7 @@ Radius scale: `rounded-lg` (buttons/inputs) → `rounded-xl`/`rounded-2xl` (card
 ### 4.3 Section heading
 
 ```tsx
-<span className="rounded-full border border-gold-400/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-700">
+<span className="text-xs font-semibold uppercase tracking-wide text-gold-700">
   Discovery Engine
 </span>
 <h2 className="font-heading text-3xl font-semibold text-navy-950 sm:text-4xl">What We Do</h2>
@@ -205,13 +205,13 @@ Radius scale: `rounded-lg` (buttons/inputs) → `rounded-xl`/`rounded-2xl` (card
 <p className="max-w-2xl text-navy-700">Optional supporting description.</p>
 ```
 
-On a dark background, swap to `border-gold-400/40 text-gold-300` (eyebrow), `text-white` (title), `text-navy-100` (description).
+On a dark background, swap to `text-gold-300` (eyebrow), `text-white` (title), `text-navy-100` (description).
 
 ### 4.4 Page hero banner (interior pages)
 
 ```tsx
 <div className="bg-navy-950 py-16 text-center text-white sm:py-20">
-  <span className="rounded-full border border-gold-400/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-300">
+  <span className="text-xs font-semibold uppercase tracking-wide text-gold-300">
     SEO
   </span>
   <h1 className="font-heading text-4xl font-bold sm:text-5xl">Business Discovery Engine</h1>
@@ -220,11 +220,9 @@ On a dark background, swap to `border-gold-400/40 text-gold-300` (eyebrow), `tex
 </div>
 ```
 
-### 4.5 Badges
+### 4.5 Labels, not badges
 
-```tsx
-<Badge variant="outline" className="gold-line text-navy-800">AI-Powered</Badge>
-```
+No pill badges on the public site. A status or tag ("Coming Soon", "Our product", "Recommended") is plain `text-xs font-semibold` text — `text-navy-500` for neutral, `text-gold-700` for accent. Pill shapes are reserved for real status chips in the admin cockpit.
 
 ### 4.6 Header / Navigation
 
@@ -297,7 +295,7 @@ Retired (Oct 2026). Sections are flat fills — `bg-white`, `bg-navy-50`, or `bg
 
 - Cards on `navy-950`: `rounded-2xl border border-navy-800 bg-navy-900`; icon tiles inside them `bg-navy-800 text-gold-300`.
 - Emphasized card on light surfaces (e.g. the flagship service): `gold-line bg-white`, not a tinted glass fill.
-- Eyebrow on dark: `border border-gold-400/40 text-gold-300` (§4.3).
+- Eyebrow on dark: plain `text-gold-300` (§4.3).
 - The hero gets one ambient effect — `DotMatrix` (§10) on plain white — and no gradient background.
 - `components/site/glow-orbs.tsx` and the `.glass*` utilities are no longer used; don't reintroduce them.
 

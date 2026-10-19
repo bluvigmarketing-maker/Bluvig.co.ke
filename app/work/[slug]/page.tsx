@@ -99,16 +99,9 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
                 <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
                   Built with
                 </p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {project.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-navy-200 bg-white px-2.5 py-1 text-xs text-navy-700"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                <p className="mt-2 text-sm text-navy-700">
+                  {project.stack.join(" · ")}
+                </p>
               </div>
             ) : null}
             {project.link ? (

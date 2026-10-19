@@ -4,7 +4,6 @@ import { FileSearch, QrCode, Sparkles } from "lucide-react";
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
-import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "Free Tools",
@@ -51,9 +50,9 @@ export default function ToolsPage() {
                   <span className="flex size-10 items-center justify-center rounded-xl bg-navy-50 text-navy-600">
                     <tool.icon className="size-5" aria-hidden="true" />
                   </span>
-                  <Badge variant="outline" className="gold-line text-navy-800">
+                  <span className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
                     Coming Soon
-                  </Badge>
+                  </span>
                 </div>
                 <h3 className="font-heading text-lg font-semibold text-navy-950">
                   {tool.title}

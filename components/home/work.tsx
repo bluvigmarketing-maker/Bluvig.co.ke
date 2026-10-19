@@ -10,16 +10,12 @@ import { Button } from "@/components/ui/button";
 function ProjectCard({ project }: { project: Project }) {
   const body = (
     <>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="w-fit rounded-full bg-navy-50 px-2.5 py-1 text-xs font-semibold text-navy-600">
-          {project.type}
-        </span>
+      <p className="text-xs font-semibold text-navy-500">
+        {project.type}
         {project.own ? (
-          <span className="w-fit rounded-full bg-gold-100 px-2.5 py-1 text-xs font-semibold text-gold-800">
-            Our product
-          </span>
+          <span className="text-gold-700"> · Our product</span>
         ) : null}
-      </div>
+      </p>
       <h3 className="font-heading text-lg font-semibold text-navy-950">
         {project.title}
       </h3>

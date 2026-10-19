@@ -151,16 +151,9 @@ export default async function ServicePage({ params }: { params: Params }) {
                 <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
                   Built with
                 </p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {service.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-navy-200 bg-white px-2.5 py-1 text-xs text-navy-700"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                <p className="mt-2 text-sm text-navy-700">
+                  {service.stack.join(" · ")}
+                </p>
               </div>
               <Button
                 size="lg"
@@ -206,7 +199,7 @@ export default async function ServicePage({ params }: { params: Params }) {
                   <Link
                     key={p.slug}
                     href={p.story ? `/work/${p.slug}` : "/work"}
-                    className="rounded-full border border-navy-200 bg-white px-3 py-1.5 text-sm text-navy-800 hover:border-gold-400"
+                    className="text-sm font-semibold text-gold-700 underline-offset-4 hover:underline"
                   >
                     {p.title}
                   </Link>

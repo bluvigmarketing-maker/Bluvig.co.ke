@@ -13,7 +13,7 @@ export function PageHero({
     <div className="bg-navy-950 py-16 text-center text-white sm:py-20">
       <Container className="flex flex-col items-center gap-4">
         {eyebrow ? (
-          <span className="w-fit rounded-full border border-gold-400/40 px-3 py-1 text-xs font-semibold tracking-wide text-gold-300 uppercase">
+          <span className="text-xs font-semibold tracking-wide text-gold-300 uppercase">
             {eyebrow}
           </span>
         ) : null}
