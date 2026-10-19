@@ -29,7 +29,6 @@ export default async function GetStartedPage() {
   return (
     <>
       <PageHero
-        eyebrow="Get Started"
         title="Let's Plan Your Website"
         description="A couple of quick questions and we'll point you to the right next step — no jargon, no pressure."
       />

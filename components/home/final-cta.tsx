@@ -3,16 +3,14 @@ import { ArrowRight } from "lucide-react";
 
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
-import { GlowOrbs } from "@/components/site/glow-orbs";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
 
 export function FinalCta() {
   return (
-    <section className="relative overflow-hidden bg-navy-950 py-20 text-white sm:py-24">
-      <GlowOrbs variant="dark" />
-      <Container className="relative z-10">
-        <AnimatedSection className="glass mx-auto flex max-w-2xl flex-col items-center gap-6 rounded-3xl p-8 text-center sm:p-14">
+    <section className="bg-navy-950 py-20 text-white sm:py-24">
+      <Container>
+        <AnimatedSection className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
           <h2 className="font-heading text-3xl font-semibold text-balance sm:text-4xl">
             Have Something You Need Built?
           </h2>
@@ -38,7 +36,7 @@ export function FinalCta() {
               <Button
                 size="lg"
                 variant="outline"
-                className="glass-gold h-12 px-8 font-semibold text-white hover:bg-white/10"
+                className="h-12 border-white/40 bg-transparent px-8 font-semibold text-white hover:bg-white/10"
                 render={<Link href="/quotation">Price a Website Now</Link>}
               />
             </MagneticButton>

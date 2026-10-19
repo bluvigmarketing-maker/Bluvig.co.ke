@@ -291,57 +291,15 @@ export function AnimatedSection({ children, className, delay = 0 }) {
 - Grids: `gap-5`/`gap-6`, responsive column counts (`sm:grid-cols-2 lg:grid-cols-3`), never more than 3 columns for card grids.
 - Mobile-first everywhere: base styles target mobile, `sm:`/`md:`/`lg:` layer up.
 
-## 9. Glassmorphism Accents
+## 9. Surfaces: flat, no glass or glow orbs
 
-Applied as an accent for tech/premium feel — **on dark or gradient surfaces only**, never as the default treatment for dense content grids (case study cards, blog cards, service card grids). Glass over plain white with nothing behind it just looks like a faint gray box; glass needs a colorful, blurred surface underneath to read as "glass."
+Retired (Oct 2026). Sections are flat fills — `bg-white`, `bg-navy-50`, or `bg-navy-950` — with depth from a hairline border, never from blurred orbs or frosted panels. Stacking orbs + glass + gradients on every section read as templated AI design and competed with the content.
 
-### 9.1 Utility classes
-
-```css
-@layer utilities {
-  .glass {
-    background: color-mix(in oklch, white 8%, transparent);
-    border: 1px solid color-mix(in oklch, white 18%, transparent);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-  .glass-light {
-    background: color-mix(in oklch, white 65%, transparent);
-    border: 1px solid color-mix(in oklch, white 60%, var(--navy-200));
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-  .glass-gold {
-    background: color-mix(in oklch, var(--gold-400) 12%, transparent);
-    border: 1px solid color-mix(in oklch, var(--gold-400) 45%, transparent);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-}
-```
-
-A `@supports not (backdrop-filter: ...)` fallback swaps each to a ~94%-opaque solid so unsupported browsers still get a readable panel instead of a washed-out one.
-
-- `.glass` — on `navy-950` surfaces (Discovery Engine cards, Final CTA panel, dark outline buttons).
-- `.glass-light` — on white/`navy-50` surfaces where a frosted card should stand apart from plain white cards. Used sparingly (e.g. the sticky header).
-- `.glass-gold` — the accent variant: dark-section eyebrow pills, the featured/flagship service card, secondary buttons on dark CTA bands.
-
-### 9.2 GlowOrbs
-
-Glass panels need something colorful blurred behind them. `<GlowOrbs variant="dark" | "light" />` renders 2–3 absolutely-positioned, heavily-blurred (`blur-[90-100px]`) navy/gold circles as a decorative background layer:
-
-```tsx
-<section className="relative overflow-hidden bg-navy-950 ...">
-  <GlowOrbs variant="dark" />
-  <Container className="relative z-10">...</Container>
-</section>
-```
-
-Always: `relative overflow-hidden` on the section, `GlowOrbs` as the first child, and `relative z-10` on the actual content wrapper so it sits above the orbs. `aria-hidden="true"`, `pointer-events-none` — decorative only.
-
-### 9.3 Where it's used
-
-Hero (`variant="light"` orbs + `.glass-gold` eyebrow), `PageHero` (`variant="dark"` orbs + `.glass-gold` eyebrow — every interior page inherits this), `DiscoveryEngine` (`.glass` pillar cards over `variant="dark"` orbs), featured service card (`.glass-gold`), `FinalCta` (`.glass` panel + `.glass-gold` secondary button over `variant="dark"` orbs), sticky `Header` (plain `bg-white/70 backdrop-blur-xl`, not the `.glass` class, since a full-width bar needs a bottom-only border rather than the class's all-sides shorthand border).
+- Cards on `navy-950`: `rounded-2xl border border-navy-800 bg-navy-900`; icon tiles inside them `bg-navy-800 text-gold-300`.
+- Emphasized card on light surfaces (e.g. the flagship service): `gold-line bg-white`, not a tinted glass fill.
+- Eyebrow on dark: `border border-gold-400/40 text-gold-300` (§4.3).
+- The hero gets one ambient effect — `DotMatrix` (§10) on plain white — and no gradient background.
+- `components/site/glow-orbs.tsx` and the `.glass*` utilities are no longer used; don't reintroduce them.
 
 ## 10. Cursor-Reactive Dot Matrix
 
@@ -355,16 +313,16 @@ A canvas-based dot grid used as a background layer on the Hero, inspired by the 
 - **Compatible with the foreground by construction**: a `mask-image: radial-gradient(...)` clears the dots out of the ellipse where the headline/body copy sits, so the effect frames the hero (edges, corners) rather than fighting the text. Don't remove the mask when reusing this on another page's hero — it's the difference between "tech accent" and "distracting noise behind body copy."
 - `pointer-events-none` throughout — it must never intercept clicks meant for CTAs above it. Mouse position is tracked via a `window` `mousemove` listener (cheap: it only stores coordinates; the actual per-frame math happens in the rAF loop, decoupled from event frequency), not a listener on the canvas itself.
 
-**Gotcha worth remembering:** `<canvas>` is a *replaced element*. `absolute inset-0` alone does **not** stretch it to fill its container the way it does a `<div>` (used successfully for `GlowOrbs`) — for absolutely-positioned replaced elements, `width/height: auto` resolves to the element's *intrinsic* size (canvas's default 300×150), not the inset-derived size. Always pair `absolute inset-0` with `size-full` (or explicit `w-full h-full`) on a canvas used this way.
+**Gotcha worth remembering:** `<canvas>` is a *replaced element*. `absolute inset-0` alone does **not** stretch it to fill its container the way it does a `<div>`  — for absolutely-positioned replaced elements, `width/height: auto` resolves to the element's *intrinsic* size (canvas's default 300×150), not the inset-derived size. Always pair `absolute inset-0` with `size-full` (or explicit `w-full h-full`) on a canvas used this way.
 
 ## 11. Applying This — Checklist
 
 1. Scaffold Next.js + Tailwind v4 + shadcn/ui (`base-nova`) + Framer Motion + lucide-react (§1).
 2. Wire the navy/gold scales from §2.1 into `@theme inline` + `:root`/`.dark` exactly as in §2.2.
 3. Set up Geist (sans) + Playfair Display (heading) via `next/font/google` (§3).
-4. Build shared primitives first, in this order: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `GlowOrbs`, the `.btn-metallic`/`.gold-line`/`.glass*` utilities — every page composes from these.
+4. Build shared primitives first, in this order: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, the `.btn-metallic`/`.gold-line` utilities — every page composes from these.
 5. Build `Header` (sticky + dropdown + mobile `Sheet`) and `Footer` (dark, logo badge) once, shared via a route-group layout.
 6. For every new page: `PageHero` → one or more `Container`-wrapped sections, each wrapped in `AnimatedSection`, headings via `SectionHeading`.
 7. Re-use the exact class strings from §4 verbatim across pages — consistency comes from copying the same Tailwind combinations, not reinventing similar ones per page.
-8. Reach for glass (§9) only on dark/gradient sections with `GlowOrbs` behind them — not on the default content-grid cards.
+8. Keep surfaces flat (§9) — no glass panels or glow orbs.
 9. `DotMatrix` (§10) is a Hero-specific accent, not a default — reuse it deliberately (e.g. another top-of-funnel page's hero), always with its center mask intact, never behind a dense text block without one.

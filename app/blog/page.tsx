@@ -65,7 +65,6 @@ export default function BlogPage() {
   return (
     <>
       <PageHero
-        eyebrow="Blog"
         title="Insights"
         description="Practical writing on software, websites, SEO and getting found online — for businesses in Kenya."
       />

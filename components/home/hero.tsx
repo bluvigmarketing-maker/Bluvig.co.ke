@@ -9,7 +9,6 @@ import gsap from "gsap";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/site/container";
 import { DotMatrix } from "@/components/site/dot-matrix";
-import { GlowOrbs } from "@/components/site/glow-orbs";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
 
@@ -69,14 +68,13 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden bg-gradient-to-b from-navy-50 via-white to-white py-20 sm:py-28"
+      className="relative overflow-hidden bg-white py-20 sm:py-28"
     >
-      <GlowOrbs variant="light" />
       <DotMatrix variant="light" />
       <Container className="relative z-10 flex flex-col items-center gap-6 text-center">
         <span
           data-hero-eyebrow
-          className="glass-gold w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-gold-700 uppercase"
+          className="text-xs font-semibold tracking-wide text-gold-700 uppercase"
         >
           Software Studio · Kenya
         </span>
@@ -90,17 +88,7 @@ export function Hero() {
                 i < HEADLINE.length - 1 && "mr-[0.28em]"
               )}
             >
-              {word === "Software" ? (
-                <span className="relative inline-block text-navy-600">
-                  {word}
-                  <span
-                    aria-hidden="true"
-                    className="text-underline-sweep absolute inset-x-0 -bottom-0.5 h-[3px] rounded-full"
-                  />
-                </span>
-              ) : (
-                word
-              )}
+              {word}
             </span>
           ))}
         </h1>

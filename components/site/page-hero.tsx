@@ -1,5 +1,4 @@
 import { Container } from "@/components/site/container";
-import { GlowOrbs } from "@/components/site/glow-orbs";
 
 export function PageHero({
   eyebrow,
@@ -11,11 +10,10 @@ export function PageHero({
   description?: string;
 }) {
   return (
-    <div className="relative overflow-hidden bg-navy-950 py-16 text-center text-white sm:py-20">
-      <GlowOrbs variant="dark" />
-      <Container className="relative z-10 flex flex-col items-center gap-4">
+    <div className="bg-navy-950 py-16 text-center text-white sm:py-20">
+      <Container className="flex flex-col items-center gap-4">
         {eyebrow ? (
-          <span className="glass-gold w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-gold-300 uppercase">
+          <span className="w-fit rounded-full border border-gold-400/40 px-3 py-1 text-xs font-semibold tracking-wide text-gold-300 uppercase">
             {eyebrow}
           </span>
         ) : null}

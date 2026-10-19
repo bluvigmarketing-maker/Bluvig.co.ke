@@ -39,7 +39,6 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        eyebrow="Contact"
         title="Let's Talk"
         description="Reach us directly, or tell us about your project and we'll call you back."
       />

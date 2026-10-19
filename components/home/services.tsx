@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { SERVICES } from "@/lib/services";
 import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
-import { GlowOrbs } from "@/components/site/glow-orbs";
 import { SectionHeading } from "@/components/site/section-heading";
 
 export function Services({
@@ -15,9 +14,8 @@ export function Services({
   heading?: boolean;
 }) {
   return (
-    <section className="relative overflow-hidden bg-navy-50 py-20">
-      <GlowOrbs variant="light" />
-      <Container className="relative z-10 flex flex-col gap-12">
+    <section className="bg-navy-50 py-20">
+      <Container className="flex flex-col gap-12">
         {heading ? (
           <AnimatedSection>
             <SectionHeading
@@ -38,7 +36,7 @@ export function Services({
                   service.supporting
                     ? "border border-dashed border-navy-200 bg-white/70"
                     : index === 0
-                      ? "glass-gold"
+                      ? "gold-line bg-white"
                       : "border border-navy-100 bg-white"
                 )}
               >

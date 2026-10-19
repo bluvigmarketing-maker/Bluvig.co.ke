@@ -63,7 +63,6 @@ export function Work({
         {heading ? (
           <AnimatedSection>
             <SectionHeading
-              eyebrow="Our Work"
               title="Shipped and in Use"
               description="Products, web apps and websites we've built for businesses in Kenya."
             />

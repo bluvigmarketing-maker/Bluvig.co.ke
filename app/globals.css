@@ -211,55 +211,6 @@
   .gold-line {
     @apply border border-gold-400/60;
   }
-
-  .text-underline-sweep {
-    background-image: linear-gradient(
-      110deg,
-      transparent 0%,
-      var(--gold-400) 35%,
-      var(--gold-500) 50%,
-      var(--gold-400) 65%,
-      transparent 100%
-    );
-    background-size: 250% 100%;
-    animation: shimmer 4s linear infinite;
-  }
-
-  /* Glassmorphism accents — DESIGN-SYSTEM.md §10.
-     Use over a dark/gradient surface (ideally with .glow-orbs behind it),
-     never as the default for dense content grids. */
-  .glass {
-    background: color-mix(in oklch, white 8%, transparent);
-    border: 1px solid color-mix(in oklch, white 18%, transparent);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-  .glass-light {
-    background: color-mix(in oklch, white 65%, transparent);
-    border: 1px solid color-mix(in oklch, white 60%, var(--navy-200));
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-  .glass-gold {
-    background: color-mix(in oklch, var(--gold-400) 12%, transparent);
-    border: 1px solid color-mix(in oklch, var(--gold-400) 45%, transparent);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-  }
-}
-
-@supports not (
-  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
-) {
-  .glass {
-    background: color-mix(in oklch, var(--navy-900) 94%, transparent);
-  }
-  .glass-light {
-    background: color-mix(in oklch, white 94%, transparent);
-  }
-  .glass-gold {
-    background: color-mix(in oklch, var(--gold-100) 94%, transparent);
-  }
 }
 
 @keyframes shimmer {
@@ -272,8 +223,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn-metallic,
-  .text-underline-sweep {
+  .btn-metallic {
     animation: none;
   }
 }

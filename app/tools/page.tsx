@@ -30,7 +30,7 @@ const TOOLS = [
     icon: Sparkles,
     title: "Visibility Checker",
     description:
-      "See whether your business would actually surface in an AI assistant's answer to a real customer question — not just Google.",
+      "See whether your business would actually surface in an AI assistant's answer to a real customer question, as well as on Google.",
   },
 ];
 

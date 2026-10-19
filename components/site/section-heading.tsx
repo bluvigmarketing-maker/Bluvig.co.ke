@@ -28,7 +28,7 @@ export function SectionHeading({
           className={cn(
             "w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase",
             dark
-              ? "glass-gold text-gold-300"
+              ? "border border-gold-400/40 text-gold-300"
               : "border border-gold-400/60 text-gold-700"
           )}
         >

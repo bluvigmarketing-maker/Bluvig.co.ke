@@ -16,7 +16,6 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Services"
         title="What We Build"
         description="One team for the whole journey: from your first website to the system your company runs on — and the integrations that tie it together."
       />

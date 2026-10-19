@@ -40,7 +40,6 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About Bluvig"
         title="A Software Studio in Kenya"
         description="We design and build the software businesses run on — and stay around to keep it running."
       />

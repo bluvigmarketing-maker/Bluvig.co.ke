@@ -15,7 +15,6 @@ export default function WorkPage() {
   return (
     <>
       <PageHero
-        eyebrow="Our Work"
         title="Shipped and in Use"
         description="Products, web apps and websites we've designed and built for businesses in Kenya."
       />
