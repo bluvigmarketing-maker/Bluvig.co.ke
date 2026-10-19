@@ -1,4 +1,4 @@
-import type { PortfolioProject } from "@/lib/portfolio-shared";
+import type { PortfolioProject } from "@/lib/portfolio";
 
 /**
  * The portfolio as first loaded from the projects spreadsheet (Documents\
@@ -223,5 +223,60 @@ export const PORTFOLIO_SEED: PortfolioProject[] = [
     "own": false,
     "image": "/work/fespen-contractors.webp",
     "imagePhone": "/work/fespen-contractors-phone.webp"
+  },
+  {
+    "id": "e-tibu",
+    "title": "E-Tibu",
+    "client": "Etibu Connect",
+    "type": "Health platform website",
+    "service": "websites",
+    "summary": "A digital health platform for ECONNECT-TIBU Services that helps patients across Kenya's 47 counties find verified doctors, specialists, caregivers and ambulances near them, with sign-up for healthcare providers.",
+    "year": "2026",
+    "visible": true,
+    "featured": true,
+    "link": "https://www.econnecttibu.co.ke/",
+    "industry": "Healthcare",
+    "location": "Nairobi, Kenya",
+    "features": [
+      "Search for clinics, doctors and pharmacies by county",
+      "Specialist search",
+      "Healthcare provider registration and sign-in",
+      "Emergency ambulance and digital wellness pages",
+      "Contact details and emergency call line"
+    ],
+    "stack": [
+      "React",
+      "Vite"
+    ],
+    "own": false,
+    "image": "/work/e-tibu.webp",
+    "imagePhone": "/work/e-tibu-phone.webp"
+  },
+  {
+    "id": "aviat-investment",
+    "title": "Aviat Investment",
+    "client": "Aviat Investment LTD",
+    "type": "Corporate website",
+    "service": "websites",
+    "summary": "A website for Aviat Investment Limited, an aviation component maintenance company at Wilson Airport, Nairobi, presenting its six specialist services with an online service quote form.",
+    "year": "2026",
+    "visible": true,
+    "featured": true,
+    "link": "https://www.aviatinvestment.co.ke/",
+    "industry": "Aviation",
+    "location": "Wilson Airport, Nairobi, Kenya",
+    "features": [
+      "Pages for six aviation maintenance services",
+      "Request a Service Quote form with service selection",
+      "Map link to the Wilson Airport location",
+      "About and contact pages",
+      "Light and dark mode"
+    ],
+    "stack": [
+      "Next.js"
+    ],
+    "own": false,
+    "image": "/work/aviat-investment.webp",
+    "imagePhone": "/work/aviat-investment-phone.webp"
   }
 ];
