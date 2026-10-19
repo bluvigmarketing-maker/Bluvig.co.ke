@@ -61,7 +61,7 @@ export function Services({
             <SectionHeading
               eyebrow="What We Build"
               title="Software for Every Stage of Your Business"
-              description="From your first website to the system your whole company runs on — designed, built and supported by one team."
+              description="From your first website to the system your whole company runs on. Designed, built and supported by one team."
             />
             <p className="text-sm text-navy-600">
               Most clients start with one and add the next when they&rsquo;re

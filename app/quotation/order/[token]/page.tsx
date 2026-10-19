@@ -142,7 +142,7 @@ export default async function OrderPage({
       <p className="mt-6 text-sm text-navy-600">
         {estimate.project ? "Pay the balance" : "Pay"} via M-Pesa Paybill <strong>{PAYMENT_TERMS.paybill}</strong>, account{" "}
         <strong>{PAYMENT_TERMS.account}</strong>
-        {estimate.project ? " on launch." : " — after we confirm your order."}
+        {estimate.project ? " on launch." : " after we confirm your order."}
       </p>
     </div>
   );

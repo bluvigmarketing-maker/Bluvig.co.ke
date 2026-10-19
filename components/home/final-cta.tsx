@@ -54,7 +54,7 @@ export function FinalCta() {
           <p className="max-w-xl text-navy-100">
             Describe it in one message on WhatsApp, or tell us more in a couple
             of minutes. We&rsquo;ll talk it through and send a clear, itemised
-            quote — no jargon, no pressure.
+            quote, with no jargon and no pressure.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button

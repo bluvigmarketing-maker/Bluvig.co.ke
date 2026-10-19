@@ -50,7 +50,7 @@ export const POST = withStorageErrors(async (request: Request) => {
     return NextResponse.json(
       {
         error: email
-          ? "That email doesn't look right — check it or leave it blank."
+          ? "That email doesn't look right. Check it or leave it blank."
           : "Please add your name and a WhatsApp number.",
       },
       { status: 400 }

@@ -195,7 +195,7 @@ export function StartWizard({
           <p className="rounded-xl bg-gold-50 px-4 py-3 text-sm text-navy-800">
             Our websites start at{" "}
             <strong>{formatMoney(minimum, currency)}</strong>. We&rsquo;ll still
-            talk through options — for example starting small and adding
+            talk through options, for example starting small and adding
             features later.
           </p>
         ) : null}
@@ -218,7 +218,7 @@ export function StartWizard({
             How would you like to start?
           </h2>
           <p className="mt-2 text-navy-700">
-            Pick whatever feels easiest — you can switch later.
+            Pick whatever feels easiest. You can switch later.
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -237,7 +237,7 @@ export function StartWizard({
           <ChoiceCard
             icon={Sparkles}
             title="Recommend for my budget"
-            text="Tell us your industry and budget — we'll suggest the best feature combination for it."
+            text="Tell us your industry and budget and we'll suggest the best feature combination for it."
             onClick={() => start("recommend")}
           />
         </div>
@@ -337,7 +337,7 @@ export function StartWizard({
       {current === "ideas" ? (
         <Question
           title="Got ideas to share?"
-          subtitle="Optional — but it helps us prepare a better call."
+          subtitle="Optional, but it helps us prepare a better call."
         >
           <MaterialsFields value={materials} onChange={setMaterials} />
           <NextButton onClick={next}>
@@ -714,7 +714,7 @@ function IndustryPicker({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search — e.g. salon, hotel, school"
+          placeholder="Search, e.g. salon, hotel, school"
           className="w-full rounded-full border border-navy-200 bg-white py-2.5 pr-4 pl-11 text-base text-navy-950 focus:border-gold-400 focus:outline-none"
         />
       </label>

@@ -93,7 +93,7 @@ export function PipelineControl({
               setEditing(false);
             }
           }}
-          placeholder="e.g. Called Tue — wants a demo"
+          placeholder="e.g. Called Tue, wants a demo"
           className="w-44 rounded-lg border border-navy-200 px-2 py-1 text-xs text-navy-900 focus:border-gold-400 focus:outline-none"
         />
       ) : (

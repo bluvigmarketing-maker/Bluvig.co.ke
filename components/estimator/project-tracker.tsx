@@ -80,7 +80,7 @@ export function ProjectTracker({
             ))}
           </ul>
           <p className="text-xs text-navy-600">
-            Your go-live date moves forward while we wait — send these over
+            Your go-live date moves forward while we wait. Send these over
             to keep things on schedule.
           </p>
           <a
@@ -136,7 +136,7 @@ export function ProjectTracker({
       </ol>
 
       <p className="text-xs text-navy-500">
-        Started {formatDate(project.startedAt)}. This page updates as we work —
+        Started {formatDate(project.startedAt)}. This page updates as we work, so
         bookmark it to check in any time.
       </p>
     </section>

@@ -88,7 +88,7 @@ export default async function AdminDashboardPage() {
         {!COCKPIT_AUTH_ENABLED ? (
           <p className="flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
-            Sign-in is switched off — anyone with this link can see this page.
+            Sign-in is switched off: anyone with this link can see this page.
           </p>
         ) : null}
 
@@ -203,7 +203,7 @@ export default async function AdminDashboardPage() {
                           ? "Call back"
                           : lead.goal || "Enquiry"}
                       </p>
-                      <p>{lead.businessType || "—"}</p>
+                      <p>{lead.businessType || "-"}</p>
                       {lead.timeline ? (
                         <p className="text-xs text-navy-500">
                           Launch: {lead.timeline}
@@ -219,7 +219,7 @@ export default async function AdminDashboardPage() {
                       ) : null}
                     </td>
                     <td className="px-4 py-3 text-navy-700">
-                      {lead.budget || "—"}
+                      {lead.budget || "-"}
                     </td>
                     <td className="max-w-xs px-4 py-3 text-navy-700">
                       <MaterialsList materials={lead.materials} compact />
@@ -227,7 +227,7 @@ export default async function AdminDashboardPage() {
                         <p className="mt-1">{lead.message}</p>
                       ) : null}
                       {!lead.message && !hasMaterials(lead.materials)
-                        ? "—"
+                        ? "-"
                         : null}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-navy-500">

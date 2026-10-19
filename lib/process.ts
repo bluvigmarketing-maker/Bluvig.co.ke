@@ -18,7 +18,7 @@ export const PROCESS: {
     icon: ClipboardList,
     title: "Discover",
     summary:
-      "A free call to understand your business, users and goals — then a fixed, itemised quote.",
+      "A free call to understand your business, users and goals, then a fixed, itemised quote.",
     deliverables: [
       "Scope and priorities in plain language",
       "Itemised quote and timeline",
@@ -40,7 +40,7 @@ export const PROCESS: {
     icon: Code2,
     title: "Build",
     summary:
-      "We build in short milestones and show you working software along the way — no disappearing for months.",
+      "We build in short milestones and show you working software along the way. No disappearing for months.",
     deliverables: [
       "Regular demos on a live preview link",
       "Progress tracker you can check any time",

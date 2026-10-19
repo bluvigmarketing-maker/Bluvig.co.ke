@@ -17,7 +17,7 @@ export function Hero() {
           </h1>
           <p className="max-w-xl text-lg text-navy-200">
             Custom business systems, web and mobile apps, websites and M-Pesa
-            integrations — for businesses in Kenya and around the world.
+            integrations, for businesses in Kenya and around the world.
           </p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button

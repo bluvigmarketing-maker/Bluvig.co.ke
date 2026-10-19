@@ -73,7 +73,7 @@ export default async function PricingPage() {
           </ul>
         ) : (
           <p className="text-sm text-navy-600">
-            No price changes yet — these are the default prices.
+            No price changes yet. These are the default prices.
           </p>
         )}
       </section>

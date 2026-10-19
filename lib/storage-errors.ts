@@ -30,7 +30,7 @@ export function describeStorageError(error: unknown): string {
     return "Couldn't reach the database: use the Supabase “Transaction pooler” string (port 6543), not the direct connection.";
   }
   if (/invalid url|invalid connection string/i.test(message)) {
-    return "DATABASE_URL isn't a valid connection string — copy it again from Supabase → Connect.";
+    return "DATABASE_URL isn't a valid connection string. Copy it again from Supabase → Connect.";
   }
   return "The server couldn't reach its database. Check DATABASE_URL in Vercel and redeploy.";
 }

@@ -7,7 +7,7 @@ import { PageHero } from "@/components/site/page-hero";
 export const metadata: Metadata = {
   title: "Free Tools",
   description:
-    "Free tools from Bluvig — a Readability Checker, QR Baker, and a Visibility Checker for AI-era search.",
+    "Free tools from Bluvig: a Readability Checker, QR Baker, and a Visibility Checker for AI-era search.",
   alternates: { canonical: "/tools" },
 };
 
@@ -22,7 +22,7 @@ const TOOLS = [
     icon: QrCode,
     title: "QR Baker",
     description:
-      "Generate M-Pesa payment QR codes for your business — instant, contactless, no app required for your customers.",
+      "Generate M-Pesa payment QR codes for your business. Instant, contactless, no app required for your customers.",
   },
   {
     icon: Sparkles,
@@ -38,7 +38,7 @@ export default function ToolsPage() {
       <PageHero
         eyebrow="Free Tools"
         title="Tools Built to Make You More Visible"
-        description="Free, practical tools — being rebuilt on our new site. Rejoining shortly."
+        description="Free, practical tools, being rebuilt on our new site. Rejoining shortly."
       />
       <section className="bg-white py-20">
         <Container className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

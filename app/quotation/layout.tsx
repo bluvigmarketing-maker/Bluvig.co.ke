@@ -4,9 +4,9 @@ import Link from "next/link";
 import { X } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Get a Quotation — Price Your Website",
+  title: "Get a Quotation: Price Your Website",
   description:
-    "Choose your industry, add the features you need and watch your website take shape — with an instant price, proforma invoice and WhatsApp purchase order.",
+    "Choose your industry, add the features you need and watch your website take shape, with an instant price, proforma invoice and WhatsApp purchase order.",
 };
 
 /** Distraction-free shell: logo + exit only (spec §2). */

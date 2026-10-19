@@ -24,7 +24,7 @@ function database(): Sql | null {
   if (!url) {
     if (process.env.VERCEL) {
       throw new Error(
-        "DATABASE_URL is not configured — this deployment can't store data. Add it in Vercel → Settings → Environment Variables."
+        "DATABASE_URL is not configured, so this deployment can't store data. Add it in Vercel → Settings → Environment Variables."
       );
     }
     return null;

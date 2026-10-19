@@ -26,7 +26,7 @@ export async function generateMetadata({
   const project = PROJECT_BY_SLUG.get((await params).slug);
   if (!project?.story) return {};
   return {
-    title: `${project.title} — Case Study`,
+    title: `${project.title}: Case Study`,
     description: project.summary,
     alternates: { canonical: `/work/${project.slug}` },
   };

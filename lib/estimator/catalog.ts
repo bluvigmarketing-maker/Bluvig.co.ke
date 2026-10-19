@@ -80,7 +80,7 @@ export const MODULES: ModuleDef[] = [
   {
     id: "extra-page",
     name: "Extra page",
-    description: "Any additional page — e.g. a page per service or location.",
+    description: "Any additional page, e.g. a page per service or location.",
     category: "pages",
     defaultPriceKes: 3_000,
     unit: "page",
@@ -123,7 +123,7 @@ export const MODULES: ModuleDef[] = [
   {
     id: "faq",
     name: "FAQ section",
-    description: "Answer common questions — boosts Google rich results.",
+    description: "Answer common questions. Boosts Google rich results.",
     category: "pages",
     defaultPriceKes: 2_000,
     days: 1,
@@ -162,7 +162,7 @@ export const MODULES: ModuleDef[] = [
   {
     id: "multilingual",
     name: "Extra language",
-    description: "Translate the site — e.g. Swahili or French.",
+    description: "Translate the site, e.g. Swahili or French.",
     category: "pages",
     defaultPriceKes: 10_000,
     unit: "language",
@@ -221,7 +221,7 @@ export const MODULES: ModuleDef[] = [
   {
     id: "shop",
     name: "Online shop / E-commerce",
-    description: "Cart, checkout and order management — up to 100 products.",
+    description: "Cart, checkout and order management, up to 100 products.",
     category: "commerce",
     defaultPriceKes: 30_000,
     days: 10,
@@ -475,7 +475,7 @@ export const MODULES: ModuleDef[] = [
     days: 4,
     preview: {
       nav: "Give",
-      section: { kind: "banner", title: "Support our mission — Donate" },
+      section: { kind: "banner", title: "Support our mission: Donate" },
     },
   },
   {
@@ -678,7 +678,7 @@ export const MODULES: ModuleDef[] = [
   {
     id: "mobile-app",
     name: "Mobile app (Android + iOS)",
-    description: "Companion app — starting price, confirmed after a call.",
+    description: "Companion app. Starting price, confirmed after a call.",
     category: "integrations",
     defaultPriceKes: 150_000,
     days: 45,

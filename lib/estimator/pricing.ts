@@ -39,8 +39,8 @@ export const DEFAULT_SETTINGS: PricingSettings = {
 
 /** Our guarantees, shown on the quotation. */
 export const GUARANTEES = {
-  delivery: "On time, or you get 10% off — guaranteed.",
-  speed: "Your website loads in 1 second — guaranteed.",
+  delivery: "On time, or you get 10% off. Guaranteed.",
+  speed: "Your website loads in 1 second. Guaranteed.",
 };
 
 /**

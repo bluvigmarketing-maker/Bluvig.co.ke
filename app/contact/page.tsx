@@ -30,7 +30,7 @@ const CHANNELS = [
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Bluvig — call, email or WhatsApp us about your software, app or website project.",
+    "Get in touch with Bluvig: call, email or WhatsApp us about your software, app or website project.",
   alternates: { canonical: "/contact" },
 };
 

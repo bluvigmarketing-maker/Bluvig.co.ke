@@ -12,13 +12,13 @@ import { FinalCta } from "@/components/home/final-cta";
 export const metadata: Metadata = {
   title: "How We Work",
   description:
-    "Discover, design, build, launch, support: how Bluvig runs software projects — fixed quotes, a prototype before code, and progress you can follow.",
+    "Discover, design, build, launch, support: how Bluvig runs software projects, with fixed quotes, a prototype before code and progress you can follow.",
   alternates: { canonical: "/process" },
 };
 
 const COMMUNICATION = [
   "One point of contact who knows your project",
-  "WhatsApp, email or video calls — whatever suits you",
+  "WhatsApp, email or video calls, whatever suits you",
   `Working hours on ${SITE.timezone}, with overlap for European and Middle East clients`,
   "A live project tracker showing each phase and what we're waiting on",
 ];

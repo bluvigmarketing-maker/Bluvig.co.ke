@@ -114,7 +114,7 @@ export function StartProjectButton({
         className="flex items-center gap-1.5 rounded-lg bg-navy-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-800 disabled:opacity-60"
       >
         <PlayCircle className="size-3.5" aria-hidden="true" />
-        {busy ? "Starting…" : "Deposit received — start"}
+        {busy ? "Starting…" : "Deposit received: start"}
       </button>
       {error ? <p className="text-xs text-red-700">{error}</p> : null}
     </div>
@@ -181,7 +181,7 @@ export function ProjectBoard({
           </p>
           {progress.late ? (
             <p className="mt-1 text-sm font-semibold text-red-700">
-              Past the guaranteed date — 10% discount applies.
+              Past the guaranteed date: 10% discount applies.
             </p>
           ) : null}
         </div>
@@ -249,7 +249,7 @@ export function ProjectBoard({
           <Hourglass className="size-4 text-gold-600" aria-hidden="true" />
           Waiting on client
           <span className="font-normal text-navy-500">
-            — pauses the delivery clock and shows on their tracker
+            (pauses the delivery clock and shows on their tracker)
           </span>
         </h3>
         {project.waits.length ? (

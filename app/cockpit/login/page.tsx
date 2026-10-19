@@ -62,7 +62,7 @@ export default function CockpitLoginPage() {
 
           {done ? (
             <p className="flex items-center justify-center gap-2 py-8 font-semibold text-gold-700">
-              <CheckCircle2 className="size-5" aria-hidden="true" /> Signed in —
+              <CheckCircle2 className="size-5" aria-hidden="true" /> Signed in,
               opening cockpit…
             </p>
           ) : (

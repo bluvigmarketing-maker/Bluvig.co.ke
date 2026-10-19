@@ -27,7 +27,7 @@ export const ASSURANCES = [
     icon: Receipt,
     title: "Clear, Itemised Prices",
     description:
-      "A fixed quote that lists every feature. 60% deposit to start, 40% when we launch — no hidden extras.",
+      "A fixed quote that lists every feature. 60% deposit to start, 40% when we launch. No hidden extras.",
   },
   {
     icon: KeyRound,
@@ -39,7 +39,7 @@ export const ASSURANCES = [
     icon: Smartphone,
     title: "M-Pesa and Local Know-How",
     description:
-      "Daraja payments, eTIMS and how Kenyan customers actually buy — built in from day one, not bolted on.",
+      "Daraja payments, eTIMS and how Kenyan customers actually buy, built in from day one, not bolted on.",
   },
   {
     icon: Globe2,

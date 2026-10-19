@@ -10,7 +10,7 @@ function getSecret(): string {
   const secret = process.env.ADMIN_PASSWORD;
   if (!secret) {
     throw new Error(
-      "ADMIN_PASSWORD is not set — add it to .env.local to enable /cockpit."
+      "ADMIN_PASSWORD is not set. Add it to .env.local to enable /cockpit."
     );
   }
   return secret;

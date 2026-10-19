@@ -61,7 +61,7 @@ export function tooManyRequests() {
   return NextResponse.json(
     {
       error:
-        "Too many attempts from your connection. Please wait a few minutes and try again — or reach us on WhatsApp.",
+        "Too many attempts from your connection. Please wait a few minutes and try again, or reach us on WhatsApp.",
     },
     { status: 429 }
   );

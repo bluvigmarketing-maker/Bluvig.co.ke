@@ -49,12 +49,12 @@ export const SERVICES: Service[] = [
     short: "Custom Software",
     icon: LayoutDashboard,
     summary:
-      "Internal systems built around how your business actually works — inventory, sales, operations dashboards and workflow automation.",
+      "Internal systems built around how your business actually works: inventory, sales, operations dashboards and workflow automation.",
     heroTitle: "Software Built Around Your Business",
     heroDescription:
       "Replace the spreadsheets, paper forms and copy-paste between apps with one system your team actually wants to use.",
     problem:
-      "Most growing businesses run on a patchwork of spreadsheets, WhatsApp groups and off-the-shelf tools that almost fit. Data lives in five places, reports take a day to compile, and mistakes slip through. Custom software puts your process in one place — shaped around how you work, not the other way round.",
+      "Most growing businesses run on a patchwork of spreadsheets, WhatsApp groups and off-the-shelf tools that almost fit. Data lives in five places, reports take a day to compile, and mistakes slip through. Custom software puts your process in one place, shaped around how you work, not the other way round.",
     included: [
       "Discovery workshop to map your process and priorities",
       "Clickable prototype before any code is written",
@@ -75,7 +75,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "How much does custom software cost?",
-        a: "It depends on the number of users, screens and integrations. We give you a fixed, itemised quote after a free discovery call — and we can split a big system into phases so you start using the most valuable part first.",
+        a: "It depends on the number of users, screens and integrations. We give you a fixed, itemised quote after a free discovery call, and we can split a big system into phases so you start using the most valuable part first.",
       },
       {
         q: "Can you work with our existing systems?",
@@ -90,10 +90,10 @@ export const SERVICES: Service[] = [
     short: "Web Apps & Portals",
     icon: Blocks,
     summary:
-      "Customer portals, booking and ordering systems, and SaaS products — fast, secure and built to grow with you.",
+      "Customer portals, booking and ordering systems, and SaaS products. Fast, secure and built to grow with you.",
     heroTitle: "Web Apps Your Customers Love Using",
     heroDescription:
-      "Customer portals, booking and ordering systems, and new SaaS products — designed for real users and built to scale.",
+      "Customer portals, booking and ordering systems, and new SaaS products, designed for real users and built to scale.",
     problem:
       "Your customers expect to book, order, pay and check their status online without calling you. A well-built web app does that around the clock, cuts admin work and gives you data on what customers actually do.",
     included: [
@@ -120,7 +120,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: "Will it work on phones?",
-        a: "Every web app we build is mobile-first and works in any modern browser — no app store needed.",
+        a: "Every web app we build is mobile-first and works in any modern browser, with no app store needed.",
       },
       PAYMENT_FAQ,
     ],
@@ -131,10 +131,10 @@ export const SERVICES: Service[] = [
     short: "Mobile Apps",
     icon: Smartphone,
     summary:
-      "Android and iOS apps from one codebase — for your customers, field teams or drivers.",
+      "Android and iOS apps from one codebase, for your customers, field teams or drivers.",
     heroTitle: "Mobile Apps for Android and iOS",
     heroDescription:
-      "One codebase, both app stores — for your customers, your field staff or your delivery riders.",
+      "One codebase, both app stores, for your customers, your field staff or your delivery riders.",
     problem:
       "Some jobs need to live on a phone: field teams recording visits offline, customers ordering in two taps, drivers updating deliveries. A mobile app puts your service in your customer's pocket and your operations in your team's hands.",
     included: [
@@ -156,11 +156,11 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "Do I need a mobile app or a web app?",
-        a: "If your users need offline access, the camera, GPS or push notifications, an app makes sense. Otherwise a mobile-friendly web app is faster and cheaper to build — we'll tell you honestly on the call.",
+        a: "If your users need offline access, the camera, GPS or push notifications, an app makes sense. Otherwise a mobile-friendly web app is faster and cheaper to build. We'll tell you honestly on the call.",
       },
       {
         q: "Do you publish the app for us?",
-        a: "Yes — we handle the Google Play and App Store submissions under your developer accounts, so the apps belong to you.",
+        a: "Yes. We handle the Google Play and App Store submissions under your developer accounts, so the apps belong to you.",
       },
       PAYMENT_FAQ,
     ],
@@ -171,10 +171,10 @@ export const SERVICES: Service[] = [
     short: "Websites",
     icon: Globe,
     summary:
-      "Fast, mobile-first business websites and online shops — priced instantly, with your design previewed live.",
+      "Fast, mobile-first business websites and online shops, priced instantly, with your design previewed live.",
     heroTitle: "Websites That Bring You Customers",
     heroDescription:
-      "Fast, mobile-first business websites and online shops. Pick your features and see your price instantly — no waiting for a quote.",
+      "Fast, mobile-first business websites and online shops. Pick your features and see your price instantly, with no waiting for a quote.",
     problem:
       "A slow, outdated or hard-to-use website loses customers before they ever call you. We build sites that load fast on any phone, show up on Google, and turn visitors into enquiries, bookings and sales.",
     included: [
@@ -197,7 +197,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "How much does a website cost?",
-        a: "Use our quotation page to pick your industry and features — you see the exact price, timeline and a live preview, and get a proforma invoice on the spot.",
+        a: "Use our quotation page to pick your industry and features. You see the exact price, timeline and a live preview, and get a proforma invoice on the spot.",
       },
       {
         q: "Can I update the website myself?",
@@ -212,12 +212,12 @@ export const SERVICES: Service[] = [
     short: "Integrations & M-Pesa",
     icon: Workflow,
     summary:
-      "M-Pesa (Daraja), card payments, KRA eTIMS and third-party APIs — connected so your systems talk to each other.",
-    heroTitle: "M-Pesa, eTIMS and APIs — Connected",
+      "M-Pesa (Daraja), card payments, KRA eTIMS and third-party APIs, connected so your systems talk to each other.",
+    heroTitle: "Connect M-Pesa, eTIMS and Your APIs",
     heroDescription:
       "Take payments automatically, stay compliant with KRA eTIMS, and connect the systems your business already uses.",
     problem:
-      "Manually matching M-Pesa messages to orders, re-typing invoices into another system, exporting and importing spreadsheets — it's slow and error-prone. Integrations make your tools pass data to each other automatically.",
+      "Manually matching M-Pesa messages to orders, re-typing invoices into another system, exporting and importing spreadsheets: it's slow and error-prone. Integrations make your tools pass data to each other automatically.",
     included: [
       "M-Pesa Daraja: STK Push, Paybill/Till (C2B), payouts (B2C) and reconciliation",
       "Card and international payment gateways",
@@ -237,7 +237,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "Do I need a Paybill or Till number first?",
-        a: "Yes — M-Pesa integrations run on your own Paybill or Till so the money goes straight to you. We guide you through getting API access from Safaricom.",
+        a: "Yes. M-Pesa integrations run on your own Paybill or Till so the money goes straight to you. We guide you through getting API access from Safaricom.",
       },
       {
         q: "Can you add M-Pesa to a system someone else built?",
@@ -252,10 +252,10 @@ export const SERVICES: Service[] = [
     short: "Launch & Grow",
     icon: Rocket,
     summary:
-      "SEO, Google Business Profile, analytics and launch content — so what we build actually gets found and used.",
+      "SEO, Google Business Profile, analytics and launch content, so what we build actually gets found and used.",
     heroTitle: "Get Found After You Launch",
     heroDescription:
-      "SEO, Google Business Profile, analytics, brand assets and team training — making sure what we build gets found, trusted and used.",
+      "SEO, Google Business Profile, analytics, brand assets and team training, making sure what we build gets found, trusted and used.",
     problem:
       "Launching is the start, not the finish. Without search visibility, measurement and a team that knows the new system, even great software sits unused. We help you get found on Google and AI assistants, measure what works, and train your people.",
     included: [
@@ -278,7 +278,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "Do you only do SEO for sites you built?",
-        a: "No — we can work on an existing site too, starting with an audit of what's holding it back.",
+        a: "No. We can work on an existing site too, starting with an audit of what's holding it back.",
       },
       {
         q: "How long until SEO shows results?",

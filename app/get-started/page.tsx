@@ -30,7 +30,7 @@ export default async function GetStartedPage() {
     <>
       <PageHero
         title="Let's Plan Your Website"
-        description="A couple of quick questions and we'll point you to the right next step — no jargon, no pressure."
+        description="A couple of quick questions and we'll point you to the right next step, with no jargon and no pressure."
       />
       <section className="bg-white py-14 sm:py-20">
         <Container className="flex flex-col gap-12">
@@ -38,7 +38,7 @@ export default async function GetStartedPage() {
             <StartWizard pricing={pricing} location={inKenya} />
           ) : (
             <p className="mx-auto max-w-lg text-center text-navy-700">
-              Our planner is temporarily unavailable — please call or WhatsApp
+              Our planner is temporarily unavailable. Please call or WhatsApp
               us below and we&rsquo;ll help you directly.
             </p>
           )}

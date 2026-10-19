@@ -81,7 +81,7 @@ export function PricingEditor({
       setDraft(body.pricing);
       setStatus({
         kind: "ok",
-        text: "Prices saved — the estimator uses them now.",
+        text: "Prices saved. The estimator uses them now.",
       });
       router.refresh();
     } catch (e) {

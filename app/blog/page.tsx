@@ -65,7 +65,7 @@ export default function BlogPage() {
     <>
       <PageHero
         title="Insights"
-        description="Practical writing on software, websites, SEO and getting found online — for businesses in Kenya."
+        description="Practical writing on software, websites, SEO and getting found online, for businesses in Kenya."
       />
       <section className="bg-white py-20">
         <Container>

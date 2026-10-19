@@ -66,7 +66,7 @@ export default async function ProjectsPage() {
             >
               Estimates
             </a>{" "}
-            tab, click &ldquo;Deposit received — start&rdquo; to start one.
+            tab, click &ldquo;Deposit received: start&rdquo; to start one.
           </div>
         ) : null}
 

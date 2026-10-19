@@ -12,7 +12,7 @@ export function purchaseOrderLink(estimate: Estimate, orderUrl: string) {
 
   const lines = [
     `*Purchase Order ${estimate.reference}*`,
-    `${client.name}${client.company ? ` — ${client.company}` : ""} (${client.country})`,
+    `${client.name}${client.company ? `, ${client.company}` : ""} (${client.country})`,
     `Industry: ${estimate.industryName}`,
     estimate.packageName
       ? `Package: ${estimate.packageName}`

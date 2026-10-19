@@ -36,7 +36,7 @@ async function deliver(message: {
 }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey || !message.to.length) {
-    console.info("[notify] email not configured — skipped:", message.subject);
+    console.info("[notify] email not configured, skipped:", message.subject);
     return;
   }
   try {
@@ -91,7 +91,7 @@ function replyToProspect(
 ) {
   if (!email || !process.env.NOTIFY_FROM) return;
   const signoff = [
-    "— The Bluvig team",
+    "The Bluvig team",
     `${SITE.phone} · WhatsApp ${SITE.whatsapp.replace("https://", "")}`,
   ];
   const text = [
@@ -138,7 +138,7 @@ export async function notifyNewLead(lead: Lead, origin: string) {
   );
   await replyToProspect(
     lead.email,
-    "We've got your request — Bluvig",
+    "Bluvig: we've got your request",
     [
       `Hi ${lead.name.split(" ")[0]},`,
       `Thanks for reaching out. We've received your request and someone from Bluvig will call you on ${lead.phone}${lead.bestTime ? ` (${lead.bestTime.toLowerCase()})` : " shortly"} to talk through your project.`,
@@ -154,7 +154,7 @@ export async function notifyNewEstimate(estimate: Estimate, origin: string) {
     ? ` + ${formatMoney(quote.monthlyTotal, quote.currency)}/mo`
     : "";
   await alertOwner(
-    `New quotation ${estimate.reference}: ${client.name} — ${total}`,
+    `New quotation ${estimate.reference}: ${client.name}, ${total}`,
     [
       ["Reference", estimate.reference],
       ["Client", [client.name, client.company].filter(Boolean).join(", ")],

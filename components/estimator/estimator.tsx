@@ -218,7 +218,7 @@ export function Estimator({
       setLastAdded(null);
       if (dependents.length) {
         setNotice(
-          `Also removed ${dependents.map((d) => d.name).join(", ")} — they need ${module.name}.`
+          `Also removed ${dependents.map((d) => d.name).join(", ")} because they need ${module.name}.`
         );
       }
       return;
@@ -231,7 +231,7 @@ export function Estimator({
     setLastAdded(module.id);
     if (added.length) {
       setNotice(
-        `Added ${added.map((id) => MODULE_BY_ID.get(id)!.name).join(", ")} — ${module.name} needs it.`
+        `Added ${added.map((id) => MODULE_BY_ID.get(id)!.name).join(", ")} because ${module.name} needs it.`
       );
     }
   }
@@ -331,7 +331,7 @@ export function Estimator({
           </a>
         </div>
         <p className="text-sm text-navy-600">
-          WhatsApp opens with your order typed out — just press{" "}
+          WhatsApp opens with your order typed out. Just press{" "}
           <strong>Send</strong>. We&rsquo;ll confirm the details and{" "}
           {prototype
             ? "get started on your free prototype."
@@ -1096,7 +1096,7 @@ function IndustryStep({ onChoose }: { onChoose: (id: string) => void }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search — e.g. salon, hotel, school"
+          placeholder="Search, e.g. salon, hotel, school"
           className="w-full rounded-full border border-navy-200 bg-white py-3 pr-4 pl-11 text-base text-navy-950 focus:border-gold-400 focus:outline-none"
         />
       </label>
@@ -1126,13 +1126,13 @@ function IndustryStep({ onChoose }: { onChoose: (id: string) => void }) {
       ) : null}
       {!results.length ? (
         <p className="text-center text-sm text-navy-600">
-          No match —{" "}
+          No match.{" "}
           <button
             type="button"
             onClick={() => onChoose("other")}
             className="font-semibold text-gold-700 underline"
           >
-            continue with &ldquo;Other&rdquo;
+            Continue with &ldquo;Other&rdquo;
           </button>
         </p>
       ) : null}

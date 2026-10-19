@@ -33,7 +33,7 @@ export const PROJECTS: Project[] = [
     service: "web-applications",
     own: true,
     summary:
-      "Our own M-Pesa QR code generator — a web app that lets small businesses in Kenya create payment QR codes for contactless M-Pesa payments.",
+      "Our own M-Pesa QR code generator: a web app that lets small businesses in Kenya create payment QR codes for contactless M-Pesa payments.",
   },
   {
     slug: "digitec-virtual",

@@ -15,7 +15,7 @@ export default function PrivacyPage() {
     <LegalPage
       title="Privacy Policy"
       updated="16 October 2026"
-      intro={`This policy explains what personal data ${SITE.legalName} ("Bluvig", "we") collects through ${SITE.url.replace("https://", "")}, why, who we share it with, and the rights you have under Kenya's Data Protection Act, 2019 — and, for visitors in the EU or UK, the GDPR.`}
+      intro={`This policy explains what personal data ${SITE.legalName} ("Bluvig", "we") collects through ${SITE.url.replace("https://", "")}, why, who we share it with, and the rights you have under Kenya's Data Protection Act, 2019 and, for visitors in the EU or UK, the GDPR.`}
       sections={[
         {
           heading: "Who we are",
@@ -66,9 +66,9 @@ export default function PrivacyPage() {
           body: [
             "We use trusted service providers who process data on our behalf, under contracts that require them to protect it:",
             [
-              "Vercel — website hosting and anonymous analytics",
-              "Supabase — our database",
-              "Resend — sending emails about your enquiry",
+              "Vercel: website hosting and anonymous analytics",
+              "Supabase: our database",
+              "Resend: sending emails about your enquiry",
             ],
             "If you choose to message us on WhatsApp or pay by M-Pesa, Meta (WhatsApp) and Safaricom handle that data under their own privacy policies. We may also disclose data where the law requires it.",
           ],

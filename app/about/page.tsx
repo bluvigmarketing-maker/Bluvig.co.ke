@@ -12,13 +12,13 @@ const VALUES = [
     icon: Wrench,
     title: "Software That Gets Used",
     description:
-      "We measure success by whether your team and customers actually use what we build — not by how many features we ship.",
+      "We measure success by whether your team and customers actually use what we build, not by how many features we ship.",
   },
   {
     icon: Globe2,
     title: "Built in Kenya, Ready for the World",
     description:
-      "M-Pesa, eTIMS and how Kenyan customers buy are second nature to us — and we build to the same standard for clients abroad.",
+      "M-Pesa, eTIMS and how Kenyan customers buy are second nature to us, and we build to the same standard for clients abroad.",
   },
   {
     icon: Handshake,
@@ -40,7 +40,7 @@ export default function AboutPage() {
     <>
       <PageHero
         title="A Software Studio in Kenya"
-        description="We design and build the software businesses run on — and stay around to keep it running."
+        description="We design and build the software businesses run on, and stay around to keep it running."
       />
 
       <section className="bg-white py-20">
@@ -50,7 +50,7 @@ export default function AboutPage() {
               align="center"
               eyebrow="Our Story"
               title="From Getting Businesses Found to Building What They Run On"
-              description="Bluvig started by helping Kenyan businesses get found online — websites, SEO and digital marketing. Along the way our clients kept asking for more: online shops, booking systems, M-Pesa payments, tools for their teams. Today we're a software studio first, building custom systems, web and mobile apps and websites for businesses in Kenya and abroad — and we still make sure what we build gets found."
+              description="Bluvig started by helping Kenyan businesses get found online: websites, SEO and digital marketing. Along the way our clients kept asking for more: online shops, booking systems, M-Pesa payments, tools for their teams. Today we're a software studio first, building custom systems, web and mobile apps and websites for businesses in Kenya and abroad, and we still make sure what we build gets found."
             />
           </div>
 
