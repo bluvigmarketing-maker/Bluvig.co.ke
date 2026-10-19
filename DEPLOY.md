@@ -15,7 +15,7 @@ Everything in the code is ready; these steps need the owner's accounts.
 |---|---|
 | `DATABASE_URL` | The Supabase pooler URI from step 1 |
 | `ADMIN_PASSWORD` | A long random secret (signs sessions; one-time setup password for the first passkey) |
-| `WEBAUTHN_ORIGIN` | `https://bluvig.co.ke` (Production only — passkeys are bound to this) |
+| `WEBAUTHN_ORIGIN` | `https://bluvig.co.ke` (Production only — passkeys are bound to this domain and work on both `bluvig.co.ke` and `www.bluvig.co.ke`) |
 | `RESEND_API_KEY` | From resend.com → API Keys |
 | `NOTIFY_EMAIL` | Where alerts go, e.g. `collins@bluvig.co.ke` |
 | `NOTIFY_FROM` | `Bluvig <hello@bluvig.co.ke>` — only after step 4; this also turns on the auto-reply to prospects |

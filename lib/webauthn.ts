@@ -19,11 +19,17 @@ export const AUTHENTICATOR_USER_NAME = "bluvig-cockpit";
 /**
  * Passkeys are bound to a domain. Set WEBAUTHN_ORIGIN (e.g. https://bluvig.co.ke)
  * in production; in development it falls back to the URL the request came in on.
+ * The passkey belongs to the bare domain, so it works on both bluvig.co.ke and
+ * www.bluvig.co.ke whichever one the site redirects to.
  * Note: passkeys only work over HTTPS or on localhost.
  */
 export function relyingParty(request: Request) {
-  const origin = process.env.WEBAUTHN_ORIGIN ?? new URL(request.url).origin;
-  return { origin, rpID: new URL(origin).hostname };
+  const url = new URL(process.env.WEBAUTHN_ORIGIN ?? new URL(request.url).origin);
+  const rpID = url.hostname.replace(/^www\./, "");
+  const port = url.port ? `:${url.port}` : "";
+  const origins = [`${url.protocol}//${rpID}${port}`];
+  if (rpID.includes(".")) origins.push(`${url.protocol}//www.${rpID}${port}`);
+  return { origins, rpID };
 }
 
 // ── Passkey check (shared by cockpit sign-in and authenticator unlock) ───
@@ -59,13 +65,13 @@ export async function verifyPasskey(
     };
   }
 
-  const { origin, rpID } = relyingParty(request);
+  const { origins, rpID } = relyingParty(request);
   try {
     const { verified, authenticationInfo } = await verifyAuthenticationResponse(
       {
         response,
         expectedChallenge: ceremony.challenge,
-        expectedOrigin: origin,
+        expectedOrigin: origins,
         expectedRPID: rpID,
         requireUserVerification: true,
         credential: {
@@ -79,7 +85,8 @@ export async function verifyPasskey(
     if (!verified) throw new Error("not verified");
     await touchDevice(device.id, authenticationInfo.newCounter);
     return { ok: true, device };
-  } catch {
+  } catch (error) {
+    console.error("Passkey sign-in failed:", error);
     return { ok: false, error: "Could not verify your passkey.", status: 401 };
   }
 }

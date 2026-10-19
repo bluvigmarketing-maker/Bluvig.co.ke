@@ -31,12 +31,12 @@ export const POST = withStorageErrors(async (request: Request) => {
     );
   }
 
-  const { origin, rpID } = relyingParty(request);
+  const { origins, rpID } = relyingParty(request);
   try {
     const { verified, registrationInfo } = await verifyRegistrationResponse({
       response,
       expectedChallenge: ceremony.challenge,
-      expectedOrigin: origin,
+      expectedOrigin: origins,
       expectedRPID: rpID,
       requireUserVerification: true,
     });
@@ -55,7 +55,8 @@ export const POST = withStorageErrors(async (request: Request) => {
     await startAuthenticatorSession(credential.id);
     await startCockpitSession();
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error("Passkey registration failed:", error);
     return NextResponse.json(
       { error: "Could not verify this passkey." },
       { status: 400 }
