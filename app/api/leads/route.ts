@@ -15,6 +15,7 @@ import {
 } from "@/lib/qualify";
 import { allow, tooManyRequests } from "@/lib/rate-limit";
 import { withStorageErrors } from "@/lib/storage-errors";
+import { isSystemKind, MIN_BRIEF, SYSTEM_KINDS } from "@/lib/system-flow";
 import { visitorInKenya } from "@/lib/visitor-location";
 
 const text = (value: unknown, max = 200) =>
@@ -38,6 +39,66 @@ export const POST = withStorageErrors(async (request: Request) => {
   const name = text(body.name, 100);
   const email = text(body.email, 200);
   const phone = text(body.phone, 40);
+
+  // App or business system brief: described in full, for a discovery call.
+  if (body.kind === "system") {
+    const brief = text(body.message, 4000);
+    if (!name || !phone) {
+      return NextResponse.json(
+        { error: "Please add your name and a phone number we can call." },
+        { status: 400 }
+      );
+    }
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      return NextResponse.json(
+        { error: "That email address doesn't look right." },
+        { status: 400 }
+      );
+    }
+    if (!isSystemKind(body.systemKind)) {
+      return NextResponse.json(
+        { error: "Please choose what you need built." },
+        { status: 400 }
+      );
+    }
+    if (brief.length < MIN_BRIEF) {
+      return NextResponse.json(
+        { error: `Please describe your project in full (at least ${MIN_BRIEF} characters).` },
+        { status: 400 }
+      );
+    }
+    if (!(await allow("lead", request))) return tooManyRequests();
+    const bestTime = isBestTime(body.bestTime) ? body.bestTime : undefined;
+    const timeline = isTimeline(body.timeline) ? body.timeline : undefined;
+
+    const lead = await addLead({
+      kind: "system",
+      name,
+      email,
+      phone,
+      businessType: SYSTEM_KINDS.find((k) => k.id === body.systemKind)!.label,
+      goal: "Discovery call",
+      budget: "",
+      message: brief,
+      location:
+        ((await visitorInKenya()) ?? body.location !== "international")
+          ? "kenya"
+          : "international",
+      timeline: timeline
+        ? TIMELINES.find((t) => t.id === timeline)!.label
+        : undefined,
+      bestTime: bestTime
+        ? BEST_TIMES.find((t) => t.id === bestTime)!.label
+        : undefined,
+      materials: cleanMaterials(body.materials),
+      source: cleanAttribution(body.attribution),
+    });
+    after(async () => {
+      await recordEvent("callback_submitted");
+      await notifyNewLead(lead, new URL(request.url).origin);
+    });
+    return NextResponse.json({ ok: true, id: lead.id }, { status: 201 });
+  }
 
   // Call-back request from the Get Started wizard.
   if (body.kind === "callback") {

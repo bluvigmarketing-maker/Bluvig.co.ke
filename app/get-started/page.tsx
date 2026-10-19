@@ -11,13 +11,19 @@ import { visitorInKenya } from "@/lib/visitor-location";
 export const metadata: Metadata = {
   title: "Get Started",
   description:
-    "Get a call back, pick your website features yourself, or let us recommend the best setup for your budget.",
+    "Describe your app or business system for a discovery call, or plan your website: get a call back, pick features yourself, or get a recommendation for your budget.",
 };
 
 // Uses live prices for the budget recommender.
 export const dynamic = "force-dynamic";
 
-export default async function GetStartedPage() {
+export default async function GetStartedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ need?: string }>;
+}) {
+  // ?need=system opens the app / business system brief directly.
+  const initialMode = (await searchParams).need === "system" ? "system" : "choose";
   let pricing: Pricing | null = null;
   const inKenya = await visitorInKenya();
   try {
@@ -29,13 +35,17 @@ export default async function GetStartedPage() {
   return (
     <>
       <PageHero
-        title="Let's Plan Your Website"
+        title="Let's Plan Your Project"
         description="A couple of quick questions and we'll point you to the right next step, with no jargon and no pressure."
       />
       <section className="bg-white py-14 sm:py-20">
         <Container className="flex flex-col gap-12">
           {pricing ? (
-            <StartWizard pricing={pricing} location={inKenya} />
+            <StartWizard
+              pricing={pricing}
+              location={inKenya}
+              initialMode={initialMode}
+            />
           ) : (
             <p className="mx-auto max-w-lg text-center text-navy-700">
               Our planner is temporarily unavailable. Please call or WhatsApp

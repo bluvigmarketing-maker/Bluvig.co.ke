@@ -11,7 +11,7 @@ export default function Home() {
       <Hero />
       <Services />
       <Process />
-      <Work limit={6} />
+      <Work featured />
       <Trust />
       <FinalCta />
     </>

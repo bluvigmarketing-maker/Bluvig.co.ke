@@ -1,5 +1,5 @@
 /**
- * Ready-made packages — three outcome-named bundles per industry, so most
+ * Ready-made packages — Basic, Gold and Platinum for each industry, so most
  * visitors pick one instead of assembling a site from ~60 add-ons. Built from
  * each industry's `recommended` list, so they follow the catalog automatically
  * and are priced by the live price list.
@@ -46,19 +46,19 @@ export function buildPackages(
   return [
     {
       id: "found",
-      name: "Get Found",
+      name: "Basic",
       promise: "A professional site customers can find on Google.",
       selection: {},
     },
     {
       id: "customers",
-      name: "Win Customers",
+      name: "Gold",
       promise: "Turn visitors into enquiries, bookings and sales.",
       selection: pick(growth),
     },
     {
       id: "complete",
-      name: "Run It Online",
+      name: "Platinum",
       promise: "Everything your business needs, working for you 24/7.",
       selection: pick([...recommended, ...COMPLETE_EXTRAS]),
     },

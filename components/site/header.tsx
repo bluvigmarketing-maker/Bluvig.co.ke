@@ -55,6 +55,11 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
+          <Button
+            variant="ghost"
+            size="sm"
+            render={<Link href="/">Home</Link>}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger
               render={

@@ -15,7 +15,7 @@ export default function WorkPage() {
   return (
     <>
       <PageHero
-        title="Shipped and in Use"
+        title="Projects Done by Us"
         description="Products, web apps and websites we've designed and built for businesses in Kenya."
       />
       <Work heading={false} />

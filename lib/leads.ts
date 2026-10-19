@@ -16,8 +16,11 @@ export interface Lead {
   budget: string;
   message: string;
   submittedAt: string;
-  /** "callback" = Get Started wizard; absent on leads from the old form. */
-  kind?: "callback";
+  /**
+   * "callback" = Get Started wizard (websites); "system" = app or business
+   * system brief, for a discovery call; absent on leads from the old form.
+   */
+  kind?: "callback" | "system";
   industry?: string;
   location?: "kenya" | "international";
   budgetBand?: string;

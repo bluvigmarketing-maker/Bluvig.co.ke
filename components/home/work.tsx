@@ -1,78 +1,52 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { PROJECTS, type Project } from "@/lib/work";
+import { getVisibleProjects } from "@/lib/portfolio";
 import { Container } from "@/components/site/container";
+import { ProjectCard } from "@/components/site/project-card";
 import { SectionHeading } from "@/components/site/section-heading";
+import { WorkFilter } from "@/components/site/work-filter";
 import { Button } from "@/components/ui/button";
 
-function ProjectCard({ project }: { project: Project }) {
-  const body = (
-    <>
-      <p className="text-xs font-semibold text-navy-500">
-        {project.type}
-        {project.own ? (
-          <span className="text-gold-700"> · Our product</span>
-        ) : null}
-      </p>
-      <h3 className="font-heading text-lg font-semibold text-navy-950">
-        {project.title}
-      </h3>
-      <p className="flex-1 text-sm leading-relaxed text-navy-700">
-        {project.summary}
-      </p>
-      {project.story ? (
-        <span className="flex items-center gap-1.5 text-sm font-semibold text-gold-700">
-          Read the case study
-          <ArrowRight className="size-3.5" aria-hidden="true" />
-        </span>
-      ) : null}
-    </>
-  );
-  const className =
-    "flex h-full flex-col gap-3 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm";
-  return project.story ? (
-    <Link
-      href={`/work/${project.slug}`}
-      className={`${className} transition-transform hover:-translate-y-1 hover:shadow-md`}
-    >
-      {body}
-    </Link>
-  ) : (
-    <div className={className}>{body}</div>
-  );
-}
-
-export function Work({
-  limit,
+/**
+ * The portfolio (managed in the cockpit's Portfolio tab). On the home page
+ * it shows the projects marked "Feature on home page"; on /work, every
+ * visible project with filters.
+ */
+export async function Work({
+  featured = false,
   heading = true,
 }: {
-  /** Show only the first N projects plus a "See all work" link. */
-  limit?: number;
+  /** Home page: only featured projects, plus a "See all work" link. */
+  featured?: boolean;
   heading?: boolean;
 }) {
-  const projects = limit ? PROJECTS.slice(0, limit) : PROJECTS;
+  const visible = await getVisibleProjects();
+  const picked = visible.filter((p) => p.featured);
+  // Nothing marked for the home page yet: show the first six instead.
+  const projects = featured ? (picked.length ? picked : visible.slice(0, 6)) : visible;
+
   return (
     <section className="bg-white py-20">
       <Container className="flex flex-col gap-12">
         {heading ? (
-          <div>
-            <SectionHeading
-              title="Shipped and in Use"
-              description="Products, web apps and websites we've built for businesses in Kenya."
-            />
-          </div>
+          <SectionHeading
+            title="Projects Done by Us"
+            description="Websites, web apps and products we've designed and built for businesses in Kenya."
+          />
         ) : null}
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <div key={project.slug}>
-              <ProjectCard project={project} />
-            </div>
-          ))}
-        </div>
+        {featured ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        ) : (
+          <WorkFilter projects={projects} />
+        )}
 
-        {limit && PROJECTS.length > limit ? (
+        {featured && visible.length > projects.length ? (
           <div className="flex justify-center">
             <Button
               size="lg"

@@ -11,6 +11,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  Blocks,
   Check,
   CheckCircle2,
   MousePointerClick,
@@ -38,11 +39,18 @@ import {
   type BudgetBandId,
   type TimelineId,
 } from "@/lib/qualify";
+import {
+  BRIEF_PROMPTS,
+  MIN_BRIEF,
+  SYSTEM_JOURNEY,
+  SYSTEM_KINDS,
+  type SystemKindId,
+} from "@/lib/system-flow";
 import { getAttribution, track } from "@/lib/track-client";
 import { IndustryIcon } from "@/components/estimator/industry-icon";
 import { MaterialsFields } from "./materials-fields";
 
-type Mode = "choose" | "callback" | "recommend";
+export type Mode = "choose" | "callback" | "recommend" | "system";
 const CALLBACK_STEPS = [
   "industry",
   "budget",
@@ -51,16 +59,21 @@ const CALLBACK_STEPS = [
   "contact",
 ] as const;
 const RECOMMEND_STEPS = ["industry", "amount", "result"] as const;
+// Apps and business systems: described in full, then a discovery call.
+const SYSTEM_STEPS = ["kind", "describe", "contact"] as const;
 
 export function StartWizard({
   pricing,
   location,
+  initialMode = "choose",
 }: {
   pricing: Pricing;
   /** Visitor in Kenya (KES) or not (USD), from their IP; null if unknown. */
   location: boolean | null;
+  /** e.g. "system" when arriving from an app or business system page. */
+  initialMode?: Mode;
 }) {
-  const [mode, setMode] = useState<Mode>("choose");
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [step, setStep] = useState(0);
   const [industryId, setIndustryId] = useState<string | null>(null);
   const [inKenya, setInKenya] = useState(location ?? true);
@@ -71,7 +84,12 @@ export function StartWizard({
   const [amount, setAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ belowMinimum: boolean } | null>(null);
+  const [done, setDone] = useState<{
+    belowMinimum: boolean;
+    system?: boolean;
+  } | null>(null);
+  const [systemKind, setSystemKind] = useState<SystemKindId | null>(null);
+  const [brief, setBrief] = useState("");
 
   // Location unknown (local dev): guess from the browser's time zone.
   useEffect(() => {
@@ -105,7 +123,7 @@ export function StartWizard({
   }
 
   function start(next: Mode) {
-    if (next === "callback") track("callback_started");
+    if (next === "callback" || next === "system") track("callback_started");
     setMode(next);
     setStep(0);
     setError(null);
@@ -168,6 +186,40 @@ export function StartWizard({
     }
   }
 
+  async function submitSystem(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!systemKind || brief.trim().length < MIN_BRIEF) return;
+    setSubmitting(true);
+    setError(null);
+    const form = new FormData(event.currentTarget);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "system",
+          systemKind,
+          message: brief,
+          location: inKenya ? "kenya" : "international",
+          bestTime,
+          materials,
+          attribution: getAttribution(),
+          name: form.get("name"),
+          phone: form.get("phone"),
+          email: form.get("email"),
+          website: form.get("website"),
+        }),
+      });
+      const body = await readJson(res);
+      if (!res.ok) throw new Error(body.error ?? "Something went wrong.");
+      setDone({ belowMinimum: false, system: true });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   const quotationHref = recommendation
     ? `/quotation?${new URLSearchParams({
         i: industryId!,
@@ -179,6 +231,31 @@ export function StartWizard({
     : "/quotation";
 
   // ── Done ───────────────────────────────────────────────────────────────
+  if (done?.system) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
+        <CheckCircle2 className="size-14 text-gold-600" aria-hidden="true" />
+        <div>
+          <h2 className="font-heading text-3xl font-semibold text-navy-950">
+            We&rsquo;ve got your brief
+          </h2>
+          <p className="mt-2 text-navy-700">
+            Thanks! We&rsquo;ll read it and call you
+            {bestTime ? ` in the ${bestTime}` : " shortly"} to book your
+            discovery call.
+          </p>
+        </div>
+        <Journey current={1} />
+        <Link
+          href="/"
+          className="text-sm font-medium text-gold-700 underline-offset-4 hover:underline"
+        >
+          Back to the homepage
+        </Link>
+      </div>
+    );
+  }
+
   if (done) {
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 text-center">
@@ -221,22 +298,28 @@ export function StartWizard({
             Pick whatever feels easiest. You can switch later.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <ChoiceCard
+            icon={Blocks}
+            title="I need an app or business system"
+            text="Describe it in full, then we book a discovery call, send a fixed price and build a prototype."
+            onClick={() => start("system")}
+          />
           <ChoiceCard
             icon={PhoneCall}
-            title="Call me back"
+            title="Call me back about a website"
             text="Not sure what you need? Answer a few quick questions and we'll call to recommend the right setup."
             onClick={() => start("callback")}
           />
           <ChoiceCard
             icon={MousePointerClick}
-            title="I'll pick the features"
+            title="I'll pick my website features"
             text="Open the visual builder, choose features yourself and watch the price update live."
             href="/quotation"
           />
           <ChoiceCard
             icon={Sparkles}
-            title="Recommend for my budget"
+            title="Recommend a website for my budget"
             text="Tell us your industry and budget and we'll suggest the best feature combination for it."
             onClick={() => start("recommend")}
           />
@@ -245,7 +328,12 @@ export function StartWizard({
     );
   }
 
-  const steps = mode === "callback" ? CALLBACK_STEPS : RECOMMEND_STEPS;
+  const steps =
+    mode === "system"
+      ? SYSTEM_STEPS
+      : mode === "callback"
+        ? CALLBACK_STEPS
+        : RECOMMEND_STEPS;
   const current = steps[step];
   const back = () => (step === 0 ? setMode("choose") : setStep(step - 1));
   const next = () => setStep(step + 1);
@@ -275,6 +363,85 @@ export function StartWizard({
           ))}
         </div>
       </div>
+
+      {current === "kind" ? (
+        <Question
+          title="What do you need built?"
+          subtitle="Here's how apps and business systems work with us."
+        >
+          <Journey current={0} />
+          <div className="grid gap-2 sm:grid-cols-2">
+            {SYSTEM_KINDS.map((k) => (
+              <Chip
+                key={k.id}
+                selected={systemKind === k.id}
+                onClick={() => {
+                  setSystemKind(k.id);
+                  next();
+                }}
+              >
+                {k.label}
+              </Chip>
+            ))}
+          </div>
+        </Question>
+      ) : null}
+
+      {current === "describe" ? (
+        <Question
+          title="Describe it in full"
+          subtitle="The more we know, the more useful your discovery call will be. A few short paragraphs is ideal."
+        >
+          <ul className="grid gap-1.5 rounded-xl bg-navy-50 px-5 py-4 text-sm text-navy-700 sm:grid-cols-2">
+            {BRIEF_PROMPTS.map((prompt) => (
+              <li key={prompt} className="flex gap-2">
+                <Check
+                  className="mt-0.5 size-4 shrink-0 text-gold-600"
+                  aria-hidden="true"
+                />
+                {prompt}
+              </li>
+            ))}
+          </ul>
+          <label className="flex flex-col gap-1.5 text-sm font-medium text-navy-900">
+            Your project brief
+            <textarea
+              value={brief}
+              onChange={(e) => setBrief(e.target.value)}
+              rows={9}
+              maxLength={4000}
+              placeholder="e.g. We run three hardware shops in Nairobi and track stock in Excel. We need a system where each branch records sales and stock, M-Pesa payments are matched to orders automatically, and the owner sees a daily report..."
+              className="rounded-xl border border-navy-200 bg-white px-4 py-3 text-base font-normal text-navy-950 focus:border-gold-400 focus:outline-none"
+            />
+            <span
+              className={cn(
+                "text-xs font-normal",
+                brief.trim().length >= MIN_BRIEF
+                  ? "text-gold-700"
+                  : "text-navy-500"
+              )}
+            >
+              {brief.trim().length >= MIN_BRIEF
+                ? "Great, that's a full description."
+                : `${MIN_BRIEF - brief.trim().length} more characters to go`}
+            </span>
+          </label>
+          <details className="rounded-xl border border-navy-100 px-4 py-3">
+            <summary className="cursor-pointer text-sm font-semibold text-navy-900">
+              Add examples or files (optional)
+            </summary>
+            <div className="mt-3">
+              <MaterialsFields value={materials} onChange={setMaterials} />
+            </div>
+          </details>
+          <NextButton
+            onClick={next}
+            disabled={brief.trim().length < MIN_BRIEF}
+          >
+            Continue
+          </NextButton>
+        </Question>
+      ) : null}
 
       {current === "industry" ? (
         <Question title="What does your business do?">
@@ -351,8 +518,17 @@ export function StartWizard({
       ) : null}
 
       {current === "contact" ? (
-        <Question title="Where should we call you?">
-          <form onSubmit={submitCallback} className="flex flex-col gap-4">
+        <Question
+          title={
+            mode === "system"
+              ? "Where should we call you for the discovery call?"
+              : "Where should we call you?"
+          }
+        >
+          <form
+            onSubmit={mode === "system" ? submitSystem : submitCallback}
+            className="flex flex-col gap-4"
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 label="Your name"
@@ -391,15 +567,17 @@ export function StartWizard({
                 ))}
               </div>
             </div>
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-navy-900">
-              Anything else? (optional)
-              <textarea
-                name="message"
-                rows={3}
-                maxLength={1000}
-                className="rounded-xl border border-navy-200 bg-white px-4 py-3 text-base font-normal text-navy-950 focus:border-gold-400 focus:outline-none"
-              />
-            </label>
+            {mode === "system" ? null : (
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-navy-900">
+                Anything else? (optional)
+                <textarea
+                  name="message"
+                  rows={3}
+                  maxLength={1000}
+                  className="rounded-xl border border-navy-200 bg-white px-4 py-3 text-base font-normal text-navy-950 focus:border-gold-400 focus:outline-none"
+                />
+              </label>
+            )}
             <input
               type="text"
               name="website"
@@ -425,7 +603,11 @@ export function StartWizard({
               .
             </p>
             <NextButton type="submit" disabled={submitting}>
-              {submitting ? "Sending…" : "Request my call back"}
+              {submitting
+                ? "Sending…"
+                : mode === "system"
+                  ? "Request my discovery call"
+                  : "Request my call back"}
             </NextButton>
           </form>
         </Question>
@@ -558,6 +740,51 @@ export function StartWizard({
         )
       ) : null}
     </div>
+  );
+}
+
+/** Describe it in full → discovery call → fixed price → prototype. */
+function Journey({ current }: { current: number }) {
+  return (
+    <ol className="grid w-full gap-3 text-left sm:grid-cols-4">
+      {SYSTEM_JOURNEY.map((step, i) => (
+        <li
+          key={step.title}
+          className={cn(
+            "flex flex-col gap-1 rounded-xl border p-3",
+            i === current
+              ? "border-gold-400 bg-gold-50"
+              : i < current
+                ? "border-navy-100 bg-white"
+                : "border-dashed border-navy-200 bg-white"
+          )}
+        >
+          <span className="flex items-center gap-2 text-xs font-semibold text-navy-500">
+            <span
+              className={cn(
+                "flex size-5 items-center justify-center rounded-full text-[11px]",
+                i < current
+                  ? "bg-gold-600 text-white"
+                  : i === current
+                    ? "bg-navy-950 text-white"
+                    : "bg-navy-100 text-navy-600"
+              )}
+            >
+              {i < current ? (
+                <Check className="size-3" aria-hidden="true" />
+              ) : (
+                i + 1
+              )}
+            </span>
+            {i === current ? "Now" : i < current ? "Done" : "Next"}
+          </span>
+          <span className="text-sm font-semibold text-navy-950">
+            {step.title}
+          </span>
+          <span className="text-xs text-navy-600">{step.text}</span>
+        </li>
+      ))}
+    </ol>
   );
 }
 

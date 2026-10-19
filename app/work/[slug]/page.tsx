@@ -4,36 +4,41 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight, Quote } from "lucide-react";
 
 import { SERVICE_BY_SLUG } from "@/lib/services";
-import { CASE_STUDIES, PROJECT_BY_SLUG } from "@/lib/work";
+import { getCaseStudies } from "@/lib/portfolio";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 import { FinalCta } from "@/components/home/final-cta";
 
 type Params = Promise<{ slug: string }>;
 
-/** Only projects with a full write-up (`story` in lib/work.ts) get a page. */
-export function generateStaticParams() {
-  return CASE_STUDIES.map((p) => ({ slug: p.slug }));
+/**
+ * Only projects with a full write-up (Challenge, Solution and Outcome in the
+ * cockpit's Portfolio tab) get a page.
+ */
+export async function generateStaticParams() {
+  return (await getCaseStudies()).map((p) => ({ slug: p.id }));
 }
 
-export const dynamicParams = false;
+async function findCaseStudy(slug: string) {
+  return (await getCaseStudies()).find((p) => p.id === slug);
+}
 
 export async function generateMetadata({
   params,
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const project = PROJECT_BY_SLUG.get((await params).slug);
+  const project = await findCaseStudy((await params).slug);
   if (!project?.story) return {};
   return {
     title: `${project.title}: Case Study`,
     description: project.summary,
-    alternates: { canonical: `/work/${project.slug}` },
+    alternates: { canonical: `/work/${project.id}` },
   };
 }
 
 export default async function CaseStudyPage({ params }: { params: Params }) {
-  const project = PROJECT_BY_SLUG.get((await params).slug);
+  const project = await findCaseStudy((await params).slug);
   if (!project?.story) notFound();
   const { story } = project;
   const service = SERVICE_BY_SLUG.get(project.service);
@@ -64,15 +69,15 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
                 </p>
               </div>
             ))}
-            {story.testimonial ? (
+            {project.testimonial ? (
               <div>
                 <figure className="rounded-2xl bg-navy-50 p-6">
                   <Quote className="size-6 text-gold-600" aria-hidden="true" />
                   <blockquote className="font-heading mt-3 text-xl text-navy-950 italic">
-                    {story.testimonial.quote}
+                    {project.testimonial.quote}
                   </blockquote>
                   <figcaption className="mt-3 text-sm text-navy-600">
-                    {story.testimonial.name}, {story.testimonial.role}
+                    {project.testimonial.name}, {project.testimonial.role}
                   </figcaption>
                 </figure>
               </div>

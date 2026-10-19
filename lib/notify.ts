@@ -121,7 +121,9 @@ const RATING = { hot: "🔥 Hot", warm: "Warm", cold: "Cold" } as const;
 export async function notifyNewLead(lead: Lead, origin: string) {
   const rating = lead.qualification ? `${RATING[lead.qualification]} ` : "";
   await alertOwner(
-    `${rating}call-back: ${lead.name} (${lead.businessType || "enquiry"})`,
+    lead.kind === "system"
+      ? `Discovery call brief: ${lead.name} (${lead.businessType})`
+      : `${rating}call-back: ${lead.name} (${lead.businessType || "enquiry"})`,
     [
       ["Name", lead.name],
       ["Phone", lead.phone],

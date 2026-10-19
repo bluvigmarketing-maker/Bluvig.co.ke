@@ -9,6 +9,7 @@ const TABS = [
   { href: "/cockpit", label: "Leads" },
   { href: "/cockpit/estimates", label: "Estimates" },
   { href: "/cockpit/projects", label: "Projects" },
+  { href: "/cockpit/portfolio", label: "Portfolio" },
   { href: "/cockpit/pricing", label: "Pricing" },
   { href: "/cockpit/insights", label: "Insights" },
 ];

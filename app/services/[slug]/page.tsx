@@ -8,7 +8,7 @@ import { getPricing } from "@/lib/estimator/store";
 import { SERVICE_BY_SLUG, SERVICES } from "@/lib/services";
 import { SITE } from "@/lib/site";
 import { visitorInKenya } from "@/lib/visitor-location";
-import { PROJECTS } from "@/lib/work";
+import { getVisibleProjects } from "@/lib/portfolio";
 import { Container } from "@/components/site/container";
 import { JsonLd } from "@/components/site/json-ld";
 import { PageHero } from "@/components/site/page-hero";
@@ -16,6 +16,7 @@ import { SectionHeading } from "@/components/site/section-heading";
 import { TickList } from "@/components/site/tick-list";
 import { Button } from "@/components/ui/button";
 import { FinalCta } from "@/components/home/final-cta";
+import { SYSTEM_JOURNEY } from "@/lib/system-flow";
 
 type Params = Promise<{ slug: string }>;
 
@@ -59,11 +60,13 @@ export default async function ServicePage({ params }: { params: Params }) {
 
   const startingPrice =
     service.quote === "instant" ? await websiteStartingPrice() : null;
-  const related = PROJECTS.filter((p) => p.service === service.slug);
+  const related = (await getVisibleProjects()).filter(
+    (p) => p.service === service.slug
+  );
   const cta =
     service.quote === "instant"
       ? { href: "/quotation", label: "See Your Price Now" }
-      : { href: "/get-started", label: "Book a Free Discovery Call" };
+      : { href: "/get-started?need=system", label: "Describe Your Project" };
 
   return (
     <>
@@ -137,6 +140,28 @@ export default async function ServicePage({ params }: { params: Params }) {
                 />
                 Milestones and dates agreed in writing before we start.
               </div>
+              {service.quote === "call" ? (
+                <div>
+                  <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
+                    How it works
+                  </p>
+                  <ol className="mt-2 flex flex-col gap-2">
+                    {SYSTEM_JOURNEY.map((step, i) => (
+                      <li key={step.title} className="flex gap-2.5 text-sm">
+                        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-navy-950 text-[11px] font-semibold text-white">
+                          {i + 1}
+                        </span>
+                        <span className="text-navy-700">
+                          <strong className="font-semibold text-navy-950">
+                            {step.title}.
+                          </strong>{" "}
+                          {step.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ) : null}
               <div>
                 <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
                   Built with
@@ -187,8 +212,8 @@ export default async function ServicePage({ params }: { params: Params }) {
               <div className="flex flex-wrap gap-2">
                 {related.map((p) => (
                   <Link
-                    key={p.slug}
-                    href={p.story ? `/work/${p.slug}` : "/work"}
+                    key={p.id}
+                    href={p.story ? `/work/${p.id}` : "/work"}
                     className="text-sm font-semibold text-gold-700 underline-offset-4 hover:underline"
                   >
                     {p.title}
