@@ -10,7 +10,7 @@ import postgres from "postgres";
  *   overwrite each other.
  * - Without it (local dev): `data/<key>.json` files, as before.
  *
- * Fine for small, low-write data (leads, authenticator devices). The estimator's
+ * Fine for small, low-write data (leads, rate limits). The estimator's
  * records will get proper tables when that's built.
  */
 

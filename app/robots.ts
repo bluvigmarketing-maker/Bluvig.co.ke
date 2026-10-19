@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Admin, sign-in, APIs and clients' private order pages.
-      disallow: ["/cockpit", "/authenticator", "/api/", "/quotation/order/"],
+      disallow: ["/cockpit", "/api/", "/quotation/order/"],
     },
     sitemap: `${SITE.url}/sitemap.xml`,
     host: SITE.url,

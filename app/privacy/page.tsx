@@ -102,7 +102,7 @@ export default function PrivacyPage() {
         {
           heading: "Security",
           body: [
-            "Data is sent over encrypted connections (HTTPS), stored in an access-controlled database, and only available to people at Bluvig who need it. Our admin area is protected by passkeys and rate-limited PINs.",
+            "Data is sent over encrypted connections (HTTPS), stored in an access-controlled database, and only available to people at Bluvig who need it. Our admin area is password-protected, with repeated wrong attempts blocked.",
           ],
         },
         {

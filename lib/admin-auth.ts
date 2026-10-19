@@ -74,7 +74,7 @@ export async function startCockpitSession() {
   });
 }
 
-/** Used only to create the first passkey (see lib/authenticator.ts). */
+/** Checks the cockpit sign-in password. */
 export function verifyPassword(candidate: string): boolean {
   return safeEqual(candidate, getSecret());
 }

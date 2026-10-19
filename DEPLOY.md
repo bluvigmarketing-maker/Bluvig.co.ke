@@ -14,8 +14,7 @@ Everything in the code is ready; these steps need the owner's accounts.
 | Variable | Value |
 |---|---|
 | `DATABASE_URL` | The Supabase pooler URI from step 1 |
-| `ADMIN_PASSWORD` | A long random secret (signs sessions; one-time setup password for the first passkey) |
-| `WEBAUTHN_ORIGIN` | `https://bluvig.co.ke` (Production only — passkeys are bound to this domain and work on both `bluvig.co.ke` and `www.bluvig.co.ke`) |
+| `ADMIN_PASSWORD` | Your cockpit password — make it long (it also signs sessions) |
 | `RESEND_API_KEY` | From resend.com → API Keys |
 | `NOTIFY_EMAIL` | Where alerts go, e.g. `collins@bluvig.co.ke` |
 | `NOTIFY_FROM` | `Bluvig <hello@bluvig.co.ke>` — only after step 4; this also turns on the auto-reply to prospects |
@@ -33,9 +32,8 @@ Everything in the code is ready; these steps need the owner's accounts.
 2. Once verified, set `NOTIFY_FROM` in Vercel and redeploy.
 
 ## 5. First sign-in
-1. Open `https://bluvig.co.ke/cockpit/login` → enter `ADMIN_PASSWORD` once → create your passkey.
-2. Cockpit → **Sign-in PIN** → set your 8-digit PIN.
-3. Cockpit → **Passkeys** → add your phone as well, so you're never locked out.
+1. Open `https://www.bluvig.co.ke/cockpit/login` → enter `ADMIN_PASSWORD`. You stay signed in for 7 days.
+2. 5 wrong passwords from one visitor (or 30 overall in an hour) pause sign-in for a while.
 
 ## 6. Smoke test on the live site
 - [ ] Home, Services, Work, Process, About, Contact, Privacy, Terms load on a phone

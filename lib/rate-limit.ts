@@ -14,12 +14,10 @@ export const LIMITS = {
   lead: { max: 5, windowMs: 10 * 60_000 },
   /** Saved quotations. */
   estimate: { max: 10, windowMs: 10 * 60_000 },
-  /** Setup-password attempts when creating the first passkey. */
-  setup: { max: 5, windowMs: 15 * 60_000 },
-  /** Cockpit PIN tries per visitor. */
-  pin: { max: 5, windowMs: 15 * 60_000 },
-  /** Cockpit PIN tries from everyone combined — stops guessing from many IPs. */
-  pinGlobal: { max: 30, windowMs: 60 * 60_000 },
+  /** Cockpit password tries per visitor. */
+  login: { max: 5, windowMs: 15 * 60_000 },
+  /** Cockpit password tries from everyone combined — stops guessing from many IPs. */
+  loginGlobal: { max: 30, windowMs: 60 * 60_000 },
 } as const;
 
 type Bucket = keyof typeof LIMITS;

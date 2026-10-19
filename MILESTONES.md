@@ -16,6 +16,7 @@ _Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing ag
 | 2026-10-03 | **Rejected: scroll-driven "code → wireframe → site" build animation.** Prototyped in three variants, then removed. | Delayed the headline/CTA on first visit — hurts conversion. Motion stays subtle and never gates content. |
 | 2026-10-10 | **Packages over à-la-carte:** the quotation leads with three ready-made packages per industry (found / customers / complete), built from each industry's recommended modules. | ~60 add-ons was too many choices; most visitors should pick a package. |
 | 2026-10-12 | **Cockpit sign-in: passkey first.** One tap with fingerprint / Face ID / Windows Hello on the device you're using (or a phone via the browser's QR prompt). Number matching with Bluvig Authenticator stays as a fallback. Sign-in switched back on. | Easiest secure option: phishing-resistant, no password to leak, no second device needed. |
+| 2026-10-19 | **Cockpit sign-in: password only.** Passkeys, the PIN and Bluvig Authenticator removed; `/cockpit/login` takes `ADMIN_PASSWORD`. 5 wrong tries per visitor / 30 overall per hour pause sign-in. | Owner asked for just a password; passkeys had failed on www. |
 | 2026-10-16 | **Cockpit PIN:** an 8-digit owner PIN, stored hashed in the DB, signs in as an alternative to the passkey (either one works). 5 wrong tries per visitor / 30 overall per hour pause PIN sign-in. | Lets the owner sign in from any computer without a passkey. |
 | 2026-10-16 | **USD only for visitors outside Kenya:** currency is set by the visitor's IP country; the KES/USD switch is gone. | Kenyan clients shouldn't see the 3× international prices. |
 | 2026-10-16 | **Site rewritten for the software studio positioning** using the proposed 6-service lineup. Digital Marketing Training and Graphic Design folded into **Launch & Grow** (old URLs redirect there). Blog stays at `/blog`. | Owner said "do them all"; lineup from Phase 1 proposal — owner to review copy. |
@@ -41,8 +42,9 @@ Done and kept as-is (design and infrastructure carry over; **copy and positionin
 - [x] Shared primitives: `Container`, `SectionHeading`, `PageHero`, `AnimatedSection`, `MagneticButton`, `.btn-metallic`
 - [x] Pages scaffolded: Home, What We Do + 4 service pages, Case Studies index, About, Get Started, Contact, Blog index, Tools index
 - [x] Lead capture: `POST /api/leads` + `/cockpit` admin dashboard (JSON file store — **not production-safe on Vercel**, see Phase 5)
-- [x] Cockpit sign-in via **passkey** (2026-10-12): `/cockpit/login` → "Sign in with passkey" → fingerprint / Face ID / Windows Hello. On a computer without the passkey, the browser offers "Use a phone" (QR). First visit: enter `ADMIN_PASSWORD` once to create the first passkey, then it's one tap. More devices: "Add this device" in the cockpit, or a one-time code for another phone. Revoke from the cockpit. Fallback: number matching via **Bluvig Authenticator** at `/authenticator` (2026-10-03). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.
-- [x] Cockpit **8-digit PIN** as an alternative to the passkey (2026-10-16): set/change/turn off in the cockpit, or put `{"pin":"12345678"}` in the `cockpit-pin` row of `bluvig_documents` — it's hashed on first use.
+- [x] ~~Cockpit sign-in via **passkey** (2026-10-12): `/cockpit/login` → "Sign in with passkey" → fingerprint / Face ID / Windows Hello. On a computer without the passkey, the browser offers "Use a phone" (QR). First visit: enter `ADMIN_PASSWORD` once to create the first passkey, then it's one tap. More devices: "Add this device" in the cockpit, or a one-time code for another phone. Revoke from the cockpit. Fallback: number matching via **Bluvig Authenticator** at `/authenticator` (2026-10-03). Data is stored in Supabase via `DATABASE_URL` (local dev: `data/authenticator.json`). Set `WEBAUTHN_ORIGIN` in production.~~ Replaced by password sign-in (2026-10-19).
+- [x] ~~Cockpit **8-digit PIN** as an alternative to the passkey (2026-10-16)~~ — removed (2026-10-19)
+- [x] Cockpit sign-in with **password** (`ADMIN_PASSWORD`), rate-limited (2026-10-19)
 - [x] Cockpit sign-in re-enabled (2026-10-12) — it was switched off 2026-10-04 (`lib/cockpit-config.ts`).
 
 Needs rework because of the repositioning:
@@ -133,7 +135,7 @@ Full spec: **[ESTIMATOR-SPEC.md](ESTIMATOR-SPEC.md)**. Flow: industry → Standa
 - [ ] Later: admin-editable industry recommendations, auto FX updates, WhatsApp Cloud API auto-send
 
 ## Phase 5 — Lead Infrastructure
-- [x] Leads and authenticator devices stored in the hosted DB when `DATABASE_URL` is set (local dev still uses `data/*.json`)
+- [x] Leads stored in the hosted DB when `DATABASE_URL` is set (local dev still uses `data/*.json`)
 - [x] Email alert to the owner on every new lead/estimate (Resend; set `RESEND_API_KEY`, `NOTIFY_EMAIL`, `NOTIFY_FROM`) (2026-10-16)
 - [x] Auto-reply email to the prospect (needs bluvig.co.ke verified in Resend) — built; turns on when `NOTIFY_FROM` is set (2026-10-16)
 - [ ] Optional: push leads to a CRM (HubSpot/Zoho) or Google Sheet via webhook

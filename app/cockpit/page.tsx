@@ -2,13 +2,9 @@ import { redirect } from "next/navigation";
 import { AlertTriangle, Mail, Phone, Users } from "lucide-react";
 
 import { isCockpitAuthed } from "@/lib/admin-auth";
-import { getDevices, type Device } from "@/lib/authenticator";
 import { COCKPIT_AUTH_ENABLED } from "@/lib/cockpit-config";
 import { getLeads, type Lead } from "@/lib/leads";
 import { describeStorageError } from "@/lib/storage-errors";
-import { AuthenticatorDevices } from "@/components/admin/authenticator-devices";
-import { PinSettings } from "@/components/admin/pin-settings";
-import { getPinUpdatedAt, hasPin } from "@/lib/cockpit-pin";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { CockpitNav } from "@/components/admin/cockpit-nav";
 import { MaterialsList } from "@/components/admin/materials-list";
@@ -61,15 +57,9 @@ export default async function AdminDashboardPage() {
 
   // Show the dashboard even if the database isn't reachable yet — with the reason.
   let leads: Lead[] = [];
-  let devices: Device[] = [];
-  let pin = { set: false, updatedAt: null as string | null };
   let storageError: string | null = null;
   try {
     leads = await getLeads();
-    if (COCKPIT_AUTH_ENABLED) {
-      devices = await getDevices();
-      pin = { set: await hasPin(), updatedAt: await getPinUpdatedAt() };
-    }
   } catch (error) {
     console.error("[cockpit]", error);
     storageError = describeStorageError(error);
@@ -254,20 +244,6 @@ export default async function AdminDashboardPage() {
             </table>
           </div>
         )}
-
-        {COCKPIT_AUTH_ENABLED ? (
-          <>
-            <AuthenticatorDevices
-              devices={devices.map(({ id, name, createdAt, lastUsedAt }) => ({
-                id,
-                name,
-                createdAt,
-                lastUsedAt,
-              }))}
-            />
-            <PinSettings hasPin={pin.set} updatedAt={pin.updatedAt} />
-          </>
-        ) : null}
       </div>
     </div>
   );
