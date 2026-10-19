@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, Mail, MessageCircle, Phone } from "lucide-react";
 
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 import { Button } from "@/components/ui/button";
@@ -45,8 +44,8 @@ export default function ContactPage() {
       <section className="bg-white py-20">
         <Container className="flex flex-col items-center gap-12">
           <div className="grid w-full gap-6 sm:grid-cols-3">
-            {CHANNELS.map((channel, index) => (
-              <AnimatedSection key={channel.title} delay={index * 0.05}>
+            {CHANNELS.map((channel) => (
+              <div key={channel.title}>
                 <a
                   href={channel.href}
                   target={channel.href.startsWith("http") ? "_blank" : undefined}
@@ -65,20 +64,20 @@ export default function ContactPage() {
                   </h3>
                   <p className="text-sm text-navy-700">{channel.value}</p>
                 </a>
-              </AnimatedSection>
+              </div>
             ))}
           </div>
 
-          <AnimatedSection
-            delay={0.1}
+          <div
+           
             className="flex items-center gap-2 text-sm text-navy-700"
           >
             <Clock className="size-4 text-gold-600" aria-hidden="true" />
             Monday–Friday, 8am–6pm East Africa Time (UTC+3). Outside Kenya? We
             schedule calls to suit your time zone.
-          </AnimatedSection>
+          </div>
 
-          <AnimatedSection delay={0.15} className="text-center">
+          <div className="text-center">
             <p className="mb-4 text-sm text-navy-700">
               Prefer to share a few details about your project first?
             </p>
@@ -92,7 +91,7 @@ export default function ContactPage() {
                 </Link>
               }
             />
-          </AnimatedSection>
+          </div>
         </Container>
       </section>
     </>

@@ -5,7 +5,6 @@ import { ArrowUpRight, Quote } from "lucide-react";
 
 import { SERVICE_BY_SLUG } from "@/lib/services";
 import { CASE_STUDIES, PROJECT_BY_SLUG } from "@/lib/work";
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 import { FinalCta } from "@/components/home/final-cta";
@@ -56,17 +55,17 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
         <Container className="grid gap-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-10">
             {sections.map((s) => (
-              <AnimatedSection key={s.title} className="flex flex-col gap-3">
+              <div key={s.title} className="flex flex-col gap-3">
                 <h2 className="font-heading text-2xl font-semibold text-navy-950">
                   {s.title}
                 </h2>
                 <p className="leading-relaxed whitespace-pre-line text-navy-700">
                   {s.body}
                 </p>
-              </AnimatedSection>
+              </div>
             ))}
             {story.testimonial ? (
-              <AnimatedSection>
+              <div>
                 <figure className="rounded-2xl bg-navy-50 p-6">
                   <Quote className="size-6 text-gold-600" aria-hidden="true" />
                   <blockquote className="font-heading mt-3 text-xl text-navy-950 italic">
@@ -76,7 +75,7 @@ export default async function CaseStudyPage({ params }: { params: Params }) {
                     {story.testimonial.name}, {story.testimonial.role}
                   </figcaption>
                 </figure>
-              </AnimatedSection>
+              </div>
             ) : null}
           </div>
 

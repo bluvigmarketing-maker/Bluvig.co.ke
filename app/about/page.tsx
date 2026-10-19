@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Globe2, Handshake, Wrench } from "lucide-react";
 
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -46,18 +45,18 @@ export default function AboutPage() {
 
       <section className="bg-white py-20">
         <Container className="flex flex-col gap-14">
-          <AnimatedSection className="mx-auto flex max-w-3xl flex-col gap-6 text-center">
+          <div className="mx-auto flex max-w-3xl flex-col gap-6 text-center">
             <SectionHeading
               align="center"
               eyebrow="Our Story"
               title="From Getting Businesses Found to Building What They Run On"
               description="Bluvig started by helping Kenyan businesses get found online — websites, SEO and digital marketing. Along the way our clients kept asking for more: online shops, booking systems, M-Pesa payments, tools for their teams. Today we're a software studio first, building custom systems, web and mobile apps and websites for businesses in Kenya and abroad — and we still make sure what we build gets found."
             />
-          </AnimatedSection>
+          </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
-            {VALUES.map((value, index) => (
-              <AnimatedSection key={value.title} delay={index * 0.05}>
+            {VALUES.map((value) => (
+              <div key={value.title}>
                 <div className="flex h-full flex-col gap-3 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm">
                   <span className="flex size-10 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
                     <value.icon className="size-5" aria-hidden="true" />
@@ -69,7 +68,7 @@ export default function AboutPage() {
                     {value.description}
                   </p>
                 </div>
-              </AnimatedSection>
+              </div>
             ))}
           </div>
         </Container>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarDays } from "lucide-react";
 
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 
@@ -71,8 +70,8 @@ export default function BlogPage() {
       <section className="bg-white py-20">
         <Container>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {POSTS.map((post, index) => (
-              <AnimatedSection key={post.title} delay={index * 0.03}>
+            {POSTS.map((post) => (
+              <div key={post.title}>
                 <article className="flex h-full flex-col gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
                   <span className="flex items-center gap-1.5 text-xs font-semibold text-gold-700">
                     <CalendarDays className="size-3.5" aria-hidden="true" />
@@ -82,7 +81,7 @@ export default function BlogPage() {
                     {post.title}
                   </h2>
                 </article>
-              </AnimatedSection>
+              </div>
             ))}
           </div>
         </Container>

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { PROJECTS, type Project } from "@/lib/work";
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { SectionHeading } from "@/components/site/section-heading";
 import { Button } from "@/components/ui/button";
@@ -57,24 +56,24 @@ export function Work({
     <section className="bg-white py-20">
       <Container className="flex flex-col gap-12">
         {heading ? (
-          <AnimatedSection>
+          <div>
             <SectionHeading
               title="Shipped and in Use"
               description="Products, web apps and websites we've built for businesses in Kenya."
             />
-          </AnimatedSection>
+          </div>
         ) : null}
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <AnimatedSection key={project.slug} delay={index * 0.05}>
+          {projects.map((project) => (
+            <div key={project.slug}>
               <ProjectCard project={project} />
-            </AnimatedSection>
+            </div>
           ))}
         </div>
 
         {limit && PROJECTS.length > limit ? (
-          <AnimatedSection className="flex justify-center">
+          <div className="flex justify-center">
             <Button
               size="lg"
               variant="outline"
@@ -86,7 +85,7 @@ export function Work({
                 </Link>
               }
             />
-          </AnimatedSection>
+          </div>
         ) : null}
       </Container>
     </section>

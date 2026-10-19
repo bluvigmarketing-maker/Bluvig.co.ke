@@ -8,7 +8,6 @@ import { ChevronDown, Menu } from "lucide-react";
 import { isChromeless } from "@/lib/chromeless";
 import { SERVICES as SERVICE_LIST } from "@/lib/services";
 import { Container } from "@/components/site/container";
-import { MagneticButton } from "@/components/site/magnetic-button";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +41,7 @@ export function Header() {
   if (isChromeless(pathname)) return null;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/70 backdrop-blur-xl backdrop-saturate-150">
+    <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/95 backdrop-blur-xl backdrop-saturate-150">
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href="/" className="flex items-center">
           <Image
@@ -87,12 +86,10 @@ export function Header() {
         </nav>
 
         <div className="hidden md:block">
-          <MagneticButton>
             <Button
               className="btn-metallic gold-line font-semibold"
               render={<Link href="/get-started">Start a Project</Link>}
             />
-          </MagneticButton>
         </div>
 
         <Sheet>

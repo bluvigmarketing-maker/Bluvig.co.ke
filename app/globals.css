@@ -190,40 +190,19 @@
 }
 
 @layer utilities {
-  .btn-metallic {
-    background-image: linear-gradient(
-      110deg,
-      var(--gold-600) 0%,
-      var(--gold-300) 30%,
-      var(--gold-500) 45%,
-      var(--gold-100) 55%,
-      var(--gold-500) 70%,
-      var(--gold-600) 100%
-    );
-    background-size: 250% 100%;
-    color: var(--navy-950);
-    animation: shimmer 5s linear infinite;
-  }
-  .btn-metallic:hover {
-    animation-duration: 1.8s;
-  }
-
   .gold-line {
     @apply border border-gold-400/60;
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: -200% 50%;
-  }
+/* Primary CTA. Unlayered so it beats the Button variant's bg-primary. */
+.btn-metallic {
+  background-color: var(--gold-600);
+  color: white;
+  transition: background-color 200ms ease;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .btn-metallic {
-    animation: none;
+@media (hover: hover) and (pointer: fine) {
+  .btn-metallic:hover {
+    background-color: var(--gold-700);
   }
 }

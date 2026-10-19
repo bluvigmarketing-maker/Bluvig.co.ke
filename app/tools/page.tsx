@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { FileSearch, QrCode, Sparkles } from "lucide-react";
 
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
 
@@ -43,8 +42,8 @@ export default function ToolsPage() {
       />
       <section className="bg-white py-20">
         <Container className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {TOOLS.map((tool, index) => (
-            <AnimatedSection key={tool.title} delay={index * 0.05}>
+          {TOOLS.map((tool) => (
+            <div key={tool.title}>
               <div className="flex h-full flex-col gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="flex size-10 items-center justify-center rounded-xl bg-navy-50 text-navy-600">
@@ -61,7 +60,7 @@ export default function ToolsPage() {
                   {tool.description}
                 </p>
               </div>
-            </AnimatedSection>
+            </div>
           ))}
         </Container>
       </section>

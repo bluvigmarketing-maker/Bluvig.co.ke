@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Eye,
   Globe2,
@@ -7,9 +9,11 @@ import {
   Smartphone,
 } from "lucide-react";
 
-import { AnimatedSection } from "@/components/site/animated-section";
+import { cn } from "@/lib/utils";
 import { Container } from "@/components/site/container";
+import { DrawnCheck } from "@/components/site/drawn-check";
 import { SectionHeading } from "@/components/site/section-heading";
+import { useScrollReach } from "@/components/site/use-scroll-reach";
 
 /** "Working with us" assurances. */
 export const ASSURANCES = [
@@ -51,27 +55,42 @@ export const ASSURANCES = [
   },
 ];
 
+/**
+ * The promises, ticked off as you read them: each card's tick draws itself
+ * as the scroll reaches its row.
+ */
 export function Trust() {
+  const { ref, reached } = useScrollReach<HTMLDivElement>({
+    offset: ["start 75%", "end 75%"],
+    stepOffset: 48,
+  });
+
   return (
     <section className="bg-white py-20">
       <Container className="flex flex-col gap-14">
-        <AnimatedSection>
-          <SectionHeading
-            align="center"
-            eyebrow="Why Bluvig"
-            title="A Software Partner You Can Trust"
-            description="Software projects fail on trust before they fail on code. This is how we work with every client."
-          />
-        </AnimatedSection>
+        <SectionHeading
+          align="center"
+          eyebrow="Why Bluvig"
+          title="A Software Partner You Can Trust"
+          description="Software projects fail on trust before they fail on code. This is how we work with every client."
+        />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {ASSURANCES.map((point, index) => (
-            <AnimatedSection key={point.title} delay={index * 0.05}>
-              <div className="flex h-full gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm">
+        <div ref={ref} className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {ASSURANCES.map((point, index) => {
+            const on = index < reached;
+            return (
+              <div
+                key={point.title}
+                data-step
+                className={cn(
+                  "relative flex h-full gap-4 rounded-2xl border bg-white p-6 transition-[border-color,box-shadow] duration-500",
+                  on ? "border-gold-300 shadow-sm" : "border-navy-100"
+                )}
+              >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
                   <point.icon className="size-5" aria-hidden="true" />
                 </span>
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1.5 pr-6">
                   <h3 className="font-heading text-base font-semibold text-navy-950">
                     {point.title}
                   </h3>
@@ -79,9 +98,14 @@ export function Trust() {
                     {point.description}
                   </p>
                 </div>
+                <DrawnCheck
+                  on={on}
+                  delay={(index % 3) * 120}
+                  className="absolute top-5 right-5"
+                />
               </div>
-            </AnimatedSection>
-          ))}
+            );
+          })}
         </div>
       </Container>
     </section>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Check, Clock } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 
 import { convert, formatMoney } from "@/lib/estimator/pricing";
 import { getPricing } from "@/lib/estimator/store";
@@ -9,11 +9,11 @@ import { SERVICE_BY_SLUG, SERVICES } from "@/lib/services";
 import { SITE } from "@/lib/site";
 import { visitorInKenya } from "@/lib/visitor-location";
 import { PROJECTS } from "@/lib/work";
-import { AnimatedSection } from "@/components/site/animated-section";
 import { Container } from "@/components/site/container";
 import { JsonLd } from "@/components/site/json-ld";
 import { PageHero } from "@/components/site/page-hero";
 import { SectionHeading } from "@/components/site/section-heading";
+import { TickList } from "@/components/site/tick-list";
 import { Button } from "@/components/ui/button";
 import { FinalCta } from "@/components/home/final-cta";
 
@@ -100,7 +100,7 @@ export default async function ServicePage({ params }: { params: Params }) {
 
       <section className="bg-white py-20">
         <Container className="grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-          <AnimatedSection className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <SectionHeading title="The Problem It Solves" />
             <p className="text-base leading-relaxed text-navy-700">
               {service.problem}
@@ -109,21 +109,11 @@ export default async function ServicePage({ params }: { params: Params }) {
               <h3 className="font-heading text-lg font-semibold text-navy-950">
                 What&rsquo;s included
               </h3>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {service.included.map((item) => (
-                  <li key={item} className="flex gap-2 text-sm text-navy-800">
-                    <Check
-                      className="mt-0.5 size-4 shrink-0 text-gold-600"
-                      aria-hidden="true"
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <TickList items={service.included} />
             </div>
-          </AnimatedSection>
+          </div>
 
-          <AnimatedSection delay={0.1}>
+          <div>
             <aside className="flex flex-col gap-5 rounded-2xl border border-navy-100 bg-navy-50 p-6">
               <div>
                 <p className="text-xs font-semibold tracking-wide text-navy-500 uppercase">
@@ -166,18 +156,18 @@ export default async function ServicePage({ params }: { params: Params }) {
                 }
               />
             </aside>
-          </AnimatedSection>
+          </div>
         </Container>
       </section>
 
       <section className="bg-navy-50 py-20">
         <Container className="flex flex-col gap-10">
-          <AnimatedSection>
+          <div>
             <SectionHeading title="What We Can Build for You" />
-          </AnimatedSection>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {service.examples.map((example, index) => (
-              <AnimatedSection key={example} delay={index * 0.04}>
+            {service.examples.map((example) => (
+              <div key={example}>
                 <div className="flex h-full items-center gap-3 rounded-2xl border border-navy-100 bg-white p-5 text-sm font-medium text-navy-900 shadow-sm">
                   <service.icon
                     className="size-5 shrink-0 text-gold-600"
@@ -185,12 +175,12 @@ export default async function ServicePage({ params }: { params: Params }) {
                   />
                   {example}
                 </div>
-              </AnimatedSection>
+              </div>
             ))}
           </div>
 
           {related.length ? (
-            <AnimatedSection className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               <h3 className="font-heading text-lg font-semibold text-navy-950">
                 Related work
               </h3>
@@ -205,16 +195,16 @@ export default async function ServicePage({ params }: { params: Params }) {
                   </Link>
                 ))}
               </div>
-            </AnimatedSection>
+            </div>
           ) : null}
         </Container>
       </section>
 
       <section className="bg-white py-20">
         <Container className="flex max-w-3xl flex-col gap-8">
-          <AnimatedSection>
+          <div>
             <SectionHeading title="Questions" />
-          </AnimatedSection>
+          </div>
           <div className="flex flex-col divide-y divide-navy-100 rounded-2xl border border-navy-100">
             {service.faq.map((f) => (
               <details key={f.q} className="group px-5 py-4">
