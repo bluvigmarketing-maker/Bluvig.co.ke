@@ -199,7 +199,7 @@ _Software buyers, especially international and established companies, buy trust 
 3. Keep the "Discovery Engine" brand name (could become the "Launch & Grow" offer) or retire it?
 4. Which past projects can be shown publicly, and with what numbers?
 5. Real team info for the About page (names, roles, photos)?
-6. Existing tools (QR Baker, Readability Checker): rebuild as live product demos/portfolio pieces, or retire?
+6. ~~Existing tools (QR Baker, Readability Checker): rebuild or retire?~~ Retired from the site (2026-10-21); only the Invoice & Quotation Generator is listed.
 7. Blog URL: keep `/blog` or rename to `/insights`?
 
 ## Suggested Order

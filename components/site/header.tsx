@@ -71,7 +71,9 @@ export function Header() {
               }
             />
             <DropdownMenuContent className="min-w-56">
-              <DropdownMenuItem render={<Link href="/services">All Services</Link>} />
+              <DropdownMenuItem
+                render={<Link href="/services">All Services</Link>}
+              />
               {SERVICES.map((service) => (
                 <DropdownMenuItem
                   key={service.href}
@@ -94,7 +96,7 @@ export function Header() {
             <DropdownMenuTrigger
               render={
                 <Button variant="ghost" size="sm" className="gap-1">
-                  Free Tools
+                  Tools
                   <ChevronDown className="size-3.5" aria-hidden="true" />
                 </Button>
               }
@@ -106,22 +108,27 @@ export function Header() {
                   render={<Link href={tool.href}>{tool.label}</Link>}
                 />
               ))}
-              <DropdownMenuItem render={<Link href="/tools">All Free Tools</Link>} />
+              <DropdownMenuItem render={<Link href="/tools">All Tools</Link>} />
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
 
         <div className="hidden lg:block">
-            <Button
-              className="btn-metallic gold-line font-semibold"
-              render={<Link href="/get-started">Start a Project</Link>}
-            />
+          <Button
+            className="btn-metallic gold-line font-semibold"
+            render={<Link href="/get-started">Start a Project</Link>}
+          />
         </div>
 
         <Sheet>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                aria-label="Open menu"
+              >
                 <Menu className="size-5" aria-hidden="true" />
               </Button>
             }
@@ -181,9 +188,9 @@ export function Header() {
                 />
               ))}
               <span className="px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-navy-400 uppercase">
-                Free Tools
+                Tools
               </span>
-              {[...LIVE_TOOLS, { label: "All Free Tools", href: "/tools" }].map(
+              {[...LIVE_TOOLS, { label: "All Tools", href: "/tools" }].map(
                 (tool) => (
                   <SheetClose
                     key={tool.href}
@@ -196,7 +203,7 @@ export function Header() {
                       </Link>
                     }
                   />
-                )
+                ),
               )}
               <Button
                 className="btn-metallic gold-line mt-3 font-semibold"

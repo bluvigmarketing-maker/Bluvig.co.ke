@@ -112,7 +112,7 @@ export default function InvoiceGeneratorPage() {
         <Container className="flex flex-col items-start gap-4">
           <nav aria-label="Breadcrumb" className="text-xs text-navy-300">
             <Link href="/tools" className="hover:text-white">
-              Free Tools
+              Tools
             </Link>{" "}
             / Invoice Generator
           </nav>

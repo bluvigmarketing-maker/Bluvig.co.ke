@@ -20,10 +20,7 @@ const COMPANY_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
-const TOOL_LINKS = [
-  ...LIVE_TOOLS,
-  { label: "All Free Tools", href: "/tools" },
-];
+const TOOL_LINKS = [...LIVE_TOOLS, { label: "All Tools", href: "/tools" }];
 
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy" },
@@ -87,7 +84,7 @@ export function Footer() {
           }))}
         />
         <LinkList title="Company" links={COMPANY_LINKS} />
-        <LinkList title="Free Tools" links={TOOL_LINKS} />
+        <LinkList title="Tools" links={TOOL_LINKS} />
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-semibold tracking-wide text-gold-300 uppercase">

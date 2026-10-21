@@ -7,7 +7,7 @@ import { LegalPage } from "@/components/site/legal-page";
 export const metadata: Metadata = {
   title: "Terms of Use",
   description:
-    "The terms for using the Bluvig website, its quotation tool and free tools.",
+    "The terms for using the Bluvig website, its quotation tool and business tools.",
   alternates: { canonical: "/terms" },
 };
 
@@ -60,9 +60,9 @@ export default function TermsPage() {
           ],
         },
         {
-          heading: "Free tools",
+          heading: "Tools",
           body: [
-            "Our free tools are provided as they are, without any guarantee. Check important results (for example payment QR codes) before relying on them.",
+            "Some of our tools are free and some are paid; a paid tool shows its price before you pay. Our tools are provided as they are, without any guarantee. Check important results (for example invoice totals and tax) before relying on them.",
           ],
         },
         {
