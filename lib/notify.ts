@@ -62,9 +62,62 @@ async function deliver(message: {
   }
 }
 
-/** Owner alert: a key/value table plus a cockpit link. */
-function alertOwner(subject: string, rows: [string, string][], link: string) {
+/**
+ * WhatsApp alert to the owner through a self-hosted OpenWA gateway
+ * (github.com/rmyndharis/OpenWA). Off until all four OPENWA_* settings are
+ * set. Never throws, and gives up after 8 seconds, so a gateway that's down
+ * can't hold up or lose a lead.
+ */
+async function whatsAppOwner(text: string) {
+  const base = process.env.OPENWA_URL?.replace(/\/+$/, "");
+  const apiKey = process.env.OPENWA_API_KEY;
+  const session = process.env.OPENWA_SESSION;
+  const to =
+    process.env.OPENWA_NOTIFY_TO?.split(",")
+      .map((n) => n.replace(/\D/g, ""))
+      .filter(Boolean) ?? [];
+  if (!base || !apiKey || !session || !to.length) return;
+  await Promise.all(
+    to.map(async (number) => {
+      try {
+        const res = await fetch(
+          `${base}/api/sessions/${encodeURIComponent(session)}/messages/send-text`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-API-Key": apiKey },
+            body: JSON.stringify({ chatId: `${number}@c.us`, text }),
+            signal: AbortSignal.timeout(8000),
+          }
+        );
+        if (!res.ok) console.error("[notify:whatsapp]", res.status, await res.text());
+      } catch (error) {
+        console.error("[notify:whatsapp]", error);
+      }
+    })
+  );
+}
+
+/** Owner alert: a key/value table plus a cockpit link, by email and WhatsApp. */
+async function alertOwner(
+  subject: string,
+  rows: [string, string][],
+  link: string
+) {
   const filled = rows.filter(([, value]) => value);
+  const clip = (v: string) => (v.length > 1200 ? `${v.slice(0, 1200)}…` : v);
+  await Promise.all([
+    whatsAppOwner(
+      [`*${subject}*`, "", ...filled.map(([k, v]) => `${k}: ${clip(v)}`), "", `Open: ${link}`].join("\n")
+    ),
+    sendOwnerEmail(subject, filled, link),
+  ]);
+}
+
+function sendOwnerEmail(
+  subject: string,
+  filled: [string, string][],
+  link: string
+) {
   return deliver({
     to: ownerEmails(),
     subject,
