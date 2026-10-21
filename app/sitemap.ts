@@ -5,6 +5,9 @@ import { SITE } from "@/lib/site";
 import { getCaseStudies } from "@/lib/portfolio";
 import { getPublishedPosts } from "@/lib/blog";
 
+// Built per request so posts and case studies appear as soon as they're published.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [caseStudies, posts] = await Promise.all([
     getCaseStudies(),

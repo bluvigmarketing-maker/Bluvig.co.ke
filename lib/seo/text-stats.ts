@@ -9,7 +9,21 @@ export function stripHtml(html: string): string {
     return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   }
   const doc = new DOMParser().parseFromString(html, "text/html");
-  return (doc.body.textContent ?? "").replace(/\s+/g, " ").trim();
+  // Read block by block, ending each with a full stop if it has none, so a
+  // heading or list item isn't glued onto the next sentence (which would
+  // inflate sentence lengths).
+  const BLOCKS = "p, li, h1, h2, h3, h4, h5, h6, td, th, figcaption, pre";
+  const leaves = Array.from(doc.body.querySelectorAll(BLOCKS)).filter(
+    (el) => !el.querySelector(BLOCKS)
+  );
+  if (leaves.length === 0) {
+    return (doc.body.textContent ?? "").replace(/\s+/g, " ").trim();
+  }
+  return leaves
+    .map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .map((t) => (/[.!?:;]$/.test(t) ? t : `${t}.`))
+    .join(" ");
 }
 
 export function getWords(text: string): string[] {
