@@ -10,6 +10,8 @@ export const FUNNEL_EVENTS = [
   { id: "callback_submitted", label: "Call-back submitted", client: false },
   { id: "whatsapp_click", label: "WhatsApp clicked", client: true },
   { id: "whatsapp_brief", label: "Sent a brief on WhatsApp", client: true },
+  { id: "invoice_downloaded", label: "Invoice tool: PDF downloaded", client: true },
+  { id: "invoice_ad_click", label: "Invoice tool: software ad clicked", client: true },
 ] as const;
 
 export type FunnelEvent = (typeof FUNNEL_EVENTS)[number]["id"];

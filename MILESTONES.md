@@ -19,6 +19,7 @@ _Last re-planned: 2026-10-03 (repositioned from "AI-powered digital marketing ag
 | 2026-10-19 | **Cockpit sign-in: password only.** Passkeys, the PIN and Bluvig Authenticator removed; `/cockpit/login` takes `ADMIN_PASSWORD`. 5 wrong tries per visitor / 30 overall per hour pause sign-in. | Owner asked for just a password; passkeys had failed on www. |
 | 2026-10-16 | **Cockpit PIN:** an 8-digit owner PIN, stored hashed in the DB, signs in as an alternative to the passkey (either one works). 5 wrong tries per visitor / 30 overall per hour pause PIN sign-in. | Lets the owner sign in from any computer without a passkey. |
 | 2026-10-16 | **USD only for visitors outside Kenya:** currency is set by the visitor's IP country; the KES/USD switch is gone. | Kenyan clients shouldn't see the 3× international prices. |
+| 2026-10-21 | **Free Invoice & Quotation Generator** at `/tools/invoice-generator`: invoices, quotations, proformas, receipts; logo, colour, 3 templates, VAT, M-Pesa/bank details, signature, stamps; free PDF, no watermark, no sign-up. Runs entirely in the browser (documents saved in the visitor's browser only). Carries an ad for Custom Business Software; downloads and ad clicks counted in Cockpit → Insights. | First free tool: search traffic from Kenyan SMEs that leads to the custom-software service. |
 | 2026-10-16 | **Site rewritten for the software studio positioning** using the proposed 6-service lineup. Digital Marketing Training and Graphic Design folded into **Launch & Grow** (old URLs redirect there). Blog stays at `/blog`. | Owner said "do them all"; lineup from Phase 1 proposal — owner to review copy. |
 | (earlier) | Stack: Next.js 16 (App Router) + TypeScript, Tailwind v4, shadcn/ui (`base-nova`), Framer Motion + GSAP, lucide-react, Geist + Playfair Display. Hosting on Vercel. | See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). |
 
@@ -156,7 +157,8 @@ _Software buyers, especially international and established companies, buy trust 
 
 ## Phase 7 — Content & SEO
 - [x] Retarget keywords: e.g. "software development company Kenya", "custom software Nairobi", "web application development Kenya", "M-Pesa integration developer", "hire developers in Kenya", "offshore development Africa" — titles, descriptions and copy (2026-10-16)
-- [ ] Blog migration from WordPress: keep posts that still fit, 301 the rest to relevant pages; choose authoring setup (MDX in repo vs. Sanity — decide by publishing frequency)
+- [x] Blog authoring: cockpit **Blog** tab (2026-10-21). Rich-text editor (Tiptap) with a live SEO / Readability / AEO / GEO score and fix list, Google preview, FAQ builder, categories. Public `/blog` + `/blog/[slug]` with Article/FAQ/Breadcrumb structured data and sitemap entries. Stored in the `blog` document (lib/blog.ts).
+- [ ] Blog migration from WordPress: keep posts that still fit (re-create them in the cockpit), 301 the rest to relevant pages
 - [ ] Content plan for the new audience: build-cost guides ("How much does custom software cost in Kenya?"), integration how-tos, case-study write-ups
 - [x] Technical SEO: `sitemap.xml`, `robots.txt`, canonical URLs, structured data (Organization, LocalBusiness, Service, Article, FAQ), Open Graph images — all but Article (no posts yet) (2026-10-16)
 - [ ] Core Web Vitals: 90+ Lighthouse on all marketing pages; keep decorative motion lightweight

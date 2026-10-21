@@ -10,12 +10,16 @@ const TABS = [
   { href: "/cockpit/estimates", label: "Estimates" },
   { href: "/cockpit/projects", label: "Projects" },
   { href: "/cockpit/portfolio", label: "Portfolio" },
+  { href: "/cockpit/blog", label: "Blog" },
   { href: "/cockpit/pricing", label: "Pricing" },
   { href: "/cockpit/insights", label: "Insights" },
 ];
 
 export function CockpitNav() {
   const pathname = usePathname();
+  // Sub-pages (e.g. /cockpit/blog/<id>) keep their tab highlighted.
+  const isActive = (href: string) =>
+    href === "/cockpit" ? pathname === href : pathname.startsWith(href);
   return (
     <nav
       aria-label="Cockpit"
@@ -25,10 +29,10 @@ export function CockpitNav() {
         <Link
           key={tab.href}
           href={tab.href}
-          aria-current={pathname === tab.href ? "page" : undefined}
+          aria-current={isActive(tab.href) ? "page" : undefined}
           className={cn(
             "rounded-full px-4 py-1.5 font-medium transition-colors",
-            pathname === tab.href
+            isActive(tab.href)
               ? "bg-navy-950 text-white"
               : "text-navy-700 hover:bg-navy-50"
           )}

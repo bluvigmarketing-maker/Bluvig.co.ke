@@ -3,9 +3,13 @@ import type { MetadataRoute } from "next";
 import { SERVICES } from "@/lib/services";
 import { SITE } from "@/lib/site";
 import { getCaseStudies } from "@/lib/portfolio";
+import { getPublishedPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const caseStudies = await getCaseStudies();
+  const [caseStudies, posts] = await Promise.all([
+    getCaseStudies(),
+    getPublishedPosts(),
+  ]);
   const page = (
     path: string,
     priority: number,
@@ -24,7 +28,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     page("/about", 0.6),
     page("/contact", 0.6),
     page("/blog", 0.5, "weekly"),
-    page("/tools", 0.4),
+    // Canonicalised elsewhere → not ours to list.
+    ...posts
+      .filter((p) => !p.canonicalUrl)
+      .map((p) => ({
+        ...page(`/blog/${p.slug}`, 0.5),
+        lastModified: p.updatedAt,
+      })),
+    page("/tools", 0.5),
+    page("/tools/invoice-generator", 0.7),
     page("/privacy", 0.2, "yearly"),
     page("/terms", 0.2, "yearly"),
   ];

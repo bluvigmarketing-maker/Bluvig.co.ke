@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { CalendarDays } from "lucide-react";
+import Link from "next/link";
 
+import { cn } from "@/lib/utils";
+import { getActiveCategories, getPublishedPosts } from "@/lib/blog";
 import { Container } from "@/components/site/container";
 import { PageHero } from "@/components/site/page-hero";
+import { PostCard } from "@/components/site/post-card";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -11,56 +14,36 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
-// Placeholder listing carried over from the current WordPress blog.
-// Full post content migrates in Phase 5 of MILESTONES.md.
-const POSTS = [
-  {
-    title: "Who Are the Best Website Developers in Kenya?",
-    category: "Website Development",
-  },
-  {
-    title:
-      "The Compliance Dividend: Why NSSF Integrity Is the Secret to a Powerful Kenyan Brand",
-    category: "Marketing",
-  },
-  {
-    title: "What Is the 3-3-3 Rule in Marketing? A Strategy for Radical Focus",
-    category: "Marketing",
-  },
-  {
-    title: "Digital Marketing in Kenya (2026 Guide)",
-    category: "Marketing",
-  },
-  {
-    title: "Should I Focus on SEO, Social Media, or Ads?",
-    category: "SEO",
-  },
-  {
-    title:
-      "What Questions Should I Ask Before Hiring a Digital Marketing Agency?",
-    category: "Marketing",
-  },
-  {
-    title:
-      "What Digital Marketing Services Are Essential for E-Commerce Businesses?",
-    category: "Marketing",
-  },
-  {
-    title: "What Should I Look for When Choosing a Digital Marketing Agency?",
-    category: "Marketing",
-  },
-  {
-    title: "How Do I Get Clients Online? A Practical Guide to Digital Marketing",
-    category: "Marketing",
-  },
-  {
-    title:
-      "How to Start Digital Marketing: A Beginner's Guide With Real-World Insights",
-    category: "AI Marketing",
-  },
-];
+/** Posts are written in the cockpit's Blog tab. `?category=<slug>` filters. */
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const [allPosts, categories] = await Promise.all([
+    getPublishedPosts(),
+    getActiveCategories(),
+  ]);
+  const current = categories.find((c) => c.slug === category);
+  const posts = current
+    ? allPosts.filter((p) => p.categoryId === current.id)
+    : allPosts;
 
-export default function BlogPage() {
+  const filter = (href: string, text: string, active: boolean) => (
+    <Link
+      key={href}
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+        active ? "bg-navy-950 text-white" : "text-navy-700 hover:bg-navy-50"
+      )}
+    >
+      {text}
+    </Link>
+  );
+
   return (
     <>
       <PageHero
@@ -68,22 +51,26 @@ export default function BlogPage() {
         description="Practical writing on software, websites, SEO and getting found online, for businesses in Kenya."
       />
       <section className="bg-white py-20">
-        <Container>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {POSTS.map((post) => (
-              <div key={post.title}>
-                <article className="flex h-full flex-col gap-4 rounded-2xl border border-navy-100 bg-white p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md">
-                  <span className="flex items-center gap-1.5 text-xs font-semibold text-gold-700">
-                    <CalendarDays className="size-3.5" aria-hidden="true" />
-                    {post.category}
-                  </span>
-                  <h2 className="font-heading text-lg leading-snug font-semibold text-navy-950">
-                    {post.title}
-                  </h2>
-                </article>
-              </div>
-            ))}
-          </div>
+        <Container className="flex flex-col gap-10">
+          {categories.length > 1 ? (
+            <nav aria-label="Categories" className="flex flex-wrap gap-1">
+              {filter("/blog", "All", !current)}
+              {categories.map((c) =>
+                filter(`/blog?category=${c.slug}`, c.name, current?.id === c.id)
+              )}
+            </nav>
+          ) : null}
+          {posts.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-10 text-center text-navy-600">
+              New posts are on the way. Check back soon.
+            </p>
+          )}
         </Container>
       </section>
     </>
