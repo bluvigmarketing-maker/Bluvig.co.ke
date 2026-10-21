@@ -97,7 +97,59 @@ async function whatsAppOwner(text: string) {
   );
 }
 
-/** Owner alert: a key/value table plus a cockpit link, by email and WhatsApp. */
+/**
+ * Telegram alert to the owner from a bot (made with @BotFather). Off until
+ * TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set. Never throws, and gives
+ * up after 8 seconds, so Telegram being slow can't hold up or lose a lead.
+ */
+async function telegramOwner(
+  subject: string,
+  filled: [string, string][],
+  link: string
+) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chats =
+    process.env.TELEGRAM_CHAT_ID?.split(",")
+      .map((c) => c.trim())
+      .filter(Boolean) ?? [];
+  if (!token || !chats.length) return;
+  const clip = (v: string) => (v.length > 1500 ? `${v.slice(0, 1500)}…` : v);
+  const text = [
+    `<b>${escape(subject)}</b>`,
+    "",
+    ...filled.map(([k, v]) => `<b>${escape(k)}:</b> ${escape(clip(v))}`),
+  ].join("\n");
+  // Telegram only accepts https links on buttons.
+  const button = link.startsWith("https://")
+    ? { inline_keyboard: [[{ text: "Open in the cockpit", url: link }]] }
+    : undefined;
+  await Promise.all(
+    chats.map(async (chat) => {
+      try {
+        const res = await fetch(
+          `https://api.telegram.org/bot${token}/sendMessage`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chat,
+              text,
+              parse_mode: "HTML",
+              link_preview_options: { is_disabled: true },
+              reply_markup: button,
+            }),
+            signal: AbortSignal.timeout(8000),
+          }
+        );
+        if (!res.ok) console.error("[notify:telegram]", res.status, await res.text());
+      } catch (error) {
+        console.error("[notify:telegram]", error);
+      }
+    })
+  );
+}
+
+/** Owner alert: a key/value table plus a cockpit link, by email, Telegram and WhatsApp. */
 async function alertOwner(
   subject: string,
   rows: [string, string][],
@@ -109,6 +161,7 @@ async function alertOwner(
     whatsAppOwner(
       [`*${subject}*`, "", ...filled.map(([k, v]) => `${k}: ${clip(v)}`), "", `Open: ${link}`].join("\n")
     ),
+    telegramOwner(subject, filled, link),
     sendOwnerEmail(subject, filled, link),
   ]);
 }
