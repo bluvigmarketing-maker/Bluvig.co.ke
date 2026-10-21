@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { bumpInvoiceCount } from "@/lib/counters";
 import { recordEvent } from "@/lib/funnel";
 import { isClientEvent } from "@/lib/funnel-events";
 
@@ -15,6 +16,7 @@ export async function POST(request: Request) {
   }
   if (!BOT.test(request.headers.get("user-agent") ?? "")) {
     await recordEvent(body.event);
+    if (body.event === "invoice_downloaded") await bumpInvoiceCount();
   }
   return new NextResponse(null, { status: 204 });
 }

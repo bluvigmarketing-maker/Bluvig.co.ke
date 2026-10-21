@@ -91,6 +91,7 @@ import {
 } from "./fields";
 import { A4, InvoicePreview } from "./invoice-preview";
 import { SignaturePad } from "./signature-pad";
+import { INVOICE_MADE_EVENT } from "./invoice-counter";
 import { SoftwareNudge } from "./software-ad";
 
 type Tab = "edit" | "preview";
@@ -229,6 +230,7 @@ export default function InvoiceGenerator() {
       if (!sample) setDocs(saveDoc(doc));
       setNotice("downloaded");
       track("invoice_downloaded");
+      window.dispatchEvent(new Event(INVOICE_MADE_EVENT));
     } catch {
       setNotice("error");
     } finally {
@@ -247,6 +249,7 @@ export default function InvoiceGenerator() {
       });
       if (!sample) setDocs(saveDoc(doc));
       track("invoice_downloaded");
+      window.dispatchEvent(new Event(INVOICE_MADE_EVENT));
     } catch (e) {
       if ((e as Error)?.name !== "AbortError") setNotice("error");
     } finally {

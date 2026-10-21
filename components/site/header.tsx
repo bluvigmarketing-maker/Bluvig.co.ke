@@ -7,6 +7,7 @@ import { ChevronDown, Menu } from "lucide-react";
 
 import { isChromeless } from "@/lib/chromeless";
 import { SERVICES as SERVICE_LIST } from "@/lib/services";
+import { LIVE_TOOLS } from "@/lib/tools";
 import { Container } from "@/components/site/container";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,7 +55,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           <Button
             variant="ghost"
             size="sm"
@@ -88,9 +89,29 @@ export function Header() {
               render={<Link href={link.href}>{link.label}</Link>}
             />
           ))}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="ghost" size="sm" className="gap-1">
+                  Free Tools
+                  <ChevronDown className="size-3.5" aria-hidden="true" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent className="min-w-56">
+              {LIVE_TOOLS.map((tool) => (
+                <DropdownMenuItem
+                  key={tool.href}
+                  render={<Link href={tool.href}>{tool.label}</Link>}
+                />
+              ))}
+              <DropdownMenuItem render={<Link href="/tools">All Free Tools</Link>} />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
             <Button
               className="btn-metallic gold-line font-semibold"
               render={<Link href="/get-started">Start a Project</Link>}
@@ -100,7 +121,7 @@ export function Header() {
         <Sheet>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
                 <Menu className="size-5" aria-hidden="true" />
               </Button>
             }
@@ -159,6 +180,24 @@ export function Header() {
                   }
                 />
               ))}
+              <span className="px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-navy-400 uppercase">
+                Free Tools
+              </span>
+              {[...LIVE_TOOLS, { label: "All Free Tools", href: "/tools" }].map(
+                (tool) => (
+                  <SheetClose
+                    key={tool.href}
+                    render={
+                      <Link
+                        href={tool.href}
+                        className="rounded-lg border-l-2 border-navy-100 py-2 pr-3 pl-4 text-sm font-medium text-navy-900 hover:bg-navy-50"
+                      >
+                        {tool.label}
+                      </Link>
+                    }
+                  />
+                )
+              )}
               <Button
                 className="btn-metallic gold-line mt-3 font-semibold"
                 render={<Link href="/get-started">Start a Project</Link>}

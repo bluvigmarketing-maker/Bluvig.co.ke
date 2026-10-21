@@ -6,6 +6,7 @@ import { Container } from "@/components/site/container";
 import { JsonLd } from "@/components/site/json-ld";
 import { SectionHeading } from "@/components/site/section-heading";
 import { InvoiceGeneratorLoader } from "@/components/invoice/generator-loader";
+import { InvoiceCounter } from "@/components/invoice/invoice-counter";
 import { SoftwareAd } from "@/components/invoice/software-ad";
 
 const PATH = "/tools/invoice-generator";
@@ -123,6 +124,7 @@ export default function InvoiceGeneratorPage() {
             logo, colours and M-Pesa details. Download the PDF free, with no
             watermark and no sign-up.
           </p>
+          <InvoiceCounter />
         </Container>
       </div>
 

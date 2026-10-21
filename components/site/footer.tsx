@@ -8,6 +8,7 @@ import { Clock, Mail, Phone } from "lucide-react";
 import { isChromeless } from "@/lib/chromeless";
 import { SERVICES } from "@/lib/services";
 import { SITE } from "@/lib/site";
+import { LIVE_TOOLS } from "@/lib/tools";
 import { Container } from "@/components/site/container";
 
 const COMPANY_LINKS = [
@@ -16,8 +17,12 @@ const COMPANY_LINKS = [
   { label: "About", href: "/about" },
   { label: "Website Pricing", href: "/quotation" },
   { label: "Blog", href: "/blog" },
-  { label: "Free Tools", href: "/tools" },
   { label: "Contact", href: "/contact" },
+];
+
+const TOOL_LINKS = [
+  ...LIVE_TOOLS,
+  { label: "All Free Tools", href: "/tools" },
 ];
 
 const LEGAL_LINKS = [
@@ -59,7 +64,7 @@ export function Footer() {
 
   return (
     <footer className="bg-navy-950 text-navy-100">
-      <Container className="grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4">
+      <Container className="grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-5">
         <div className="flex flex-col gap-4">
           <Image
             src="/logo.png"
@@ -82,6 +87,7 @@ export function Footer() {
           }))}
         />
         <LinkList title="Company" links={COMPANY_LINKS} />
+        <LinkList title="Free Tools" links={TOOL_LINKS} />
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-semibold tracking-wide text-gold-300 uppercase">
