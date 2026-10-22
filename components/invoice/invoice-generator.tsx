@@ -20,8 +20,6 @@ import {
   PenLine,
   Percent,
   Plus,
-  Save,
-  Share2,
   SquarePen,
   Trash2,
   UserRound,
@@ -121,21 +119,8 @@ export default function InvoiceGenerator() {
   const [tab, setTab] = useState<Tab>("edit");
   const rootRef = useRef<HTMLDivElement>(null);
   const [showDocs, setShowDocs] = useState(false);
-  const [busy, setBusy] = useState<"download" | "share" | null>(null);
-  const [notice, setNotice] = useState<"downloaded" | "saved" | "error" | null>(
-    null,
-  );
-  const [canShare] = useState(() => {
-    try {
-      const probe = new File([""], "x.pdf", { type: "application/pdf" });
-      return (
-        typeof navigator.canShare === "function" &&
-        navigator.canShare({ files: [probe] })
-      );
-    } catch {
-      return false;
-    }
-  });
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<"downloaded" | "error" | null>(null);
 
   const setDoc = (fn: (d: InvoiceDoc) => InvoiceDoc) =>
     setState((s) => ({
@@ -197,11 +182,6 @@ export default function InvoiceGenerator() {
     });
   }
 
-  function save() {
-    setDocs(saveDoc(doc));
-    setNotice("saved");
-  }
-
   async function makePdf() {
     const [{ pdf }, { InvoicePdf }] = await Promise.all([
       import("@react-pdf/renderer"),
@@ -216,7 +196,7 @@ export default function InvoiceGenerator() {
   }
 
   async function download() {
-    setBusy("download");
+    setBusy(true);
     try {
       const blob = await makePdf();
       const url = URL.createObjectURL(blob);
@@ -234,26 +214,7 @@ export default function InvoiceGenerator() {
     } catch {
       setNotice("error");
     } finally {
-      setBusy(null);
-    }
-  }
-
-  async function share() {
-    setBusy("share");
-    try {
-      const blob = await makePdf();
-      const file = new File([blob], fileName(doc), { type: "application/pdf" });
-      await navigator.share({
-        files: [file],
-        title: `${docTitle(doc)} ${doc.number}`,
-      });
-      if (!sample) setDocs(saveDoc(doc));
-      track("invoice_downloaded");
-      window.dispatchEvent(new Event(INVOICE_MADE_EVENT));
-    } catch (e) {
-      if ((e as Error)?.name !== "AbortError") setNotice("error");
-    } finally {
-      setBusy(null);
+      setBusy(false);
     }
   }
 
@@ -284,29 +245,16 @@ export default function InvoiceGenerator() {
           <button
             type="button"
             onClick={download}
-            disabled={busy !== null}
+            disabled={busy}
             className="inline-flex h-10 items-center gap-2 rounded-xl bg-navy-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800 disabled:opacity-70"
           >
-            {busy === "download" ? (
+            {busy ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             ) : (
               <Download className="size-4" aria-hidden="true" />
             )}
             Download<span className="hidden min-[400px]:inline"> PDF</span>
           </button>
-          {canShare ? (
-            <ToolButton onClick={share} disabled={busy !== null} label="Share">
-              {busy === "share" ? (
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-              ) : (
-                <Share2 className="size-4" aria-hidden="true" />
-              )}
-            </ToolButton>
-          ) : null}
-          <ToolButton onClick={save} label="Save">
-            <Save className="size-4" aria-hidden="true" />
-          </ToolButton>
-
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -384,11 +332,6 @@ export default function InvoiceGenerator() {
 
       {notice === "downloaded" ? (
         <SoftwareNudge onClose={() => setNotice(null)} />
-      ) : null}
-      {notice === "saved" ? (
-        <Banner onClose={() => setNotice(null)}>
-          Saved to My documents in this browser.
-        </Banner>
       ) : null}
       {notice === "error" ? (
         <Banner tone="error" onClose={() => setNotice(null)}>
@@ -547,8 +490,8 @@ function DocsPanel({
       </div>
       {shown.length === 0 ? (
         <p className="mt-4 text-sm text-navy-600">
-          Nothing saved yet. Documents are saved here when you download or press
-          Save. They stay in this browser only.
+          Nothing saved yet. Every document you download is saved here
+          automatically. They stay in this browser only.
         </p>
       ) : (
         <ul className="mt-3 flex max-h-80 flex-col divide-y divide-navy-100 overflow-y-auto">

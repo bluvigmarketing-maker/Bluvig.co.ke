@@ -72,7 +72,7 @@ const FAQ = [
   },
   {
     q: "How do I send it on WhatsApp or email?",
-    a: "Download the PDF and attach it. On most phones the Share button sends the PDF straight to WhatsApp, Gmail or any other app.",
+    a: "Download the PDF, then attach it to a WhatsApp chat or an email like any other file.",
   },
   {
     q: "Can I turn a quotation into an invoice?",
