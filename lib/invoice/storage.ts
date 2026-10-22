@@ -143,3 +143,16 @@ export function recentItems(docs: InvoiceDoc[]) {
   }
   return [...seen.values()];
 }
+
+const FIRST_DOWNLOAD = "bluvig-invoice:first-download";
+
+/** True only the first time this browser downloads a document (for the confetti). */
+export function claimFirstDownload(): boolean {
+  try {
+    if (localStorage.getItem(FIRST_DOWNLOAD)) return false;
+    localStorage.setItem(FIRST_DOWNLOAD, new Date().toISOString());
+    return true;
+  } catch {
+    return false;
+  }
+}

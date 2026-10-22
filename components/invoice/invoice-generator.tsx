@@ -52,6 +52,7 @@ import {
 import { buildView, fileName } from "@/lib/invoice/view";
 import { fileToDataUrl } from "@/lib/invoice/images";
 import {
+  claimFirstDownload,
   deleteDoc,
   loadDocs,
   loadDraft,
@@ -89,6 +90,7 @@ import {
 } from "./fields";
 import { A4, InvoicePreview } from "./invoice-preview";
 import { SignaturePad } from "./signature-pad";
+import { burstConfetti } from "./confetti";
 import { INVOICE_MADE_EVENT } from "./invoice-counter";
 import { SoftwareNudge } from "./software-ad";
 
@@ -211,6 +213,15 @@ export default function InvoiceGenerator() {
       setNotice("downloaded");
       track("invoice_downloaded");
       window.dispatchEvent(new Event(INVOICE_MADE_EVENT));
+      if (claimFirstDownload())
+        burstConfetti([
+          doc.branding.color,
+          "#2a7cef",
+          "#f5b301",
+          "#15803d",
+          "#e11d48",
+          "#7c3aed",
+        ]);
     } catch {
       setNotice("error");
     } finally {
