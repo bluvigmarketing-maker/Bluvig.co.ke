@@ -109,21 +109,23 @@ export default function InvoiceGeneratorPage() {
       />
 
       <div className="bg-navy-950 pt-12 pb-10 text-white sm:pt-16">
-        <Container className="flex flex-col items-start gap-4">
-          <nav aria-label="Breadcrumb" className="text-xs text-navy-300">
-            <Link href="/tools" className="hover:text-white">
-              Tools
-            </Link>{" "}
-            / Invoice Generator
-          </nav>
-          <h1 className="font-heading text-4xl font-bold text-balance sm:text-5xl">
-            Free Invoice &amp; Quotation Generator
-          </h1>
-          <p className="max-w-2xl text-navy-100">
-            Professional invoices, quotations, proformas and receipts with your
-            logo, colours and M-Pesa details. Download the PDF free, with no
-            watermark and no sign-up.
-          </p>
+        <Container className="grid gap-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+          <div className="flex flex-col items-start gap-4">
+            <nav aria-label="Breadcrumb" className="text-xs text-navy-300">
+              <Link href="/tools" className="hover:text-white">
+                Tools
+              </Link>{" "}
+              / Invoice Generator
+            </nav>
+            <h1 className="font-heading text-4xl font-bold text-balance sm:text-5xl">
+              Free Invoice &amp; Quotation Generator
+            </h1>
+            <p className="max-w-2xl text-navy-100">
+              Professional invoices, quotations, proformas and receipts with
+              your logo, colours and M-Pesa details. Download the PDF free, with
+              no watermark and no sign-up.
+            </p>
+          </div>
           <InvoiceCounter />
         </Container>
       </div>
