@@ -6,8 +6,9 @@
 
 /** Budget bands in KES. International clients see them ×multiplier in USD. */
 export const BUDGET_BANDS = [
-  { id: "below-min", minKes: 0, maxKes: 29_999 },
-  { id: "30-60", minKes: 30_000, maxKes: 60_000 },
+  { id: "below-min", minKes: 0, maxKes: 19_999 },
+  // The id is stored with leads, so it keeps its old name; the floor is the base price.
+  { id: "30-60", minKes: 20_000, maxKes: 60_000 },
   { id: "60-120", minKes: 60_000, maxKes: 120_000 },
   { id: "120-250", minKes: 120_000, maxKes: 250_000 },
   { id: "250-plus", minKes: 250_000, maxKes: null },
@@ -38,7 +39,7 @@ export type Qualification = "hot" | "warm" | "cold";
 /**
  * hot  — budget at or above the minimum and ready within a month
  * warm — budget fits (or not sure yet) but later / unsure timing
- * cold — below the KES 30,000 minimum, or just exploring on a small budget
+ * cold — below the KES 20,000 minimum, or just exploring on a small budget
  */
 export function qualify(
   band: BudgetBandId,

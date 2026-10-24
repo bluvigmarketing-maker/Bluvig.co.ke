@@ -68,16 +68,16 @@ There are two separate costs: building the integration once, and Safaricom's fee
 {
   "title": "What it costs to add M-Pesa",
   "subtitle": "One-off build cost in KES, by project type",
-  "alt": "Bar chart of M-Pesa integration build costs in Kenya: KES 12,000 on a new Bluvig website, KES 20,000 to 80,000 for a typical app integration",
+  "alt": "Bar chart of M-Pesa integration build costs in Kenya: KES 7,000 on a new Bluvig website, KES 20,000 to 80,000 for a typical app integration",
   "rows": [
-    { "label": "STK Push on a new Bluvig website", "value": 12000, "display": "KES 12,000", "highlight": true },
+    { "label": "STK Push on a new Bluvig website", "value": 7000, "display": "KES 7,000", "highlight": true },
     { "label": "Typical app or system integration (market range)", "from": 20000, "value": 80000, "display": "KES 20,000 to 80,000" }
   ],
   "source": "Sources: Bluvig live price list (Oct 2026); Gurucrafts Kenya app cost guide (May 2026)"
 }
 ```
 
-**Building the integration.** At Bluvig, M-Pesa checkout with STK Push is a **KES 12,000** add-on when we build your website, and you can see it priced on our [instant quotation page](/quotation). Connecting M-Pesa to an existing app, ERP or custom system takes more work, because payments have to flow into your own records. Kenyan agencies quote roughly **KES 20,000 to 80,000** for that ([Gurucrafts](https://gurucrafts.agency/mobile-app-development-cost-in-kenya/)). Payouts (B2C), multiple shortcodes and full reconciliation sit at the top of that range.
+**Building the integration.** At Bluvig, M-Pesa checkout with STK Push is a **KES 7,000** add-on when we build your website, and you can see it priced on our [instant quotation page](/quotation). Connecting M-Pesa to an existing app, ERP or custom system takes more work, because payments have to flow into your own records. Kenyan agencies quote roughly **KES 20,000 to 80,000** for that ([Gurucrafts](https://gurucrafts.agency/mobile-app-development-cost-in-kenya/)). Payouts (B2C), multiple shortcodes and full reconciliation sit at the top of that range.
 
 **Safaricom's fees.** On 7 August 2026, Safaricom cut its merchant charges. For Buy Goods (Till) collections, payments up to KSh 500 are now free to the merchant. Above that, the fee is 0.55%, capped at KSh 200 per transaction ([The Standard](https://www.standardmedia.co.ke/business/article/2001554316/safaricom-halves-m-pesa-merchant-fees-in-cbk-led-move)). Paybill tariffs differ, so check Safaricom's current tariff table for your account type.
 
@@ -117,7 +117,7 @@ If you want M-Pesa connected to a website, an app or the systems you already run
 ## Frequently asked questions
 
 ### How much does M-Pesa integration cost in Kenya?
-At Bluvig, STK Push checkout costs KES 12,000 as part of a new website. Integrating M-Pesa into an existing app or system typically costs KES 20,000 to 80,000, depending on payouts and reconciliation. Safaricom also charges per-transaction fees.
+At Bluvig, STK Push checkout costs KES 7,000 as part of a new website. Integrating M-Pesa into an existing app or system typically costs KES 20,000 to 80,000, depending on payouts and reconciliation. Safaricom also charges per-transaction fees.
 
 ### Can an individual get M-Pesa API production access?
 No. Safaricom only issues production Daraja credentials to registered businesses that own a Paybill or Till. Individuals can still use the sandbox to learn and test.

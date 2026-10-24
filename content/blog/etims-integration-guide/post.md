@@ -84,7 +84,7 @@ Stock records matter too. The eTIMS regulations require stock-in and stock-out r
 
 KRA's own eTIMS software is free. The cost comes from connecting your existing system and maintaining that connection.
 
-At Bluvig, eTIMS invoicing built into a new website or online shop is a **KES 25,000** feature on our [quotation page](/quotation). Connecting an existing ERP, POS or custom system depends on how it stores sales and stock, so we quote it after a short review. When you compare eTIMS integration quotes, ask three things. Which certification route does your setup need? Who maintains it when KRA updates its specification? And how are failed invoices handled?
+At Bluvig, eTIMS invoicing built into a new website or online shop is a **KES 18,000** feature on our [quotation page](/quotation). Connecting an existing ERP, POS or custom system depends on how it stores sales and stock, so we quote it after a short review. When you compare eTIMS integration quotes, ask three things. Which certification route does your setup need? Who maintains it when KRA updates its specification? And how are failed invoices handled?
 
 Taking payments as well? Our [M-Pesa integration guide](/blog/m-pesa-integration-cost-steps-timeline) covers that side.
 

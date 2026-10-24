@@ -624,14 +624,14 @@ export function StartWizard({
               inputMode="numeric"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder={inKenya ? "e.g. 60,000" : "e.g. 1,500"}
+              placeholder={inKenya ? "e.g. 40,000" : "e.g. 1,500"}
               aria-label={`Budget in ${currency}`}
               className="min-w-0 flex-1 text-lg text-navy-950 focus:outline-none"
             />
           </label>
           <div className="flex flex-wrap gap-2">
             {(inKenya
-              ? [30_000, 50_000, 80_000, 120_000, 200_000]
+              ? [20_000, 35_000, 50_000, 80_000, 150_000]
               : [700, 1_200, 2_000, 3_500, 6_000]
             ).map((n) => (
               <Chip

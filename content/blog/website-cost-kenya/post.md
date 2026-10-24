@@ -52,7 +52,7 @@ Here is the typical website cost in Kenya by type, based on 2026 prices from Ken
 
 ## What does Bluvig charge for a website?
 
-We publish our prices, so you can check the numbers yourself. A standard Bluvig website costs **KES 30,000** and includes:
+We publish our prices, so you can check the numbers yourself. A standard Bluvig website costs **KES 20,000** and includes:
 
 - Home, About, Services and Contact pages
 - An admin dashboard to edit content and see enquiries
@@ -61,7 +61,7 @@ We publish our prices, so you can check the numbers yourself. A standard Bluvig 
 - Mobile-friendly design and SSL
 - Hosting and a domain for the first year
 
-From the second year, renewal is **KES 5,000 a year**. Features are priced individually: an online shop for up to 100 products adds KES 30,000, M-Pesa checkout adds KES 12,000, and advanced SEO and GEO adds KES 20,000. You can pick features on our [instant quotation page](/quotation) and see the exact price, timeline and a live preview before you pay anything.
+From the second year, renewal is **KES 5,000 a year**. Features are priced individually: an online shop for up to 100 products adds KES 20,000, M-Pesa checkout adds KES 7,000, and advanced SEO and GEO adds KES 12,000. You can pick features on our [instant quotation page](/quotation) and see the exact price, timeline and a live preview before you pay anything.
 
 ## What will you pay every year after launch?
 
@@ -70,7 +70,7 @@ The build is only part of the website cost in Kenya. Plan for these recurring co
 1. **Domain name.** A .co.ke domain is cheap in year one, but renewals are higher. KeNIC raised its wholesale prices for third-level domains by 43% in February 2025, and registrars now charge roughly KES 999 to 2,500 a year to renew ([Achi Systems](https://achisystems.co.ke/co-ke-domain-costs-and-prices/)).
 2. **Hosting.** Shared hosting in Kenya costs about KES 2,000 to 12,500 a year. Online shops often need business hosting at KES 10,000 to 50,000 a year.
 3. **SSL certificate.** Usually free with modern hosting, through Let's Encrypt.
-4. **Maintenance.** Updates, backups and fixes cost about KES 5,000 to 15,000 a month on retainer ([McTaba](https://mctaba.com/learn/freelancing/price-first-website-project)). Our own plan is KES 5,000 a month.
+4. **Maintenance.** Updates, backups and fixes cost about KES 5,000 to 15,000 a month on retainer ([McTaba](https://mctaba.com/learn/freelancing/price-first-website-project)). Our own plan is KES 2,500 a month.
 
 Therefore, compare the website cost in Kenya over three years, not on the build price alone. A "cheap" site with expensive renewals often costs more by year three.
 
@@ -101,7 +101,7 @@ At Bluvig, your code, content and domain are yours once the project is paid for.
 ## Frequently asked questions
 
 ### How much does a simple website cost in Kenya?
-A simple 4 to 7 page business website costs about KES 20,000 to 100,000 in 2026, depending on who builds it. Bluvig's standard website is KES 30,000, including hosting and a domain for the first year.
+A simple 4 to 7 page business website costs about KES 20,000 to 100,000 in 2026, depending on who builds it. Bluvig's standard website is KES 20,000, including hosting and a domain for the first year.
 
 ### How much does an e-commerce website cost in Kenya?
 An online shop with M-Pesa checkout typically costs KES 60,000 to 300,000 to build. Running costs include hosting, payment fees and maintenance.

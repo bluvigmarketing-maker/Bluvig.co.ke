@@ -38,7 +38,7 @@ Kenyan developers group apps into three levels. These are typical 2026 market pr
 - **Medium app:** user accounts, a database, M-Pesa payments, push notifications and an admin panel. About KES 150,000 to 500,000.
 - **Complex app:** real-time features, maps and tracking, multiple user types or a marketplace. About KES 500,000 to 2,000,000 or more, and 5 to 8 months of work ([Quest Designers](https://www.questdesigners.com/services/mobile-app-development)).
 
-At Bluvig, a companion app for Android and iOS starts from **KES 150,000**, and we confirm the final price after a short call. You can see it alongside website features on our [quotation page](/quotation).
+At Bluvig, a companion app for Android and iOS starts from **KES 120,000**, and we confirm the final price after a short call. You can see it alongside website features on our [quotation page](/quotation).
 
 ## What drives the cost of an app up or down?
 
