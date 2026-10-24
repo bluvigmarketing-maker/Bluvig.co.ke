@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
-  Download,
   Gauge,
   Info,
   Lightbulb,
@@ -315,13 +314,6 @@ export function Estimator({
           >
             Send purchase order on WhatsApp
             <ArrowRight className="size-4" aria-hidden="true" />
-          </a>
-          <a
-            href={done.pdfUrl}
-            className="flex items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-6 py-4 font-semibold text-navy-900 transition-colors hover:bg-navy-50"
-          >
-            <Download className="size-4" aria-hidden="true" />
-            Download proforma invoice (PDF)
           </a>
           <a
             href={done.orderUrl}
@@ -754,8 +746,8 @@ export function Estimator({
                 Ready? Reserve your start date
               </h2>
               <p className="mt-1 text-sm text-navy-700">
-                We only need your name and WhatsApp number to send your
-                proforma invoice. No account, no spam.
+                We only need your name and WhatsApp number to prepare your
+                order. No account, no spam.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -872,7 +864,7 @@ export function Estimator({
           disabled={submitting}
           className="btn-metallic gold-line flex items-center gap-2 rounded-xl px-5 py-3 font-semibold disabled:opacity-60"
         >
-          {submitting ? "Preparing…" : "Get my proforma"}
+          {submitting ? "Preparing…" : "Reserve my start date"}
           <ArrowRight className="size-4" aria-hidden="true" />
         </button>
       )}

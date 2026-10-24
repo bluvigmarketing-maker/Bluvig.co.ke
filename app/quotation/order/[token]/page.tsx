@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
-import { Check, Download, Lightbulb } from "lucide-react";
+import { Check, Lightbulb } from "lucide-react";
 
 import { formatMoney, PAYMENT_TERMS } from "@/lib/estimator/pricing";
 import { getEstimate } from "@/lib/estimator/store";
@@ -114,8 +114,8 @@ export default async function OrderPage({
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        {estimate.project ? null : (
+      {estimate.project ? null : (
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <a
             href={purchaseOrderLink(estimate, orderUrl)}
             target="_blank"
@@ -124,15 +124,8 @@ export default async function OrderPage({
           >
             Send purchase order on WhatsApp
           </a>
-        )}
-        <a
-          href={`/api/estimates/${estimate.token}/pdf`}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-5 py-3 font-semibold text-navy-900 hover:bg-navy-50"
-        >
-          <Download className="size-4" aria-hidden="true" /> Proforma invoice
-          (PDF)
-        </a>
-      </div>
+        </div>
+      )}
       {hasMaterials(estimate.materials) ? (
         <div className="mt-6 rounded-2xl border border-navy-100 bg-white p-5">
           <p className="mb-2 font-semibold text-navy-950">Shared ideas</p>

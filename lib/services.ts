@@ -197,7 +197,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         q: "How much does a website cost?",
-        a: "Use our quotation page to pick your industry and features. You see the exact price, timeline and a live preview, and get a proforma invoice on the spot.",
+        a: "Use our quotation page to pick your industry and features. You see the exact price, timeline and a live preview, and can send your order on WhatsApp on the spot.",
       },
       {
         q: "Can I update the website myself?",

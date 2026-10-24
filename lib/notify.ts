@@ -287,7 +287,7 @@ export async function notifyNewEstimate(estimate: Estimate, origin: string) {
     [
       `Hi ${client.name.split(" ")[0]},`,
       `Thanks for pricing your ${estimate.industryName.toLowerCase()} website with us. Your quotation ${estimate.reference} comes to ${total}${monthly}, with an estimated ${quote.weeks.min}–${quote.weeks.max} weeks to launch.`,
-      "Your order page has the full breakdown and the proforma invoice PDF. When you're ready, send the purchase order on WhatsApp from that page, or simply reply to this email with any questions.",
+      "Your order page has the full breakdown. When you're ready, send the purchase order on WhatsApp from that page, or simply reply to this email with any questions.",
     ],
     {
       href: `${origin}/quotation/order/${estimate.token}`,
